@@ -66,6 +66,7 @@
     width:100%;padding:10px;border-radius:8px;border:1px solid var(--line);font-size:16px;font-family:inherit;background:#fff;color:var(--ink);min-height:42px;}
   @media(min-width:700px){input[type=text],input[type=tel],input[type=date],input[type=time],input[type=number],input[type=search],select,textarea{font-size:14px;}}
   textarea{min-height:70px;resize:vertical;}
+  input::placeholder,textarea::placeholder{font-size:13px;color:#b5ae9c;}
   input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,162,39,.15);}
   .pills{display:flex;flex-wrap:wrap;gap:6px;}
   .pill{position:relative;}
@@ -597,7 +598,7 @@ function summary(c){ const si=stageInfo(c), f=fun(c), w=wakes(c); return {id:c.i
 const people = c => [...new Set(CONFIG.PASTORS.concat(CONFIG.TEAM, c?[c.call.receivedBy,c.call.coordinator]:[]).filter(Boolean))];
 
 /* ---------------- Storage / sync ---------------- */
-const S = { index:[], full:{}, view:'home', cur:null, tab:'details', filter:'active', year:'all', q:'', pin:ls('tow_fn_pin')||'', dirty:new Set(), saving:false, tg:false };
+const S = { photos:{}, grey:{}, index:[], full:{}, view:'home', cur:null, tab:'details', filter:'active', year:'all', q:'', pin:ls('tow_fn_pin')||'', dirty:new Set(), saving:false, tg:false };
 const LOCAL = !CONFIG.API_URL;
 let COL = {}; try{ COL = JSON.parse(ls('tow_fn_col')||'{}'); }catch(e){}
 function setSync(cls,txt){ const s=$('#sync'); s.className='sync '+cls; s.textContent=txt; const st=$('#saveTxt'); if(st) st.textContent=txt; }
@@ -764,7 +765,8 @@ const peopleList = c => '<datalist id="ppl">'+people(c).map(p=>'<option>'+esc(p)
 
 /* ---- Details ---- */
 function vDetails(c){
-  let h=c.manual?'<div class="note" style="margin:0 0 12px">Past record — entered after the service. Fill in the name and dates below, then upload or paste the obituary and programme.</div>'+filesBox(c,null,true):'';
+  let h=autofillBox(c);
+  h+=c.manual?'<div class="note" style="margin:0 0 12px">Past record — entered after the service. Fill in the name and dates below, then upload or paste the obituary and programme.</div>'+filesBox(c,null,true):'';
   h+=box('handling', sec('','Request handling'), '<div class="grid">'+
     fText('Call received on','call.date',c,{type:'date'})+fText('Time','call.time',c,{type:'time'})+
     fText('Received by <small>(Pastor 1)</small>','call.receivedBy',c,{list:'ppl'})+fText('Coordinator <small>(Pastor 2)</small>','call.coordinator',c,{list:'ppl'})+
@@ -876,7 +878,7 @@ const TPLS=[['grace','Grace','#f6f4ef'],['classic','Classic Gold','#FFFDF8'],['e
 function vObituary(c){
   let pick='<div class="tpls">'+TPLS.map(([k,n,bg])=>'<div class="tpl'+(c.obit.tpl===k?' on':'')+'" data-tpl="'+k+'"><div class="sw" style="background:'+bg+(k==='grace'?' url('+RING+') center/80% no-repeat':'')+'">'+tplSwatch(k)+'</div>'+n+'</div>').join('')+'</div>';
   let ctl='<div class="grid" style="margin-top:12px">'+
-    '<div><label class="f">Photo</label><input type="file" id="photoIn" accept="image/*" style="font-size:13px;max-width:100%">'+(c.obit.photo?'<button class="btn sm" data-act="rmPhoto" style="margin-top:6px">Remove photo</button>':'')+'</div>'+
+    '<div><label class="f">Photo</label><input type="file" id="photoIn" accept="image/*" style="font-size:13px;max-width:100%">'+(photoSrc(c)||c.obit.photoId?'<button class="btn sm" data-act="rmPhoto" style="margin-top:6px">Remove photo</button>':'')+'</div>'+
     '<div><label class="f">Scripture</label><select data-b="obit.verse" data-rr="1">'+Object.entries(VERSES).map(([k,v])=>'<option value="'+k+'"'+(c.obit.verse===k?' selected':'')+'>'+v.ref+'</option>').join('')+'<option value=""'+(!c.obit.verse?' selected':'')+'>No verse</option></select></div>'+
     '<div class="full"><label class="f">Opening line</label><input type="text" data-b="obit.called" value="'+esc(c.obit.called)+'" list="calls"></div>'+
     fArea('Survived by','survivedBy',c)+fArea('Additional note <small>(optional)</small>','obit.extra',c,{ph:'e.g. In lieu of flowers, kindly contribute to …'})+
@@ -935,7 +937,7 @@ function obData(c){
   const d=c.deceased, y1=d.dob?pd(d.dob).getFullYear():'', y2=d.dop?pd(d.dop).getFullYear():'';
   const f=fun(c);
   return { name:d.name||'Full Name', zh:c.obit.showZh?d.zh:'', years:(y1&&y2)?(y1+' – '+y2):String(y2||y1||''), y1, y2, passed:d.dop?fmtLong(d.dop):'', age:hasAge(d)?d.age:'',
-    called:c.obit.called||'', verse:VERSES[c.obit.verse], surv:c.survivedBy, extra:c.obit.extra, photo:c.obit.photo, photoG:c.obit.photoG,
+    called:c.obit.called||'', verse:VERSES[c.obit.verse], surv:c.survivedBy, extra:c.obit.extra, photo:photoSrc(c), photoG:S.grey[photoSrc(c).length+':'+photoSrc(c).slice(-40)]||'',
     initials:(d.name||'').split(/\s+/).filter(Boolean).slice(0,2).map(x=>x[0]).join('').toUpperCase(),
     wakes:wakes(c).map(w=>{ const e=eff(c,w); return {date:fmtDate(w.date), time:fmtTime(e.time), venue:venueText(e)}; }),
     fun:f.date?{date:fmtDate(f.date), full:fmtFull(f.date), time:fmtTime(f.time), venue:venueText(f)}:null,
@@ -964,13 +966,16 @@ const TPL = {
 };
 function renderObit(c){
   const el=$('#obit'); if(!el) return;
-  if(c.obit.tpl==='modern' && c.obit.photo && !c.obit.photoG){ greyPhoto(c); }
+  if(c.obit.photoId && !c.obit.photo && !S.photos[c.obit.photoId]) fetchPhoto(c);
+  const src=photoSrc(c); if(c.obit.tpl==='modern' && src && !S.grey[src.length+':'+src.slice(-40)]) greyPhoto(c);
   el.innerHTML=(TPL[c.obit.tpl]||TPL.grace)(obData(c));
   fitObit();
 }
 function fitObit(){ const w=$('#obwrap'), s=$('#obscale'); if(!w||!s) return; const k=Math.min(1,w.clientWidth/540); s.style.transform='scale('+k+')'; s.style.left=Math.max(0,(w.clientWidth-540*k)/2)+'px'; const ob=s.querySelector('.ob'); w.style.height=(ob?ob.offsetHeight*k:0)+'px'; }
 window.addEventListener('resize',()=>{ if(S.tab==='obituary') fitObit(); });
-function greyPhoto(c){ const img=new Image(); img.onload=()=>{ const cv=document.createElement('canvas'); cv.width=img.width; cv.height=img.height; const x=cv.getContext('2d'); x.drawImage(img,0,0); const d=x.getImageData(0,0,cv.width,cv.height); for(let i=0;i<d.data.length;i+=4){ const g=d.data[i]*.3+d.data[i+1]*.59+d.data[i+2]*.11; d.data[i]=d.data[i+1]=d.data[i+2]=g; } x.putImageData(d,0,0); c.obit.photoG=cv.toDataURL('image/jpeg',.82); renderObit(c); }; img.src=c.obit.photo; }
+function photoSrc(c){ return c.obit.photo || (c.obit.photoId && S.photos[c.obit.photoId]) || ''; }
+async function fetchPhoto(c){ const id=c.obit.photoId; if(S.photos[id]===false) return; S.photos[id]=false; try{ const j=await api({action:'file',fileId:id}); if(j.ok){ S.photos[id]='data:'+j.mime+';base64,'+j.data; if(S.tab==='obituary'&&cur()===c) renderObit(c); } }catch(e){} }
+function greyPhoto(c){ const src=photoSrc(c), key=src.length+':'+src.slice(-40); if(S.grey[key]) return; const img=new Image(); img.onload=()=>{ const cv=document.createElement('canvas'); cv.width=img.width; cv.height=img.height; const x=cv.getContext('2d'); x.drawImage(img,0,0); const d=x.getImageData(0,0,cv.width,cv.height); for(let i=0;i<d.data.length;i+=4){ const g=d.data[i]*.3+d.data[i+1]*.59+d.data[i+2]*.11; d.data[i]=d.data[i+1]=d.data[i+2]=g; } x.putImageData(d,0,0); S.grey[key]=cv.toDataURL('image/jpeg',.82); renderObit(c); }; img.src=src; }
 function obitText(c){
   const D=obData(c), L=['✝ *In Loving Memory of*','*'+D.name+'*'+(D.zh?' '+D.zh:'')];
   if(D.years) L.push(D.years);
@@ -1117,22 +1122,21 @@ function filesBox(c, kind, open){
 }
 function readAsDataURL(file){ return new Promise((res,rej)=>{ const r=new FileReader(); r.onload=()=>res(r.result); r.onerror=rej; r.readAsDataURL(file); }); }
 function shrinkImage(dataUrl,max){ return new Promise(res=>{ const img=new Image(); img.onload=()=>{ const k=Math.min(1,max/Math.max(img.width,img.height)); if(k===1&&dataUrl.length<2.5e6) return res(dataUrl); const cv=document.createElement('canvas'); cv.width=Math.round(img.width*k); cv.height=Math.round(img.height*k); const x=cv.getContext('2d'); x.fillStyle='#fff'; x.fillRect(0,0,cv.width,cv.height); x.drawImage(img,0,0,cv.width,cv.height); res(cv.toDataURL('image/jpeg',.86)); }; img.onerror=()=>res(dataUrl); img.src=dataUrl; }); }
+async function uploadOne(c, file, kind){
+  if(file.size>15*1048576) throw new Error(file.name+' is over 15 MB');
+  const isImg=/^image\//.test(file.type), isPdf=file.type==='application/pdf';
+  if(!isImg&&!isPdf) throw new Error('Please upload a PDF or photo');
+  setSync('saving','Uploading '+file.name+'…');
+  let url=await readAsDataURL(file); let mime=file.type, name=file.name;
+  if(isImg){ url=await shrinkImage(url,2000); if(url.startsWith('data:image/jpeg')&&!/\.jpe?g$/i.test(name)) { mime='image/jpeg'; name=name.replace(/\.\w+$/,'')+'.jpg'; } }
+  const data=url.split(',')[1], size=Math.round(data.length*0.75);
+  const entry={kind, name, mime, size, by:ls('tow_fn_me')||'', at:new Date().toISOString()};
+  if(LOCAL){ entry.id=uid(); entry.data=url; }
+  else { const j=await api({action:'upload', caseId:c.id, name, mime, data}); if(!j.ok) throw new Error(j.error||'Upload failed'); entry.id=j.fileId; }
+  c.files.push(entry); touch(c); return entry;
+}
 async function uploadFiles(c, files, kind){
-  for(const file of files){
-    if(file.size>15*1048576){ toast(file.name+' is over 15 MB'); continue; }
-    const isImg=/^image\//.test(file.type), isPdf=file.type==='application/pdf';
-    if(!isImg&&!isPdf){ toast('Please upload a PDF or photo'); continue; }
-    setSync('saving','Uploading '+file.name+'…');
-    try{
-      let url=await readAsDataURL(file); let mime=file.type, name=file.name;
-      if(isImg){ url=await shrinkImage(url,2000); if(url.startsWith('data:image/jpeg')&&!/\.jpe?g$/i.test(name)) { mime='image/jpeg'; name=name.replace(/\.\w+$/,'')+'.jpg'; } }
-      const data=url.split(',')[1], size=Math.round(data.length*0.75);
-      const entry={kind, name, mime, size, by:ls('tow_fn_me')||'', at:new Date().toISOString()};
-      if(LOCAL){ entry.id=uid(); entry.data=url; }
-      else { const j=await api({action:'upload', caseId:c.id, name, mime, data}); if(!j.ok) throw new Error(j.error||'Upload failed'); entry.id=j.fileId; }
-      c.files.push(entry); touch(c);
-    }catch(e){ if(e.message!=='PIN') toast('Could not upload '+file.name+(e.message?' — '+e.message:'')); }
-  }
+  for(const file of files){ try{ await uploadOne(c,file,kind); }catch(e){ if(e.message!=='PIN') toast('Could not upload — '+(e.message||file.name)); } }
   await flush(); keep(renderCase); toast('Uploaded');
 }
 async function viewFile(c,id){
@@ -1144,6 +1148,110 @@ async function viewFile(c,id){
   const url=URL.createObjectURL(new Blob([arr],{type:f.mime}));
   if(isPdf){ modal('<div style="display:flex;gap:12px;align-items:center;margin-bottom:14px"><span class="ficon">PDF</span><div style="min-width:0"><h3 style="font-size:20px;margin:0">'+esc(f.name)+'</h3><div class="small muted">'+kindName(f.kind)+' · '+fsize(f.size||0)+'</div></div></div><div class="btnrow" style="justify-content:flex-end"><button class="btn" onclick="closeModal()">Close</button><a class="btn" href="'+url+'" download="'+esc(f.name)+'">⤓ Download</a><a class="btn primary" href="'+url+'" target="_blank" rel="noopener">Open PDF</a></div>'); return; }
   modal('<h3 style="font-size:20px">'+esc(f.name)+'</h3><img src="'+url+'" style="width:100%;max-height:65vh;object-fit:contain;border-radius:8px;background:#f4f2ec;margin:6px 0 12px"><div class="btnrow" style="justify-content:flex-end"><a class="btn" href="'+url+'" download="'+esc(f.name)+'">⤓ Download</a><button class="btn primary" onclick="closeModal()">Close</button></div>');
+}
+
+/* ---------------- Auto-fill from the family's obituary ---------------- */
+function autofillBox(c){
+  const body='<div class="small" style="line-height:1.55;color:#5b5748;margin-bottom:10px">If the family sends their obituary (photo or PDF), upload it here. The app reads the text and suggests the name, dates, venue and contacts for you to check — then you only fill in the church’s part.</div>'+
+    (LOCAL?'<div class="note">Auto-fill needs the Google Apps Script connection (not available in test mode).</div>':'<div class="btnrow"><label class="btn gold" for="afIn" style="cursor:pointer">⤒ Upload obituary &amp; auto-fill</label><input type="file" id="afIn" data-autofill="1" accept="image/*,application/pdf" style="display:none">'+(c.files.some(f=>f.kind==='obituary'&&/^image|pdf/.test(f.mime))?'<button class="btn sm" data-act="afAgain">Read the uploaded obituary again</button>':'')+'</div>');
+  return box('autofill', sec('','Auto-fill from obituary'), body, {open:!c.deceased.name});
+}
+async function autofill(c, entry){
+  setSync('saving','Reading the obituary…'); toast('Reading the obituary — this takes a few seconds…');
+  try{
+    const j=await api({action:'ocr', fileId:entry.id});
+    if(!j.ok) throw new Error(j.error||'Could not read the file');
+    if(!c.texts.obituary) { c.texts.obituary=j.text; touch(c); }
+    setSync('','Read');
+    reviewAutofill(c, parseObituary(j.text), j.text);
+  }catch(e){ if(e.message!=='PIN'){ setSync('err','Could not read'); modal('<h3>Could not read the obituary</h3><p>'+esc(e.message||'')+'</p><p>The file is still saved under Files. You can type the details in yourself.</p><div class="btnrow" style="justify-content:flex-end"><button class="btn primary" onclick="closeModal()">OK</button></div>'); } }
+}
+const titleCase = x => String(x||'').toLowerCase().replace(/(^|[\s(\/,.-])([a-z])/g,(m,a,b)=>a+b.toUpperCase()).replace(/\b(No|Jln|Jalan|Bdr|Bandar|Tmn|Taman|Kg)\b/g,m=>m).replace(/\b(Ii|Iii)\b/g,m=>m.toUpperCase());
+function toISO(d,m,y){ y=+y; if(y<100) y+=2000; d=+d; m=+m; if(m>12&&d<=12){ const t=d; d=m; m=t; } if(!(d>=1&&d<=31&&m>=1&&m<=12)) return ''; return y+'-'+String(m).padStart(2,'0')+'-'+String(d).padStart(2,'0'); }
+const MONS={jan:1,feb:2,mar:3,apr:4,may:5,jun:6,jul:7,aug:8,sep:9,sept:9,oct:10,nov:11,dec:12};
+function findDates(t){ const out=[]; let m; const r1=/(\d{1,2})\s*[\/.\-]\s*(\d{1,2})\s*[\/.\-]\s*(\d{2,4})/g; while((m=r1.exec(t))){ const v=toISO(m[1],m[2],m[3]); if(v) out.push({i:m.index,v}); }
+  const r2=/(\d{1,2})(?:st|nd|rd|th)?\s+(jan|feb|mar|apr|may|jun|jul|aug|sept?|oct|nov|dec)[a-z]*\.?,?\s+(\d{4})/gi; while((m=r2.exec(t))){ out.push({i:m.index,v:toISO(m[1],MONS[m[2].toLowerCase()],m[3])}); }
+  const r4=/(\d{1,2})(?:st|nd|rd|th)?\s*(?:&|and|-|–|to|,)\s*(\d{1,2})(?:st|nd|rd|th)?\s+(jan|feb|mar|apr|may|jun|jul|aug|sept?|oct|nov|dec)[a-z]*\.?,?\s+(\d{4})/gi; while((m=r4.exec(t))){ const mo=MONS[m[3].toLowerCase()]; out.push({i:m.index,v:toISO(m[1],mo,m[4])}); out.push({i:m.index+1,v:toISO(m[2],mo,m[4])}); }
+  const r3=/(\d{4})\s*年\s*(\d{1,2})\s*月\s*(\d{1,2})\s*日/g; while((m=r3.exec(t))){ out.push({i:m.index,v:toISO(m[3],m[2],m[1])}); }
+  return out.sort((a,b)=>a.i-b.i).map(x=>x.v); }
+function findTimes(t){ const out=[]; let m; const r=/(\d{1,2})(?:[.:](\d{2}))?\s*(a\.?m\.?|p\.?m\.?)/gi; while((m=r.exec(t))){ let h=+m[1]%12; if(/p/i.test(m[3])) h+=12; out.push(String(h).padStart(2,'0')+':'+(m[2]||'00')); }
+  if(!out.length){ const r2=/(上午|早上|下午|晚上|傍晚)\s*(\d{1,2})\s*(?:[時时点點])\s*(?:(\d{1,2})\s*分|半)?/g; while((m=r2.exec(t))){ let h=+m[2]; if(/下午|晚上|傍晚/.test(m[1])&&h<12) h+=12; out.push(String(h).padStart(2,'0')+':'+(m[3]?String(m[3]).padStart(2,'0'):(/半/.test(m[0])?'30':'00'))); } }
+  return out; }
+const phonesIn = t => { const out=[]; let m; const r=/(\+?6?0?1\d)[\s-]?(\d{3,4})[\s-]?(\d{3,4})\s*(?:\(([^)]{1,24})\))?/g; while((m=r.exec(t))){ if(!m[4]){ const pre=t.slice(Math.max(0,m.index-30),m.index).split(/[\n\/,;:]/).pop().trim(); if(/^[A-Za-z\u4e00-\u9fff][A-Za-z .\u4e00-\u9fff]{0,24}$/.test(pre)&&!/^(tel|hp|phone|mobile|contact|no)$/i.test(pre)) m[4]=pre; } let d=(m[1]+m[2]+m[3]).replace(/\D/g,'').replace(/^6(?=01)/,''); if(!d.startsWith('0')) d='0'+d; out.push({phone:d.slice(0,3)+'-'+d.slice(3), who:(m[4]||'').trim()}); } return out; };
+const stripLabels = t => t.replace(/\b(FUNERAL|WAKE|CREA?MATION|BURIAL|INTERMENT|VENUE|TIME|SERVICES?|PROCESSION|FAMILY|CONTACT|ADDRESS|LOCATION|PLACE)\b\s*:?/gi,' ');
+const latinPart = t => t.replace(/[　-鿿＀-￯]+/g,' ').replace(/\s+/g,' ').replace(/^[\s:：\-–]+|[\s:：\-–]+$/g,'').trim();
+const cjkPart = t => (t.match(/[一-鿿]{3,}/g)||[]).join(' ');
+function parseObituary(raw){
+  const t=String(raw||'').replace(/\r/g,'').replace(/[：]/g,':').replace(/[（]/g,'(').replace(/[）]/g,')').replace(/[－—]/g,'-');
+  const out={};
+  let m=t.match(/THE\s+LATE\s+(?:MR|MRS|MS|MDM|MADAM|MISS|DR|DATO'?|DATIN|TAN SRI|PUAN|ENCIK)?\.?\s+([A-Za-z][A-Za-z .'@\-]{2,60})/i) || t.match(/IN\s+(?:LOVING\s+)?MEMORY\s+OF\s*:?\s*\n?\s*(?:MR|MRS|MS|MDM|MADAM)?\.?\s*([A-Za-z][A-Za-z .'@\-]{2,60})/i);
+  if(m) out.name=titleCase(m[1].replace(/\s*@\s*/g,' @ ').replace(/\s+/g,' ').trim());
+  m=t.match(/([一-鿿]{2,})\s*(弟兄|姊妹|姐妹|老先生|先生|老夫人|夫人|女士|老太太)/); if(m) out.zh=m[1].length>3?m[1].slice(-3):m[1];
+  m=t.match(/\(\s*(19\d{2}|20\d{2})\s*[-–~至]\s*(19\d{2}|20\d{2})\s*\)/)||t.match(/\b(19\d{2})\s*[-–~]\s*(20\d{2})\b/); if(m){ out.y1=m[1]; out.y2=m[2]; out.age=String(+m[2]-+m[1]); }
+  m=t.match(/(?:PASSED\s+AWAY|CALLED\s+HOME|WENT\s+HOME|RETURNED\s+TO|安息於|安息于|蒙主寵召|蒙主宠召|逝世於|逝世于)[^\n]{0,60}/i); if(m){ const d=findDates(m[0]); if(d[0]) out.dop=d[0]; }
+  const KEYS=[['visit',/VISITATION|吊唁|瞻仰/i],['wake',/WAKE\s*SERVICE|追思禮拜|追思礼拜|安慰禮拜|安慰礼拜|守夜/i],['funeral',/FUNERAL\s+SERVICE(?!S)|出殯禮拜|出殡礼拜|告別禮拜|告别礼拜|安息禮拜|安息礼拜/i],
+    ['procession',/PROCESSION|CORTEGE|舉殯|举殡|出殯時間|出殡时间/i],['cremation',/CREA?MATION|CREMATORIUM|火化|羽化/i],['burial',/BURIAL|INTERMENT|安葬|下葬/i],
+    ['venue',/FUNERAL\s+VENUE|WAKE\s+VENUE|治喪處|治丧处|靈堂|灵堂|\bVENUE\b|\bADDRESS\b/i],['contact',/FAMILY\s+CONTACT|家屬聯絡|家属联络|CONTACT/i],['undertaker',/殯葬禮儀由|殡葬礼仪由|FUNERAL\s+SERVICES|FUNERAL\s+PARLOU?R|UNDERTAKER|殯儀|殡仪/i]];
+  const sec={}; let cur=null;
+  t.split('\n').forEach(line=>{ const L=line.trim(); if(!L) return; let hit=null, pos=1e9; KEYS.forEach(([k,re])=>{ const mm=L.match(re); if(mm&&mm.index<pos){ pos=mm.index; hit=[k,mm]; } });
+    if(hit && hit[0]!==cur){ cur=hit[0]; const rest=L.slice(hit[1].index+hit[1][0].length); sec[cur]=(sec[cur]?sec[cur]+'\n':'')+rest; }
+    else if(cur) sec[cur]=(sec[cur]||'')+'\n'+L; });
+  if(sec.wake){ const d=findDates(sec.wake); if(d.length){ let a=d[0], b=d.length>1?d[d.length-1]:d[0]; const n=Math.round((pd(b)-pd(a))/864e5)+1; out.wakes=n>0&&n<8?Array.from({length:n},(_,i)=>addDays(a,i)):[a]; } const tm=findTimes(sec.wake); if(tm[0]) out.wakeTime=tm[0]; }
+  if(sec.funeral){ const d=findDates(sec.funeral); if(d[0]) out.fdate=d[0]; const tm=findTimes(sec.funeral); if(tm[0]) out.ftime=tm[0]; }
+  if(sec.procession){ const tm=findTimes(sec.procession); if(tm[0]) out.procession=fmtTime(tm[0]); if(!out.fdate){ const d=findDates(sec.procession); if(d[0]) out.fdate=d[0]; } }
+  if(sec.visit){ const tm=findTimes(sec.visit); if(tm.length) out.visit=tm.map(fmtTime).join(' – '); if(!out.wakes){ const d=findDates(sec.visit); if(d.length) out.wakes=d.slice(0,1); } }
+  const site=x=>{ const lp=latinPart(stripLabels(x)).replace(/^(at|@|in)\s+/i,''); return lp?titleCase(lp):cjkPart(x); };
+  if(sec.cremation){ out.serviceType='Cremation'; const s2=site(sec.cremation); if(s2) out.site=s2; }
+  else if(sec.burial){ out.serviceType='Burial'; const s2=site(sec.burial); if(s2) out.site=s2; }
+  if(sec.venue){ const lp=latinPart(stripLabels(sec.venue)); const cj=cjkPart(sec.venue); const parts=[cj,lp?titleCase(lp):''].filter(Boolean); if(parts.length) out.venue=parts.join(', ');
+    const V=sec.venue.toUpperCase(); out.location=/CHURCH|教會|教会|禮拜堂|礼拜堂/.test(V)?'Church':/RESIDENCE|HOUSE|住家|府上|住宅/.test(V)?'Residence':/紀念館|纪念馆|殯儀館|殡仪馆|PARLOU?R|MEMORIAL|FUNERAL HOME|HALL|NIRVANA|堂/.test(V)?'Funeral Home':''; }
+  if(sec.contact){ const ps=phonesIn(sec.contact); if(ps[0]){ out.kinPhone=ps[0].phone; if(ps[0].who) out.kinName=ps[0].who; } if(ps.length>1) out.otherContacts=ps.slice(1).map(x=>x.phone+(x.who?' ('+x.who+')':'')).join(', '); }
+  if(sec.undertaker){ const lines=sec.undertaker.split('\n').map(x=>latinPart(x)).filter(x=>/[A-Za-z]{3}/.test(x)); const nm=lines.find(x=>/FUNERAL|SERVICES|PARLOU?R|BERHAD|SDN|ENTERPRISE/i.test(x))||lines[0]; if(nm) out.undertaker=titleCase(nm.replace(/^.*?(?=[A-Z]{2})/,'')); const ps=phonesIn(sec.undertaker); if(ps[0]) out.undertakerPhone=ps.map(x=>x.phone).slice(0,2).join(' / '); }
+  return out;
+}
+function reviewAutofill(c, P, raw){
+  const W=wakes(c), F=fun(c);
+  const rows=[
+    ['name','Name (English)', P.name, c.deceased.name],
+    ['zh','Chinese name', P.zh, c.deceased.zh],
+    ['dop','Date of passing', P.dop, c.deceased.dop, 'date'],
+    ['age','Age'+(P.y1?' (from '+P.y1+'–'+P.y2+', approx.)':''), P.age, c.deceased.age],
+    ['wakes','Wake nights', P.wakes?P.wakes.map(d=>fmtDate(d)).join(' · ')+' ('+P.wakes.length+' night'+(P.wakes.length>1?'s':'')+')':'', '', 'ro'],
+    ['wakeTime','Wake service time', P.wakeTime, '', 'time'],
+    ['fdate','Funeral service date', P.fdate, '', 'date'],
+    ['ftime','Funeral service time', P.ftime, '', 'time'],
+    ['venue','Funeral / wake venue', P.venue, W[0]&&W[0].venue],
+    ['location','Location type', P.location, W[0]&&W[0].location],
+    ['serviceType','Burial or cremation', P.serviceType, F.serviceType],
+    ['site', P.serviceType==='Burial'?'Burial site':'Crematorium', P.site, F.site],
+    ['kinName','Family contact person', P.kinName, c.kin.name],
+    ['kinPhone','Family contact number', P.kinPhone, c.kin.phone],
+    ['undertaker','Funeral home / undertaker', P.undertaker, c.undertaker.company],
+    ['undertakerPhone','Undertaker number', P.undertakerPhone, c.undertaker.phone],
+    ['remarks','Wake remarks', [P.visit?'Visitation '+P.visit:'', P.otherContacts?'Other family contact: '+P.otherContacts:''].filter(Boolean).join(' · '), ''],
+    ['remarksF','Funeral remarks', P.procession?'Funeral procession '+P.procession:'', ''],
+  ].filter(r=>r[2]);
+  if(!rows.length){ modal('<h3>Nothing found automatically</h3><p>The text was read but no details could be matched — the layout may be unusual. The text is saved under <b>Obituary text</b> in Files so you can copy from it.</p><div class="btnrow" style="justify-content:flex-end"><button class="btn primary" onclick="closeModal()">OK</button></div>'); return; }
+  const inp=(r)=> r[4]==='ro' ? '<div class="small" style="padding:8px 0;font-weight:600">'+esc(r[2])+'</div>' : '<input type="'+(r[4]==='date'?'date':r[4]==='time'?'time':'text')+'" data-af="'+r[0]+'" value="'+esc(r[2])+'" style="min-height:36px;padding:6px 9px">';
+  modal('<h3>Check the details</h3><p>Read from the obituary — untick anything that is wrong, or correct it, then apply. Existing details are only replaced where ticked.</p><div style="max-height:56vh;overflow:auto;margin:0 -6px;padding:0 6px">'+
+    rows.map(r=>'<label style="display:grid;grid-template-columns:22px 1fr;gap:8px;align-items:start;padding:8px 0;border-top:1px solid #F3EFE6"><input type="checkbox" data-afk="'+r[0]+'" '+(!r[3]||r[0]==='wakes'||r[0]==='fdate'||r[0]==='wakeTime'||r[0]==='ftime'?'checked':'')+' style="margin-top:10px;width:18px;height:18px"><div><div class="small muted" style="font-weight:600">'+r[1]+(r[3]&&r[4]!=='ro'?' <span style="color:var(--amber)">· replaces “'+esc(r[3])+'”</span>':'')+'</div>'+inp(r)+'</div></label>').join('')+
+    '</div><div class="btnrow" style="justify-content:flex-end;margin-top:14px"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn primary" id="afApply">Apply</button></div>');
+  $('#afApply').onclick=()=>{
+    const v=k=>{ const e=$('[data-af="'+k+'"]'); return e?e.value.trim():(P[k]||''); }, on=k=>{ const e=$('[data-afk="'+k+'"]'); return e&&e.checked; };
+    if(on('name')) c.deceased.name=v('name'); if(on('zh')) c.deceased.zh=v('zh'); if(on('dop')) c.deceased.dop=v('dop'); if(on('age')) c.deceased.age=v('age')===''?'':Number(v('age'));
+    if(on('wakes') && P.wakes){ const old=wakes(c), base=old[0]||newDay('wake'), fd=fun(c); const nw=P.wakes.map((d,i)=>{ const x=i===0?base:(old[i]||newDay('wake')); x.date=d; if(i>0) x.same=true; return x; }); c.days=nw.concat([fd]); }
+    const W2=wakes(c), F2=fun(c);
+    if(on('wakeTime')) W2.forEach(d=>d.time=v('wakeTime'));
+    if(on('fdate')) F2.date=v('fdate'); if(on('ftime')) F2.time=v('ftime');
+    if(on('venue')){ W2[0].venue=v('venue'); if(!F2.venue) F2.venue=v('venue'); }
+    if(on('location')){ W2[0].location=v('location'); if(!F2.location) F2.location=v('location'); }
+    if(on('serviceType')) F2.serviceType=v('serviceType'); if(on('site')) F2.site=v('site');
+    if(on('kinName')) c.kin.name=v('kinName'); if(on('kinPhone')) c.kin.phone=v('kinPhone');
+    if(on('undertaker')){ c.undertaker.company=v('undertaker'); W2[0].undertaker=W2[0].undertaker||v('undertaker'); F2.undertaker=F2.undertaker||v('undertaker'); } if(on('undertakerPhone')) c.undertaker.phone=v('undertakerPhone');
+    if(on('remarks')){ const r=v('remarks'); W2[0].remarks=W2[0].remarks?W2[0].remarks+'\n'+r:r; }
+    if(on('remarksF')){ const r=v('remarksF'); F2.remarks=F2.remarks?F2.remarks+'\n'+r:r; }
+    closeModal(); touch(c); flush(); keep(renderCase); toast('Details filled in — please check and complete the rest');
+  };
 }
 
 /* ---------------- Binding ---------------- */
@@ -1170,6 +1278,7 @@ function bind(c){
       touch(c); keep(renderCase); return; }
     if(el.dataset.skip){ const [i,j]=el.dataset.skip.split('.').map(Number); c.days[i].prog[j].skip=!el.checked; touch(c); keep(renderCase); return; }
     if(el.id==='photoIn'&&el.files[0]) return loadPhoto(el.files[0],c);
+    if(el.dataset.autofill && el.files[0]){ const f=el.files[0]; (async()=>{ try{ const e2=await uploadOne(c,f,'obituary'); await flush(); keep(renderCase); await autofill(c,e2); }catch(err){ if(err.message!=='PIN') toast('Could not upload — '+(err.message||'')); } })(); return; }
     if(el.dataset.upload!==undefined && el.files.length){ const kind=el.dataset.upload || ($('#upKind')||{}).value || 'other'; return uploadFiles(c,[...el.files],kind); }
     if(el.dataset.b && /^tasks\.\w+\.status$/.test(el.dataset.b)){ const T=getP(c,el.dataset.b.replace('.status','')); if(T.status==='Done'){ T.by=ls('tow_fn_me')||''; T.at=new Date().toISOString(); } touch(c); }
     if(el.dataset.b && el.dataset.rr && (el.tagName==='SELECT'||el.type==='date'||el.type==='number')) keep(renderCase);
@@ -1200,7 +1309,8 @@ function bind(c){
     if(a==='printGuide') doPrint(guideHTML(c));
     if(a==='printObit'){ const D=obData(c); doPrint('<div class="pz-obit">'+(TPL[c.obit.tpl]||TPL.grace)(D)+'</div>'); }
     if(a==='copyObit') copy(obitText(c));
-    if(a==='rmPhoto'){ c.obit.photo=''; c.obit.photoG=''; touch(c); renderCase(); }
+    if(a==='afAgain'){ const f=[...c.files].reverse().find(x=>x.kind==='obituary'); if(f) autofill(c,f); }
+    if(a==='rmPhoto'){ if(c.obit.photoId&&!LOCAL){ api({action:'deleteFile',fileId:c.obit.photoId}).catch(()=>{}); } c.obit.photo=''; c.obit.photoId=''; delete c.obit.photoG; touch(c); renderCase(); }
     if(a==='obitImg') saveObitImage(c);
     if(a==='sigSave') saveSig(c);
     if(a==='sigReset'){ const cv=$('#sigPad'); cv.getContext('2d').clearRect(0,0,cv.width,cv.height); initSig(c); }
@@ -1210,7 +1320,11 @@ function bind(c){
 function syncDates(c){ const w=wakes(c); for(let i=1;i<w.length;i++) if(w[i].same) w[i].date=addDays(w[0].date,i); const f=fun(c); if(w.length&&w[0].date&&!(f.date&&f.date>w[w.length-1].date)) f.date=addDays(w[w.length-1].date,1); }
 async function copy(txt){ try{ await navigator.clipboard.writeText(txt); toast('Copied — paste into WhatsApp'); }catch(e){ const ta=document.createElement('textarea'); ta.value=txt; document.body.appendChild(ta); ta.select(); try{ document.execCommand('copy'); toast('Copied'); }catch(_){ toast('Could not copy'); } ta.remove(); } }
 async function sendTG(text){ try{ const j=await api({action:'notify',text:text.replace(/\*/g,'').replace(/(^|\s)_([^_]+)_/g,'$1$2')}); toast(j.ok?'Sent to Telegram':'Telegram: '+(j.error||'failed')); }catch(e){} }
-function loadPhoto(file,c){ const r=new FileReader(); r.onload=()=>{ const img=new Image(); img.onload=()=>{ const W=420,H=500,cv=document.createElement('canvas'); cv.width=W; cv.height=H; const x=cv.getContext('2d'); const s=Math.max(W/img.width,H/img.height), w=img.width*s, h=img.height*s; x.fillStyle='#fff'; x.fillRect(0,0,W,H); x.drawImage(img,(W-w)/2,(H-h)/2,w,h); c.obit.photo=cv.toDataURL('image/jpeg',.82); c.obit.photoG=''; touch(c); renderCase(); }; img.src=r.result; }; r.readAsDataURL(file); }
+function loadPhoto(file,c){ const r=new FileReader(); r.onload=()=>{ const img=new Image(); img.onload=async()=>{ const W=420,H=500,cv=document.createElement('canvas'); cv.width=W; cv.height=H; const x=cv.getContext('2d'); const s=Math.max(W/img.width,H/img.height), w=img.width*s, h=img.height*s; x.fillStyle='#fff'; x.fillRect(0,0,W,H); x.drawImage(img,(W-w)/2,(H-h)/2,w,h); const url=cv.toDataURL('image/jpeg',.82); delete c.obit.photoG;
+  if(LOCAL){ c.obit.photo=url; touch(c); renderCase(); return; }
+  setSync('saving','Saving photo to Drive…');
+  try{ const j=await api({action:'upload',caseId:c.id,name:'obituary-photo.jpg',mime:'image/jpeg',data:url.split(',')[1]}); if(!j.ok) throw new Error(j.error); if(c.obit.photoId) api({action:'deleteFile',fileId:c.obit.photoId}).catch(()=>{}); c.obit.photoId=j.fileId; c.obit.photo=''; S.photos[j.fileId]=url; touch(c); await flush(); renderCase(); }
+  catch(e){ toast('Could not save photo — '+(e.message||'')); setSync('err','Error'); } }; img.src=r.result; }; r.readAsDataURL(file); }
 async function saveObitImage(c){
   if(!window.html2canvas){ toast('Image tool not loaded — use Print instead'); return; }
   toast('Preparing image…');
