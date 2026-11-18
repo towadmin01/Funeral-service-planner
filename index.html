@@ -383,7 +383,7 @@ const CONFIG = {
   CHURCH: 'Tabernacle of Worship',
   // Names offered when choosing who received the call / coordinator / assignments (you can still type any name)
   PASTORS: ['Ps. Derick Wong','Ps. Jocelyn Yoong','Ps. Kenrick Kong','Ps. Kevin Ong','Ps. Melissa Lai','Ps. Michael Lia','Ps. Viven Tan'],
-  TEAM: ['Leon Wong','Jeremy Ong','Priscilla Chin','Church office'],
+  TEAM: ['MJ (Admin)','Leon Wong','Jeremy Ong','Priscilla Chin','Church office'],
   COORDINATOR: 'Ps. Melissa Lai',       // default coordinator (Pastor 2) — can be changed per case
   LANGUAGES: ['English','Mandarin','Cantonese','Bahasa Malaysia','Hokkien'],
 };
@@ -643,10 +643,17 @@ function closeModal(){ $('#modalRoot').innerHTML=''; }
 function confirmBox(title,text,ok,cb){ modal('<h3>'+esc(title)+'</h3><p>'+esc(text)+'</p><div class="btnrow" style="justify-content:flex-end"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn primary" id="mok">'+esc(ok)+'</button></div>'); $('#mok').onclick=()=>{ closeModal(); cb(); }; }
 function pickMe(force){
   const me=ls('tow_fn_me')||'';
-  modal('<h3>Who is using this device?</h3><p>Your name is recorded when you tick items, and filled in as “received by” on new requests.</p><input type="text" id="meSel" list="meList" value="'+esc(me)+'" placeholder="Choose or type your name" style="margin-bottom:12px">'+(LOCAL?'':'<label class="f">Admin PIN <small>(admin only — leave blank)</small></label><input type="password" id="adminIn" inputmode="numeric" value="'+esc(ls('tow_fn_admin')||'')+'" style="margin-bottom:14px">')+'<datalist id="meList">'+people().map(p=>'<option>'+esc(p)).join('')+'</datalist><div class="btnrow" style="justify-content:flex-end">'+(force?'':'<button class="btn" onclick="closeModal()">Cancel</button>')+'<button class="btn primary" id="meOk">Save</button></div>');
-  $('#meOk').onclick=async()=>{ const v=$('#meSel').value.trim(); if(!v){ toast('Please choose a name'); return; } ls('tow_fn_me',v); const ai=$('#adminIn'); if(ai){ const a=ai.value.trim(); if(a) ls('tow_fn_admin',a); else ls('tow_fn_admin',null); } updateMe(); closeModal(); if(!LOCAL && S.pin){ try{ await loadIndex(); if(S.view==='home') renderHome(); if(ai&&ai.value.trim()) toast(S.sheetUrl?'Admin access on':'Admin PIN not recognised'); }catch(e){} } };
+  modal('<h3>Who is using this device?</h3><p>Your name is recorded when you tick items, and filled in as “received by” on new requests.</p><input type="text" id="meSel" list="meList" value="'+esc(me)+'" placeholder="Choose or type your name" style="margin-bottom:14px"><datalist id="meList">'+people().map(p=>'<option>'+esc(p)).join('')+'</datalist><div class="btnrow" style="justify-content:flex-end">'+(force?'':'<button class="btn" onclick="closeModal()">Cancel</button>')+'<button class="btn primary" id="meOk">Save</button></div>');
+  $('#meOk').onclick=()=>{ const v=$('#meSel').value.trim(); if(!v){ toast('Please choose a name'); return; } ls('tow_fn_me',v); updateMe(); closeModal(); };
 }
 function updateMe(){ $('#meBtn').textContent=ls('tow_fn_me')||'Select name'; }
+function adminBox(){
+  const on=!!ls('tow_fn_admin');
+  modal('<h3>Admin access</h3><p>'+(on?'Admin access is on for this device — the sheet icon shows beside your name.':'For the admin only. Enter the admin PIN to show the Google Sheet icon on this device.')+'</p>'+(on?'':'<input type="password" id="adminIn" inputmode="numeric" placeholder="Admin PIN" style="text-align:center;letter-spacing:.3em;margin-bottom:14px">')+'<div class="btnrow" style="justify-content:flex-end"><button class="btn" onclick="closeModal()">Close</button>'+(on?'<button class="btn danger" id="adminOff">Turn off on this device</button>':'<button class="btn primary" id="adminOk">Unlock</button>')+'</div>');
+  const done=async(msgOk)=>{ closeModal(); try{ await loadIndex(); render(); }catch(e){} if(msgOk) toast(S.sheetUrl?'Admin access on':'Admin PIN not recognised'); if(msgOk && !S.sheetUrl) ls('tow_fn_admin',null); };
+  if(on) $('#adminOff').onclick=()=>{ ls('tow_fn_admin',null); S.sheetUrl=''; showSheetBtn(false); closeModal(); toast('Admin access turned off'); };
+  else { const go=()=>{ const a=$('#adminIn').value.trim(); if(!a) return; ls('tow_fn_admin',a); done(true); }; $('#adminOk').onclick=go; $('#adminIn').addEventListener('keydown',e=>{ if(e.key==='Enter') go(); }); setTimeout(()=>{ const x=$('#adminIn'); if(x) x.focus(); },50); }
+}
 $('#meBtn').onclick=()=>pickMe(false);
 // Sheet icon: only shown when the server confirms the admin PIN (the sheet link is never stored in this page)
 const showSheetBtn = on => { const b=$('#sheetBtn'); if(on && S.sheetUrl){ b.href=S.sheetUrl; b.style.display=''; } else b.style.display='none'; };
@@ -698,7 +705,9 @@ function renderHome(){
     const chip=s.status==='closed'?'<span class="chip grey">Closed</span>':s.stage==='All done'?'<span class="chip green">All done</span>':'<span class="chip gold">'+esc(s.stage)+'</span>';
     h+='<div class="card case-card" data-open="'+s.id+'"><div class="crow"><div style="min-width:0"><div class="cname">'+esc(s.name||'Unnamed')+(s.zh?'<span class="zh">'+esc(s.zh)+'</span>':'')+'</div><div class="cmeta">'+(s.wakes?s.wakes+' wake night'+(s.wakes>1?'s':'')+(s.w1?' from '+fmtDate(s.w1,false):'')+' · ':'')+'Funeral '+fmtDate(s.fdate)+(s.ftime?', '+fmtTime(s.ftime):'')+'<br>Received by '+esc(s.receivedBy||'—')+' · Coordinator '+esc(s.coordinator||'—')+'</div></div>'+chip+'</div><div style="display:flex;align-items:center;gap:10px;margin-top:12px"><div class="bar" style="flex:1"><i style="width:'+(s.pct||0)+'%"></i></div><span class="small muted">'+(s.pct||0)+'%</span></div></div>';
   });
+  if(!LOCAL) h+='<div style="text-align:center;margin:28px 0 6px"><button id="adminBtn" style="background:none;border:none;color:#b3ab95;font-size:11.5px;cursor:pointer;letter-spacing:.04em">'+(ls('tow_fn_admin')?'Admin ✓':'Admin')+'</button></div>';
   $('#app').innerHTML=h;
+  const ab=$('#adminBtn'); if(ab) ab.onclick=adminBox;
   $('#q').oninput=e=>{ S.q=e.target.value; const p=e.target.selectionStart; renderHome(); const n=$('#q'); n.focus(); n.setSelectionRange(p,p); };
   $('#newBtn').onclick=()=>{ const c=newCase(); S.full[c.id]=c; S.cur=c.id; S.view='case'; S.tab='details'; touch(c); render(); window.scrollTo(0,0); };
   $$('input[name=flt]').forEach(r=>r.onchange=()=>{ S.filter=r.value; renderHome(); });
