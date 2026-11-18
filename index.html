@@ -28,6 +28,7 @@
   header .brand{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:700;}
   header h1{margin:2px 0 0;font-size:19px;font-weight:700;letter-spacing:-.01em;}
   .hbtn{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.25);border-radius:8px;padding:7px 11px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;max-width:42vw;overflow:hidden;text-overflow:ellipsis;}
+  .hbtn.icon{display:inline-flex;align-items:center;justify-content:center;padding:7px 9px;text-decoration:none;}
   .tabs{display:flex;gap:6px;margin:12px auto 0;max-width:780px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;}
   .tabs::-webkit-scrollbar{display:none;}
   .tab{flex:1 0 auto;min-width:84px;text-align:center;padding:9px 8px;border-radius:8px;font-size:12px;font-weight:600;color:rgba(255,255,255,.65);background:rgba(255,255,255,.06);cursor:pointer;white-space:nowrap;}
@@ -360,6 +361,7 @@
       <div class="brand">Tabernacle of Worship</div>
       <h1>Funeral Service Planner</h1>
     </div>
+    <a class="hbtn icon" id="sheetBtn" target="_blank" rel="noopener" title="Open the Google Sheet" aria-label="Open the Google Sheet"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/></svg></a>
     <button class="hbtn" id="meBtn" title="Who is using this device">—</button>
   </div>
   <div class="tabs" id="tabs" style="display:none"></div>
@@ -595,7 +597,7 @@ const LOCAL = !CONFIG.API_URL;
 let COL = {}; try{ COL = JSON.parse(ls('tow_fn_col')||'{}'); }catch(e){}
 function setSync(cls,txt){ const s=$('#sync'); s.className='sync '+cls; s.textContent=txt; const st=$('#saveTxt'); if(st) st.textContent=txt; }
 async function api(body){
-  const r=await fetch(CONFIG.API_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(Object.assign({pin:S.pin,by:ls('tow_fn_me')||''},body))});
+  const r=await fetch(CONFIG.API_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(Object.assign({pin:S.pin,adminPin:ls('tow_fn_admin')||'',by:ls('tow_fn_me')||''},body))});
   const j=await r.json();
   if(!j.ok && j.error==='PIN'){ S.pin=''; ls('tow_fn_pin',null); showLock('Incorrect PIN — please try again.'); throw new Error('PIN'); }
   return j;
@@ -604,7 +606,7 @@ function localAll(){ try{ return JSON.parse(ls('tow_fn_cases')||'[]').map(normal
 async function loadIndex(){
   if(LOCAL){ const all=localAll(); all.forEach(c=>S.full[c.id]=c); S.index=all.map(summary); setSync('local','Test mode · saved on this device'); return; }
   setSync('saving','Loading…');
-  try{ const j=await api({action:'list'}); if(j.ok){ S.index=j.cases||[]; S.tg=!!j.telegram; setSync('','Synced'); } else setSync('err',j.error||'Error'); }
+  try{ const j=await api({action:'list'}); if(j.ok){ S.index=j.cases||[]; S.tg=!!j.telegram; S.sheetUrl=j.sheetUrl||''; showSheetBtn(true); setSync('','Synced'); } else setSync('err',j.error||'Error'); }
   catch(e){ if(e.message!=='PIN') setSync('err','Offline — cannot reach server'); throw e; }
 }
 async function openCase(id, tab){
@@ -641,11 +643,13 @@ function closeModal(){ $('#modalRoot').innerHTML=''; }
 function confirmBox(title,text,ok,cb){ modal('<h3>'+esc(title)+'</h3><p>'+esc(text)+'</p><div class="btnrow" style="justify-content:flex-end"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn primary" id="mok">'+esc(ok)+'</button></div>'); $('#mok').onclick=()=>{ closeModal(); cb(); }; }
 function pickMe(force){
   const me=ls('tow_fn_me')||'';
-  modal('<h3>Who is using this device?</h3><p>Your name is recorded when you tick items, and filled in as “received by” on new requests.</p><input type="text" id="meSel" list="meList" value="'+esc(me)+'" placeholder="Choose or type your name" style="margin-bottom:14px"><datalist id="meList">'+people().map(p=>'<option>'+esc(p)).join('')+'</datalist><div class="btnrow" style="justify-content:flex-end">'+(force?'':'<button class="btn" onclick="closeModal()">Cancel</button>')+'<button class="btn primary" id="meOk">Save</button></div>');
-  $('#meOk').onclick=()=>{ const v=$('#meSel').value.trim(); if(!v){ toast('Please choose a name'); return; } ls('tow_fn_me',v); updateMe(); closeModal(); };
+  modal('<h3>Who is using this device?</h3><p>Your name is recorded when you tick items, and filled in as “received by” on new requests.</p><input type="text" id="meSel" list="meList" value="'+esc(me)+'" placeholder="Choose or type your name" style="margin-bottom:12px">'+(LOCAL?'':'<label class="f">Admin PIN <small>(admin only — leave blank)</small></label><input type="password" id="adminIn" inputmode="numeric" value="'+esc(ls('tow_fn_admin')||'')+'" style="margin-bottom:14px">')+'<datalist id="meList">'+people().map(p=>'<option>'+esc(p)).join('')+'</datalist><div class="btnrow" style="justify-content:flex-end">'+(force?'':'<button class="btn" onclick="closeModal()">Cancel</button>')+'<button class="btn primary" id="meOk">Save</button></div>');
+  $('#meOk').onclick=async()=>{ const v=$('#meSel').value.trim(); if(!v){ toast('Please choose a name'); return; } ls('tow_fn_me',v); const ai=$('#adminIn'); if(ai){ const a=ai.value.trim(); if(a) ls('tow_fn_admin',a); else ls('tow_fn_admin',null); } updateMe(); closeModal(); if(!LOCAL && S.pin){ try{ await loadIndex(); if(S.view==='home') renderHome(); if(ai&&ai.value.trim()) toast(S.sheetUrl?'Admin access on':'Admin PIN not recognised'); }catch(e){} } };
 }
 function updateMe(){ $('#meBtn').textContent=ls('tow_fn_me')||'Select name'; }
 $('#meBtn').onclick=()=>pickMe(false);
+// Sheet icon: only shown when the server confirms the admin PIN (the sheet link is never stored in this page)
+const showSheetBtn = on => { const b=$('#sheetBtn'); if(on && S.sheetUrl){ b.href=S.sheetUrl; b.style.display=''; } else b.style.display='none'; };
 $('#saveNow').onclick=async()=>{
   const btn=$('#saveNow'); btn.disabled=true; btn.textContent='Saving…';
   const c=cur(); if(c && !S.dirty.has(c.id)) S.dirty.add(c.id);
@@ -656,7 +660,7 @@ $('#saveNow').onclick=async()=>{
 
 /* ---------------- Lock ---------------- */
 function showLock(msg){
-  $('#tabs').style.display='none'; $('#savebar').style.display='none'; $('#crumb').textContent='Sign in';
+  showSheetBtn(false); $('#tabs').style.display='none'; $('#savebar').style.display='none'; $('#crumb').textContent='Sign in';
   $('#app').innerHTML='<div class="lock"><div class="card" style="padding:26px"><div style="font-family:var(--serif);font-size:34px;color:var(--gold)">✝</div><h2 style="font-family:var(--serif);font-weight:600;font-size:26px;margin:6px 0 4px;color:var(--navy-dark)">Pastoral team access</h2><p class="muted small" style="margin:0 0 16px">Enter the team PIN to view funeral requests.</p>'+(msg?'<p class="small" style="color:var(--red)">'+esc(msg)+'</p>':'')+'<input type="password" id="pinIn" inputmode="numeric" placeholder="PIN" style="text-align:center;font-size:18px;letter-spacing:.3em;margin-bottom:12px"><button class="btn primary" style="width:100%;justify-content:center" id="pinGo">Continue</button></div></div>';
   const go=async()=>{ S.pin=$('#pinIn').value.trim(); if(!S.pin) return; ls('tow_fn_pin',S.pin); try{ await loadIndex(); S.view='home'; render(); if(!ls('tow_fn_me')) pickMe(true); }catch(e){} };
   $('#pinGo').onclick=go; $('#pinIn').addEventListener('keydown',e=>{ if(e.key==='Enter') go(); });
@@ -671,7 +675,7 @@ const toolsBar = () => '<div class="tools"><button data-all="1">Expand all</butt
 function sec(letter,title,hint){ return '<div class="sec-title">'+(letter?'<span class="letter">'+letter+'</span>':'')+'<h2>'+title+(hint?' <span class="hint">· '+hint+'</span>':'')+'</h2></div>'; }
 
 /* ---------------- Render: home ---------------- */
-function render(){ if(S.view==='home') return renderHome(); renderCase(); }
+function render(){ showSheetBtn(true); if(S.view==='home') return renderHome(); renderCase(); }
 function renderHome(){
   $('#tabs').style.display='none'; $('#savebar').style.display='none'; $('#crumb').textContent='All funeral requests';
   const q=S.q.toLowerCase();
@@ -1069,7 +1073,7 @@ function formHTML(c){ // c = null → blank form
   const fTbl=(label,type,d)=>'<div class="pz-day"><div class="dh">'+label+'</div><table class="pz-f"><tr><td class="l" style="width:70px">TIME</td><td class="l">SEGMENT</td><td class="l">DESCRIPTION</td><td class="l">PERSON IN CHARGE</td></tr>'+segRows(type,d)+'</table></div>';
   h+='<div class="pz-page">'+pzHead('Section F · Programme flow','');
   if(c){ wakes(c).forEach((d,i)=>h+=fTbl('Day '+(i+1)+': Wake Service','wake',d)); h+=fTbl('Funeral Service','funeral',fun(c)); }
-  else h+=fTbl('Day 1: Wake Service','wake')+fTbl('Day 2: Wake Service','wake')+fTbl('Funeral Service','funeral');
+  else h+=fTbl('Day 1: Wake Service','wake')+fTbl('Day 2: Wake Service','wake')+fTbl('Day 3: Wake Service','wake')+fTbl('Funeral Service','funeral');
   return h+'</div>';
 }
 function isDoneKey(c,k){ for(const st of STAGES){ const it=st.items.find(i=>i.k===k); if(it) return isDone(c,it); } return !!(c.checks[k]&&c.checks[k].done); }
