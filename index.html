@@ -164,6 +164,11 @@
   .tpl.on .sw{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,162,39,.25);}
   .obwrap{position:relative;overflow:hidden;}
   .obscale{width:540px;transform-origin:top left;position:absolute;top:0;left:0;}
+  .frow{display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px solid #F3EFE6;}
+  .frow:first-child{border-top:none;}
+  .ficon{width:38px;height:44px;border-radius:6px;background:#F3EFE4;color:var(--navy);font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;border:1px solid var(--line);}
+  .fname{font-size:13.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .uprow{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);}
   /* overlays */
   .toast{position:fixed;left:50%;bottom:86px;transform:translateX(-50%) translateY(20px);background:var(--navy-dark);color:#fff;padding:10px 16px;border-radius:10px;font-size:13px;opacity:0;transition:all .25s;z-index:100;pointer-events:none;max-width:90vw;}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
@@ -383,7 +388,7 @@ const CONFIG = {
   CHURCH: 'Tabernacle of Worship',
   // Names offered when choosing who received the call / coordinator / assignments (you can still type any name)
   PASTORS: ['Ps. Derick Wong','Ps. Jocelyn Yoong','Ps. Kenrick Kong','Ps. Kevin Ong','Ps. Melissa Lai','Ps. Michael Lia','Ps. Viven Tan'],
-  TEAM: ['MJ (Admin)','Leon Wong','Jeremy Ong','Priscilla Chin','Church office'],
+  TEAM: ['Leon Wong','Jeremy Ong','Priscilla Chin','Church office'],
   COORDINATOR: 'Ps. Melissa Lai',       // default coordinator (Pastor 2) — can be changed per case
   LANGUAGES: ['English','Mandarin','Cantonese','Bahasa Malaysia','Hokkien'],
 };
@@ -553,7 +558,7 @@ function newCase(){
     undertaker:{company:'',contact:'',phone:'',pkg:''},
     days:[], tasks:blankTasks(),
     flowers:{items:'',florist:'',deliveryDate:'',deliveryTime:'',deliverTo:'',cost:'',notes:''},
-    checks:{}, ack:{name:'',date:'',agreed:false,sig:''},
+    checks:{}, files:[], texts:{obituary:'',programme:''}, ack:{name:'',date:'',agreed:false,sig:''},
     obit:{tpl:'grace', verse:'john11', called:'Called home to be with the Lord', photo:'', showZh:true, extra:''} };
   c.tasks.undertaker.who=me;
   const w=newDay('wake'); w.date=todayISO(); c.days.push(w);
@@ -563,7 +568,7 @@ function newCase(){
 function normalize(c){
   const b=newCase();
   ['call','deceased','kin','undertaker','flowers','ack','obit'].forEach(k=>{ c[k]=Object.assign({}, b[k], c[k]||{}); });
-  c.checks=c.checks||{}; c.tasks=Object.assign(blankTasks(), c.tasks||{});
+  c.checks=c.checks||{}; c.files=c.files||[]; c.texts=Object.assign({obituary:'',programme:''},c.texts||{}); c.tasks=Object.assign(blankTasks(), c.tasks||{});
   TASKS.forEach(([k])=>{ c.tasks[k]=Object.assign({who:'',status:'To do',notes:''}, c.tasks[k]); });
   c.days=c.days&&c.days.length?c.days:b.days;
   c.days.forEach(d=>{ d.roster=Object.assign(blankRoster(), d.roster||{}); if(!d.prog) d.prog=blankProg(d.type);
@@ -588,7 +593,7 @@ function stageInfo(c){
   const per=STAGES.map(st=>{ const its=allItems(st), dn=its.filter(i=>isDone(c,i)).length; total+=its.length; done+=dn; const complete=dn===its.length; if(!complete&&cur==null) cur=st.k; return {k:st.k,dn,n:its.length,complete}; });
   return {per,total,done,pct:total?Math.round(done/total*100):0,cur,curStage:STAGES.find(s=>s.k===cur)};
 }
-function summary(c){ const si=stageInfo(c), f=fun(c), w=wakes(c); return {id:c.id, name:c.deceased.name, zh:c.deceased.zh, kin:c.kin.name, dop:c.deceased.dop, fdate:f.date||'', ftime:f.time||'', wakes:w.length, w1:w[0]?w[0].date:'', receivedBy:c.call.receivedBy, coordinator:c.call.coordinator, stage:si.curStage?si.curStage.t:'All done', pct:si.pct, done:si.done, total:si.total, status:c.status, updated:c.updated||c.created}; }
+function summary(c){ const si=stageInfo(c), f=fun(c), w=wakes(c); return {id:c.id, name:c.deceased.name, zh:c.deceased.zh, kin:c.kin.name, dop:c.deceased.dop, fdate:f.date||'', ftime:f.time||'', wakes:w.length, w1:w[0]?w[0].date:'', receivedBy:c.call.receivedBy, coordinator:c.call.coordinator, stage:si.curStage?si.curStage.t:'All done', pct:si.pct, done:si.done, total:si.total, status:c.status, manual:!!c.manual, files:(c.files||[]).length+['obituary','programme'].filter(k=>c.texts&&c.texts[k]&&c.texts[k].trim()).length, updated:c.updated||c.created}; }
 const people = c => [...new Set(CONFIG.PASTORS.concat(CONFIG.TEAM, c?[c.call.receivedBy,c.call.coordinator]:[]).filter(Boolean))];
 
 /* ---------------- Storage / sync ---------------- */
@@ -696,13 +701,14 @@ function renderHome(){
   let h='<div class="toolbar"><input type="search" id="q" placeholder="Search name or family contact" value="'+esc(S.q)+'"><button class="btn primary" id="newBtn">＋ New request</button></div>';
   h+='<div class="toolbar"><div class="pills">'+[['active','Active ('+cnt.active+')'],['closed','Past records ('+cnt.closed+')'],['all','All']].map(([k,l])=>'<label class="pill"><input type="radio" name="flt" value="'+k+'"'+(S.filter===k?' checked':'')+'><span>'+l+'</span></label>').join('')+'</div>'+
     '<select id="yearSel" style="width:auto;min-height:36px;padding:6px 10px;font-size:13px"><option value="all">All years</option>'+years.map(y=>'<option'+(S.year===y?' selected':'')+'>'+y+'</option>').join('')+'</select>'+
-    '<div class="btnrow" style="margin-left:auto"><button class="btn sm" id="blankBtn">⎙ Blank form</button><button class="btn sm" id="expBtn">⤓ Backup</button>'+(LOCAL?'':'<button class="btn sm" id="refBtn">↻</button>')+'</div></div>';
+    '<div class="btnrow" style="margin-left:auto"><button class="btn sm" id="pastBtn">＋ Past record</button><button class="btn sm" id="blankBtn">⎙ Blank form</button><button class="btn sm" id="expBtn">⤓ Backup</button>'+(LOCAL?'':'<button class="btn sm" id="refBtn">↻</button>')+'</div></div>';
   if(LOCAL) h+='<div class="note" style="margin:0 0 12px">Test mode — requests are saved in this browser only. Paste the Apps Script link into <b>CONFIG.API_URL</b> so the whole team shares one list.</div>';
   if(!list.length) h+='<div class="empty"><div style="font-family:var(--serif);font-size:40px;color:var(--gold)">✝</div><div style="font-family:var(--serif);font-size:22px;color:var(--navy-dark);margin:6px 0">No requests here</div><div class="small">When a family calls, tap “New request”.</div></div>';
   let lastY=null;
   list.forEach(s=>{
     const y=yearOf(s); if(S.filter!=='active' && y!==lastY){ h+='<div class="yearhd">'+(y||'Undated')+'</div>'; lastY=y; }
-    const chip=s.status==='closed'?'<span class="chip grey">Closed</span>':s.stage==='All done'?'<span class="chip green">All done</span>':'<span class="chip gold">'+esc(s.stage)+'</span>';
+    const chip=s.manual?'<span class="chip navy">Past record'+(s.files?' · '+s.files+' file'+(s.files>1?'s':''):'')+'</span>':s.status==='closed'?'<span class="chip grey">Closed</span>':s.stage==='All done'?'<span class="chip green">All done</span>':'<span class="chip gold">'+esc(s.stage)+'</span>';
+    if(s.manual){ h+='<div class="card case-card" data-open="'+s.id+'"><div class="crow"><div style="min-width:0"><div class="cname">'+esc(s.name||'Unnamed')+(s.zh?'<span class="zh">'+esc(s.zh)+'</span>':'')+'</div><div class="cmeta">'+(s.dop?'Passed '+fmtDate(s.dop,false):'')+(s.fdate?(s.dop?' · ':'')+'Funeral '+fmtDate(s.fdate):'')+'</div></div>'+chip+'</div></div>'; return; }
     h+='<div class="card case-card" data-open="'+s.id+'"><div class="crow"><div style="min-width:0"><div class="cname">'+esc(s.name||'Unnamed')+(s.zh?'<span class="zh">'+esc(s.zh)+'</span>':'')+'</div><div class="cmeta">'+(s.wakes?s.wakes+' wake night'+(s.wakes>1?'s':'')+(s.w1?' from '+fmtDate(s.w1,false):'')+' · ':'')+'Funeral '+fmtDate(s.fdate)+(s.ftime?', '+fmtTime(s.ftime):'')+'<br>Received by '+esc(s.receivedBy||'—')+' · Coordinator '+esc(s.coordinator||'—')+'</div></div>'+chip+'</div><div style="display:flex;align-items:center;gap:10px;margin-top:12px"><div class="bar" style="flex:1"><i style="width:'+(s.pct||0)+'%"></i></div><span class="small muted">'+(s.pct||0)+'%</span></div></div>';
   });
   if(!LOCAL) h+='<div style="text-align:center;margin:28px 0 6px"><button id="adminBtn" style="background:none;border:none;color:#b3ab95;font-size:11.5px;cursor:pointer;letter-spacing:.04em">'+(ls('tow_fn_admin')?'Admin ✓':'Admin')+'</button></div>';
@@ -710,6 +716,7 @@ function renderHome(){
   const ab=$('#adminBtn'); if(ab) ab.onclick=adminBox;
   $('#q').oninput=e=>{ S.q=e.target.value; const p=e.target.selectionStart; renderHome(); const n=$('#q'); n.focus(); n.setSelectionRange(p,p); };
   $('#newBtn').onclick=()=>{ const c=newCase(); S.full[c.id]=c; S.cur=c.id; S.view='case'; S.tab='details'; touch(c); render(); window.scrollTo(0,0); };
+  $('#pastBtn').onclick=()=>{ const c=newCase(); c.manual=true; c.status='closed'; c.call.receivedBy=''; c.call.date=''; c.tasks.undertaker.who=''; c.deceased.dop=''; c.days.forEach(d=>d.date=''); S.full[c.id]=c; S.cur=c.id; S.view='case'; S.tab='details'; touch(c); render(); window.scrollTo(0,0); toast('Past record — fill in the name & dates, then upload the files'); };
   $$('input[name=flt]').forEach(r=>r.onchange=()=>{ S.filter=r.value; renderHome(); });
   $('#yearSel').onchange=e=>{ S.year=e.target.value; renderHome(); };
   $$('[data-open]').forEach(el=>el.onclick=()=>openCase(el.dataset.open));
@@ -744,7 +751,7 @@ function renderCase(){
 function renderHead(c){
   const si=stageInfo(c), f=fun(c);
   const st=c.status==='closed'?'<span class="chip grey">Closed</span>':si.curStage?'<span class="chip gold">Now: '+esc(si.curStage.t)+'</span>':'<span class="chip green">All done</span>';
-  $('#caseHead').innerHTML='<button class="back" id="backBtn">← All requests</button><div class="crow"><div style="min-width:0"><div class="cname">'+esc(c.deceased.name||'New funeral request')+(c.deceased.zh?'<span class="zh">'+esc(c.deceased.zh)+'</span>':'')+'</div><div class="cmeta">'+(c.deceased.dop?'Passed '+fmtDate(c.deceased.dop,false):'')+(hasAge(c.deceased)?' · Aged '+esc(c.deceased.age):'')+' · Funeral '+fmtDate(f.date)+'</div></div>'+st+'</div><div style="display:flex;align-items:center;gap:10px;margin-top:10px"><div class="bar" style="flex:1"><i style="width:'+si.pct+'%"></i></div><span class="small muted">'+si.pct+'%</span></div>';
+  $('#caseHead').innerHTML='<button class="back" id="backBtn">← All requests</button><div class="crow"><div style="min-width:0"><div class="cname">'+esc(c.deceased.name||'New funeral request')+(c.deceased.zh?'<span class="zh">'+esc(c.deceased.zh)+'</span>':'')+'</div><div class="cmeta">'+(c.deceased.dop?'Passed '+fmtDate(c.deceased.dop,false):'')+(hasAge(c.deceased)?' · Aged '+esc(c.deceased.age):'')+' · Funeral '+fmtDate(f.date)+'</div></div>'+(c.manual?'<span class="chip navy">Past record</span>':st)+'</div>'+(c.manual?'':'<div style="display:flex;align-items:center;gap:10px;margin-top:10px"><div class="bar" style="flex:1"><i style="width:'+si.pct+'%"></i></div><span class="small muted">'+si.pct+'%</span></div>');
   $('#backBtn').onclick=async()=>{ await flush(); S.view='home'; render(); window.scrollTo(0,0); };
 }
 
@@ -757,7 +764,8 @@ const peopleList = c => '<datalist id="ppl">'+people(c).map(p=>'<option>'+esc(p)
 
 /* ---- Details ---- */
 function vDetails(c){
-  let h=box('handling', sec('','Request handling'), '<div class="grid">'+
+  let h=c.manual?'<div class="note" style="margin:0 0 12px">Past record — entered after the service. Fill in the name and dates below, then upload or paste the obituary and programme.</div>'+filesBox(c,null,true):'';
+  h+=box('handling', sec('','Request handling'), '<div class="grid">'+
     fText('Call received on','call.date',c,{type:'date'})+fText('Time','call.time',c,{type:'time'})+
     fText('Received by <small>(Pastor 1)</small>','call.receivedBy',c,{list:'ppl'})+fText('Coordinator <small>(Pastor 2)</small>','call.coordinator',c,{list:'ppl'})+
     fPills('Membership','call.membership',c,['Member','Non-member'],{rr:true})+'</div>'+
@@ -780,7 +788,8 @@ function vDetails(c){
     fText('Contact person','undertaker.contact',c)+fText('Contact number','undertaker.phone',c,{type:'tel'})+'</div>');
   let b='<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap"><span class="small" style="font-weight:600;color:#5b5748">Wake nights</span><div class="stepper"><button data-act="wakeMinus">−</button><b>'+wakes(c).length+'</b><button data-act="wakePlus">＋</button></div><span class="small muted">followed by the funeral service</span></div>';
   c.days.forEach((d,i)=>{ b+=dayBox(c,d,i); });
-  h+=box('B', sec('B','Service details'), b);
+  h+=box('B', sec('B','Service details'), b, {open:!c.manual});
+  if(!c.manual) h+=filesBox(c,null,false);
   h+='<div class="card"><div class="btnrow" style="justify-content:space-between"><div class="btnrow">'+(c.status==='closed'?'<button class="btn" data-act="reopen">Reopen case</button>':'<button class="btn" data-act="close">Mark case closed</button>')+'<button class="btn" data-act="printForm">⎙ Print request form</button></div><button class="btn danger" data-act="delete">Delete</button></div></div>';
   return h;
 }
@@ -802,7 +811,7 @@ function dayBox(c,d,i){
 
 /* ---- Workflow ---- */
 function vWorkflow(c){
-  const si=stageInfo(c); let h='';
+  const si=stageInfo(c); let h=c.manual?'<div class="note" style="margin:0 0 12px">Past record — the checklist wasn’t used for this funeral. You can still tick items if helpful.</div>':'';
   STAGES.forEach((st,n)=>{
     const p=si.per[n], cls=p.complete?'done':(si.cur===st.k?'current':'');
     const head='<div class="h3" style="font-family:var(--sans);font-size:15px;font-weight:700">'+st.t+'</div><div class="owner">Led by <b>'+esc(whoName(c,st.who))+'</b></div>';
@@ -849,7 +858,8 @@ function vTeam(c){
 function picFor(d,s){ if(s.pic) return s.pic; const r=d.roster; if(s.role==='eulogy') return [r.eulogy1,r.eulogy2].filter(Boolean).join(', '); if(s.role==='wl') return r.wl?r.wl+(r.musicians?' & team':''):''; return r[s.role]||''; }
 function progRows(c,d){ let t=eff(c,d).time||d.time; return d.prog.map(s=>{ const o={s,time:s.skip?'':t}; if(!s.skip) t=addMin(t,Number(s.dur)||0); return o; }); }
 function vProgramme(c){
-  let h='<div class="card" style="padding:12px 16px"><div class="btnrow" style="justify-content:space-between"><div class="small muted" style="flex:1;min-width:200px">Times follow each day’s start time and the minutes per segment. “Person in charge” fills in from the Serving Team tab — type to change.</div><button class="btn primary sm" data-act="printProg">⎙ Print programme</button></div></div>';
+  let h=(c.manual||c.files.some(f=>f.kind==='programme')||c.texts.programme)?filesBox(c,'programme',true):'';
+  h+='<div class="card" style="padding:12px 16px"><div class="btnrow" style="justify-content:space-between"><div class="small muted" style="flex:1;min-width:200px">Times follow each day’s start time and the minutes per segment. “Person in charge” fills in from the Serving Team tab — type to change.</div><button class="btn primary sm" data-act="printProg">⎙ Print programme</button></div></div>';
   c.days.forEach((d,i)=>{
     const e=eff(c,d);
     let b='<div class="small muted" style="margin-bottom:6px">'+esc(locText(e)||'Venue to be confirmed')+'</div><div class="tblwrap"><table class="prog"><thead><tr><th>Time</th><th>Segment</th><th class="hide-m">Description</th><th>Person in charge</th><th>Min</th><th></th></tr></thead><tbody>';
@@ -872,7 +882,8 @@ function vObituary(c){
     fArea('Survived by','survivedBy',c)+fArea('Additional note <small>(optional)</small>','obit.extra',c,{ph:'e.g. In lieu of flowers, kindly contribute to …'})+
     '<div class="full"><label class="switch"><input type="checkbox" data-b="obit.showZh" data-rr="1"'+(c.obit.showZh?' checked':'')+'><i></i>Show Chinese name</label></div></div>'+
     '<datalist id="calls"><option>Called home to be with the Lord<option>Peacefully went home to be with the Lord<option>Entered into eternal rest<option>Promoted to glory</datalist>';
-  let h=box('obd', sec('','Design','fills in from the request'), pick+ctl);
+  let h=(c.manual||c.files.some(f=>f.kind==='obituary')||c.texts.obituary)?filesBox(c,'obituary',true):'';
+  h+=box('obd', sec('','Design','fills in from the request'), pick+ctl, {open:!c.manual});
   h+='<div class="card"><div class="obwrap" id="obwrap"><div class="obscale" id="obscale"><div id="obit"></div></div></div><div class="btnrow" style="justify-content:center;margin-top:14px"><button class="btn gold" data-act="obitImg">⤓ Save as image</button><button class="btn" data-act="printObit">⎙ Print / PDF</button><button class="btn" data-act="copyObit">Copy text</button></div></div>';
   return h;
 }
@@ -1088,6 +1099,53 @@ function formHTML(c){ // c = null → blank form
 function isDoneKey(c,k){ for(const st of STAGES){ const it=st.items.find(i=>i.k===k); if(it) return isDone(c,it); } return !!(c.checks[k]&&c.checks[k].done); }
 function guideHTML(c){ return '<div class="pz-page pz-guide">'+pzHead('A gentle guide for the days ahead', c?'For the family of<br><b>'+esc(c.deceased.name||'')+'</b>':'')+'<p>We are so sorry for your loss. Here is a simple list to help — take it one step at a time, and call us whenever you need help.</p>'+GUIDE.map(g=>'<h4>'+g.h+'</h4><ul>'+g.p.map(p=>'<li>☐ '+esc(p)+'</li>').join('')+'</ul>').join('')+'<p class="pz-small">Your contact at church: <b>'+esc(c?(c.call.coordinator||c.call.receivedBy):'')+'</b><br><i>This is general guidance; your undertaker will advise on the exact steps.</i></p></div>'; }
 
+/* ---------------- Files (uploaded obituary, programme, photos) ---------------- */
+const FILE_KINDS=[['obituary','Obituary'],['programme','Programme flow'],['form','Signed form'],['photo','Photos'],['other','Other']];
+const kindName = k => (FILE_KINDS.find(x=>x[0]===k)||['','Other'])[1];
+const fsize = n => n>1048576?(n/1048576).toFixed(1)+' MB':Math.max(1,Math.round(n/1024))+' KB';
+function filesBox(c, kind, open){
+  const list=c.files.filter(f=>!kind||f.kind===kind);
+  let b=list.length?list.map(f=>'<div class="frow"><span class="ficon">'+(/pdf/.test(f.mime)?'PDF':'IMG')+'</span><div class="grow" style="min-width:0"><div class="fname">'+esc(f.name)+'</div><div class="small muted">'+(kind?'':kindName(f.kind)+' · ')+fsize(f.size||0)+(f.by?' · '+esc(f.by):'')+'</div></div><button class="btn sm" data-fview="'+f.id+'">View</button><button class="btn sm danger" data-fdel="'+f.id+'" title="Remove">✕</button></div>').join(''):'<div class="small muted" style="padding:4px 0 8px">No files uploaded yet.</div>';
+  const tk = kind ? [kind] : ['obituary','programme'];
+  b+=tk.map(k=>'<div style="margin-top:12px"><label class="f">'+kindName(k)+' text <small>(paste from WhatsApp or type — optional)</small></label><textarea data-b="texts.'+k+'" style="min-height:'+(c.texts[k]?150:70)+'px" placeholder="Paste the '+kindName(k).toLowerCase()+' here…">'+esc(c.texts[k])+'</textarea>'+(c.texts[k]?'<div class="btnrow" style="margin-top:6px"><button class="btn sm" data-copytext="'+k+'">Copy</button></div>':'')+'</div>').join('');
+  const iid='up-'+(kind||'all');
+  b+='<div class="uprow">'+(kind?'':'<select id="upKind" style="width:auto;min-height:38px">'+FILE_KINDS.map(([k,l])=>'<option value="'+k+'">'+l+'</option>').join('')+'</select>')+
+    '<label class="btn primary sm" for="'+iid+'" style="cursor:pointer">⤒ Upload '+(kind?kindName(kind).toLowerCase():'file')+'</label><input type="file" id="'+iid+'" data-upload="'+(kind||'')+'" accept="image/*,application/pdf" multiple style="display:none"><span class="small muted">PDF or photo · up to 15 MB</span></div>';
+  const title=kind?(kind==='obituary'?'Uploaded obituary':'Uploaded programme flow'):'Files, text & attachments';
+  const n=list.length+tk.filter(k=>c.texts[k]&&c.texts[k].trim()).length;
+  return box('files-'+(kind||'all'), sec('',title, kind?'':'obituary, programme, photos, text'), b, {open:open||n>0, right:n?'<span class="chip navy">'+n+'</span>':''});
+}
+function readAsDataURL(file){ return new Promise((res,rej)=>{ const r=new FileReader(); r.onload=()=>res(r.result); r.onerror=rej; r.readAsDataURL(file); }); }
+function shrinkImage(dataUrl,max){ return new Promise(res=>{ const img=new Image(); img.onload=()=>{ const k=Math.min(1,max/Math.max(img.width,img.height)); if(k===1&&dataUrl.length<2.5e6) return res(dataUrl); const cv=document.createElement('canvas'); cv.width=Math.round(img.width*k); cv.height=Math.round(img.height*k); const x=cv.getContext('2d'); x.fillStyle='#fff'; x.fillRect(0,0,cv.width,cv.height); x.drawImage(img,0,0,cv.width,cv.height); res(cv.toDataURL('image/jpeg',.86)); }; img.onerror=()=>res(dataUrl); img.src=dataUrl; }); }
+async function uploadFiles(c, files, kind){
+  for(const file of files){
+    if(file.size>15*1048576){ toast(file.name+' is over 15 MB'); continue; }
+    const isImg=/^image\//.test(file.type), isPdf=file.type==='application/pdf';
+    if(!isImg&&!isPdf){ toast('Please upload a PDF or photo'); continue; }
+    setSync('saving','Uploading '+file.name+'…');
+    try{
+      let url=await readAsDataURL(file); let mime=file.type, name=file.name;
+      if(isImg){ url=await shrinkImage(url,2000); if(url.startsWith('data:image/jpeg')&&!/\.jpe?g$/i.test(name)) { mime='image/jpeg'; name=name.replace(/\.\w+$/,'')+'.jpg'; } }
+      const data=url.split(',')[1], size=Math.round(data.length*0.75);
+      const entry={kind, name, mime, size, by:ls('tow_fn_me')||'', at:new Date().toISOString()};
+      if(LOCAL){ entry.id=uid(); entry.data=url; }
+      else { const j=await api({action:'upload', caseId:c.id, name, mime, data}); if(!j.ok) throw new Error(j.error||'Upload failed'); entry.id=j.fileId; }
+      c.files.push(entry); touch(c);
+    }catch(e){ if(e.message!=='PIN') toast('Could not upload '+file.name+(e.message?' — '+e.message:'')); }
+  }
+  await flush(); keep(renderCase); toast('Uploaded');
+}
+async function viewFile(c,id){
+  const f=c.files.find(x=>x.id===id); if(!f) return;
+  const isPdf=/pdf/.test(f.mime);
+  let dataUrl=f.data;
+  if(!dataUrl){ setSync('saving','Opening file…'); try{ const j=await api({action:'file',fileId:id}); if(!j.ok) throw new Error(j.error||'Not found'); dataUrl='data:'+j.mime+';base64,'+j.data; setSync('','Synced'); }catch(e){ toast('Could not open file'); setSync('err','Error'); return; } }
+  const bin=atob(dataUrl.split(',')[1]); const arr=new Uint8Array(bin.length); for(let i=0;i<bin.length;i++) arr[i]=bin.charCodeAt(i);
+  const url=URL.createObjectURL(new Blob([arr],{type:f.mime}));
+  if(isPdf){ modal('<div style="display:flex;gap:12px;align-items:center;margin-bottom:14px"><span class="ficon">PDF</span><div style="min-width:0"><h3 style="font-size:20px;margin:0">'+esc(f.name)+'</h3><div class="small muted">'+kindName(f.kind)+' · '+fsize(f.size||0)+'</div></div></div><div class="btnrow" style="justify-content:flex-end"><button class="btn" onclick="closeModal()">Close</button><a class="btn" href="'+url+'" download="'+esc(f.name)+'">⤓ Download</a><a class="btn primary" href="'+url+'" target="_blank" rel="noopener">Open PDF</a></div>'); return; }
+  modal('<h3 style="font-size:20px">'+esc(f.name)+'</h3><img src="'+url+'" style="width:100%;max-height:65vh;object-fit:contain;border-radius:8px;background:#f4f2ec;margin:6px 0 12px"><div class="btnrow" style="justify-content:flex-end"><a class="btn" href="'+url+'" download="'+esc(f.name)+'">⤓ Download</a><button class="btn primary" onclick="closeModal()">Close</button></div>');
+}
+
 /* ---------------- Binding ---------------- */
 function keep(fn){ const y=window.scrollY; fn(); window.scrollTo(0,y); }
 function bind(c){
@@ -1112,11 +1170,15 @@ function bind(c){
       touch(c); keep(renderCase); return; }
     if(el.dataset.skip){ const [i,j]=el.dataset.skip.split('.').map(Number); c.days[i].prog[j].skip=!el.checked; touch(c); keep(renderCase); return; }
     if(el.id==='photoIn'&&el.files[0]) return loadPhoto(el.files[0],c);
+    if(el.dataset.upload!==undefined && el.files.length){ const kind=el.dataset.upload || ($('#upKind')||{}).value || 'other'; return uploadFiles(c,[...el.files],kind); }
     if(el.dataset.b && /^tasks\.\w+\.status$/.test(el.dataset.b)){ const T=getP(c,el.dataset.b.replace('.status','')); if(T.status==='Done'){ T.by=ls('tow_fn_me')||''; T.at=new Date().toISOString(); } touch(c); }
     if(el.dataset.b && el.dataset.rr && (el.tagName==='SELECT'||el.type==='date'||el.type==='number')) keep(renderCase);
   };
   app.onclick=e=>{
-    const t=e.target.closest('[data-act],[data-addnote],[data-goshare],[data-copy],[data-tg],[data-copyroster],[data-resetprog],[data-tpl],[data-all],[data-toggle]'); if(!t) return;
+    const t=e.target.closest('[data-act],[data-addnote],[data-copytext],[data-fview],[data-fdel],[data-goshare],[data-copy],[data-tg],[data-copyroster],[data-resetprog],[data-tpl],[data-all],[data-toggle]'); if(!t) return;
+    if(t.dataset.copytext){ copy(c.texts[t.dataset.copytext]||''); return; }
+    if(t.dataset.fview){ viewFile(c,t.dataset.fview); return; }
+    if(t.dataset.fdel){ const f=c.files.find(x=>x.id===t.dataset.fdel); confirmBox('Remove this file?','“'+(f?f.name:'')+'” will be removed from this record.','Remove',async()=>{ if(!LOCAL){ try{ await api({action:'deleteFile',fileId:f.id}); }catch(e){} } c.files=c.files.filter(x=>x!==f); touch(c); await flush(); keep(renderCase); toast('File removed'); }); return; }
     if(t.dataset.addnote){ const inp=t.nextElementSibling; inp.style.display=''; inp.focus(); t.remove(); return; }
     if(t.dataset.goshare){ e.preventDefault(); e.stopPropagation(); S.tab=['tasks','roster'].includes(t.dataset.goshare)?'team':'notices'; COL[S.cur+':msg-'+t.dataset.goshare]=true; renderCase(); const m=$('[data-box="msg-'+t.dataset.goshare+'"]'); if(m) setTimeout(()=>m.scrollIntoView({behavior:'smooth',block:'start'}),60); return; }
     if(t.dataset.copy){ copy(MSGS[t.dataset.copy].body(c)); return; }
