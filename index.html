@@ -66,7 +66,7 @@
     width:100%;padding:10px;border-radius:8px;border:1px solid var(--line);font-size:16px;font-family:inherit;background:#fff;color:var(--ink);min-height:42px;}
   @media(min-width:700px){input[type=text],input[type=tel],input[type=date],input[type=time],input[type=number],input[type=search],select,textarea{font-size:14px;}}
   textarea{min-height:70px;resize:vertical;}
-  input::placeholder,textarea::placeholder{font-size:13px;color:#b5ae9c;}
+  input::placeholder,textarea::placeholder{font-size:12px;color:#b9b2a1;font-style:italic;}
   input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,162,39,.15);}
   .pills{display:flex;flex-wrap:wrap;gap:6px;}
   .pill{position:relative;}
@@ -170,6 +170,19 @@
   .ficon{width:38px;height:44px;border-radius:6px;background:#F3EFE4;color:var(--navy);font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;border:1px solid var(--line);}
   .fname{font-size:13.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .uprow{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);}
+  .stepnav{display:flex;gap:6px;justify-content:space-between;margin:0 0 12px;padding:10px 12px;background:#fff;border:1px solid var(--line);border-radius:12px;position:sticky;top:calc(var(--hdr,118px));z-index:5;}
+  .stepnav button{flex:1;max-width:44px;height:32px;border-radius:50%;border:2px solid var(--line);background:#fff;font-family:var(--serif);font-weight:700;font-size:15px;color:var(--muted);cursor:pointer;padding:0;}
+  .stepnav button.ok{background:var(--green);border-color:var(--green);color:#fff;}
+  .stepnav button.now{background:var(--gold);border-color:var(--gold);color:var(--navy-dark);}
+  .leadrow{display:flex;align-items:center;gap:10px;margin-bottom:8px;padding:8px 10px;background:#FDFCF8;border:1px solid var(--line);border-radius:8px;}
+  .leadrow input{min-height:34px;padding:6px 9px;}
+  .cklist{border:1px solid var(--line);border-radius:10px;padding:2px 12px;margin-bottom:4px;}
+  .stage-ui{margin-top:4px;}
+  .stage-ui > .card{margin:12px 0 0;}
+  .rep{padding:18px;overflow-x:auto;}
+  .rep .pz-page{margin-bottom:26px;padding-bottom:20px;border-bottom:1px dashed var(--line);}
+  .rep .pz-page:last-child{border-bottom:none;}
+  @media(max-width:600px){.rep .pz-obit{zoom:.62;} .rep{padding:12px;} .rep .pz{font-size:10pt;}}
   /* overlays */
   .toast{position:fixed;left:50%;bottom:86px;transform:translateX(-50%) translateY(20px);background:var(--navy-dark);color:#fff;padding:10px 16px;border-radius:10px;font-size:13px;opacity:0;transition:all .25s;z-index:100;pointer-events:none;max-width:90vw;}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
@@ -238,6 +251,12 @@
   .pz-team{margin-top:12px;border:1px solid #e3dccb;border-radius:6px;padding:10px 14px;font-size:10pt;display:grid;grid-template-columns:1fr 1fr;gap:4px 22px;}
   .pz-team b{color:#1F3864;display:inline-block;min-width:118px;}
   .pz-obit{display:flex;justify-content:center;}
+  .pz-rep .pz-f td{height:auto;padding:4px 7px;font-size:9.5pt;}
+  .pz-rep .pz-f td.l{width:28%;font-size:9pt;}
+  .pz-rep h4{margin:12px 0 5px;break-after:avoid;}
+  .pz-rep tr{break-inside:avoid;}
+  .pz-rep .pz-day{padding:6px 10px;margin-bottom:6px;}
+  .pz-rep .pz-day .dh{font-size:12.5pt;margin-bottom:4px;}
   .pz-guide{font-size:10.5pt;line-height:1.55;}
   .pz-guide ul{margin:4px 0 8px;padding-left:18px;}
 
@@ -392,6 +411,7 @@ const CONFIG = {
   TEAM: ['Leon Wong','Jeremy Ong','Priscilla Chin','Church office'],
   COORDINATOR: 'Ps. Melissa Lai',       // default coordinator (Pastor 2) — can be changed per case
   LANGUAGES: ['English','Mandarin','Cantonese','Bahasa Malaysia','Hokkien'],
+  FULL_UNDERTAKER_CHECKLIST: false,   // true = show the detailed undertaker package checklist (permits, casket, hearse…)
 };
 const PAPER = 'data:image/jpeg;base64,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';
 const SKY = 'data:image/jpeg;base64,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';
@@ -425,47 +445,54 @@ const UNDERTAKER = [
 const STAGES = [
   {k:'call', t:'Call received', who:'p1', d:'Comfort the family, record the details and alert the team.', items:[
     {k:'call_condolence', t:'Condolence call & prayer with the family'},
-    {k:'call_details', t:'Deceased & family details recorded (Section A)', auto:c=>!!(c.deceased.name && c.kin.name && c.kin.phone)},
+    {k:'call_details', t:'Deceased & family details recorded (Details tab)', auto:c=>!!(c.deceased.name && c.kin.name && c.kin.phone)},
     {k:'call_notify', t:'Team notified (WhatsApp group / Telegram)', msg:'alert'},
     {k:'call_member', t:'Membership confirmed — non-member requests reviewed by the pastoral team'},
-  ]},
-  {k:'undertaker', t:'Undertaker arrangements', who:'p1', d:'Make sure the family has arranged these through the undertaker. Tick what is confirmed.', undertaker:true, items:[
-    {k:'d_undertaker', t:'Booked & confirmed undertaker', form:true, task:'undertaker'},
-  ]},
-  {k:'handover', t:'Hand-over to coordinator', who:'p1', d:'Pass the case to the coordinator to arrange programme and team.', items:[
+  ], ui:c=>msgBox(c,'alert')},
+  {k:'undertaker', t:'Undertaker & venue', who:'und', d:'Confirm the undertaker the family has engaged, any other vendor, and the venue.', undertaker:true, items:[
+    {k:'d_undertaker', t:'Booked & confirmed undertaker', form:true},
+    {k:'d_venue', t:'Booked & confirmed venue', form:true},
+  ], ui:c=>undertakerUI(c)},
+  {k:'handover', t:'Hand-over to coordinator', who:'p1', d:'Pass the case to the coordinator to arrange the team and programme.', items:[
     {k:'ho_inform', t:'Coordinator informed & case handed over', msg:'handover'},
     {k:'ho_days', t:'Number of wake nights & funeral date confirmed', auto:c=>!!(fun(c).date && wakes(c).every(d=>d.date))},
     {k:'d_form', t:'Completed funeral request form', form:true},
-    {k:'d_venue', t:'Booked & confirmed venue', form:true},
-  ]},
-  {k:'serving', t:'Programme & serving personnel', who:'p2', d:'Assign the team, arrange the programme for every night.', items:[
-    {k:'assigned', t:'Duties assigned to the team', auto:c=>TASKS.every(([k])=>c.tasks[k].who)},
-    {k:'prog', t:'Programme drafted for every wake night & the funeral'},
-    {k:'flowers', t:'Flowers ordered & delivery arranged', task:'flowers', msg:'tasks'},
-    {k:'levites', t:'Worship leader & musicians confirmed', task:'levites'},
+  ], ui:c=>msgBox(c,'handover')},
+  {k:'serving', t:'Serving personnel', who:'p2', d:'Assign the duties and the team for each wake night and the funeral.', items:[
+    {k:'assigned', t:'Duties assigned to the team', auto:c=>DUTIES.every(([k])=>c.tasks[k].who)},
     {k:'roster', t:'Minister, scripture reader & helpers for each day', auto:c=>c.days.every(d=>d.roster.minister && d.roster.reader)},
+    {k:'levites', t:'Worship leader & musicians confirmed', task:'levites'},
+    {k:'flowers', t:'Flowers ordered & delivery arranged', task:'flowers'},
     {k:'d_personnel', t:'Confirmed serving personnel', form:true, msg:'roster'},
     {k:'d_eulogy', t:'Eulogy contributors contacted (friend / family)', form:true},
     {k:'d_slides', t:'Slides / media submitted (memoir)', form:true, task:'slides'},
     {k:'d_song', t:'Song request (optional)', form:true},
-  ]},
-  {k:'notices', t:'Notices & announcement', who:'p2', d:'Guide the family, brief the team, announce the service.', items:[
-    {k:'n_family', t:'Family acknowledged the guidelines & declaration', msg:'family', auto:c=>!!((c.ack.agreed||c.ack.sig) && c.ack.name)},
-    {k:'n_guide', t:'Family guide shared (things to do & who to contact)', msg:'guide'},
-    {k:'n_personnel', t:'Serving personnel briefed with the roster', msg:'roster'},
-    {k:'obit', t:'Obituary designed & approved by the family', task:'obituary'},
-    {k:'d_announce', t:'Announcement of memorial information', form:true, task:'announce', msg:'announce'},
+  ], ui:c=>vTeam(c)},
+  {k:'programme', t:'Programme flow', who:'p2', d:'Times and names fill in automatically from the team above — edit as needed.', items:[
+    {k:'prog', t:'Programme drafted for every wake night & the funeral'},
     {k:'d_progfinal', t:'Finalised memorial programme', form:true},
     {k:'d_printed', t:'Printed memorial programme', form:true, task:'print'},
+  ], ui:c=>vProgramme(c)},
+  {k:'obituary', t:'Obituary & announcement', who:'p2', d:'Design or upload the obituary, then announce the service.', items:[
+    {k:'obit', t:'Obituary designed & approved by the family', task:'obituary'},
+    {k:'d_announce', t:'Announcement of memorial information', form:true, task:'announce', msg:'announce'},
+  ], ui:c=>vObituary(c)+msgBox(c,'announce')},
+  {k:'notices', t:'Family guidelines & notices', who:'p2', d:'Share the guidelines, get the declaration signed and guide the family.', items:[
+    {k:'n_family', t:'Family acknowledged the guidelines & declaration', auto:c=>!!((c.ack.agreed||c.ack.sig) && c.ack.name)},
+    {k:'n_guide', t:'Family guide shared (things to do & who to contact)', msg:'guide'},
+    {k:'n_personnel', t:'Serving personnel briefed with the roster', msg:'roster'},
     {k:'d_refresh', t:'Finalised refreshment plans', form:true, task:'refreshments'},
-  ]},
-  {k:'after', t:'After the service', who:'p2', d:'Close the case with care.', items:[
+  ], ui:c=>vNotices(c)},
+  {k:'after', t:'After the service', who:'p2', d:'Love offerings, follow-up care, then review the record and close the case.', items:[
     {k:'d_love_staff', t:'Love offering to working personnel', form:true},
     {k:'d_love_church', t:'Love offering to church', form:true},
     {k:'after_visit', t:'Follow-up visit with the family (grief care)', task:'grief'},
+    {k:'after_report', t:'Funeral record checked (Report tab)'},
     {k:'after_close', t:'Case closed', auto:c=>c.status==='closed'},
-  ]},
+  ], ui:c=>afterUI(c)},
 ];
+const DUTIES = TASKS.filter(([k])=>k!=='undertaker');
+const MSG_STAGE = {alert:'call', handover:'handover', tasks:'serving', roster:'serving', announce:'obituary', family:'notices', guide:'notices'};
 
 const SEG_WAKE = [
   {k:'arrival', seg:'Arrival of Family', desc:'Prelude music', dur:10, role:''},
@@ -556,7 +583,7 @@ function newCase(){
     call:{date:todayISO(), time:'', receivedBy:me, coordinator:CONFIG.COORDINATOR, membership:'Member'},
     deceased:{name:'',zh:'',dob:'',dop:todayISO(),age:'',gender:'',marital:'',cause:''},
     kin:{name:'',relation:'',phone:'',address:''}, survivedBy:'',
-    undertaker:{company:'',contact:'',phone:'',pkg:''},
+    undertaker:{company:'',contact:'',phone:'',pkg:'',vendor:'',vendorPhone:''}, leads:{}, followup:{date:'',by:'',notes:''},
     days:[], tasks:blankTasks(),
     flowers:{items:'',florist:'',deliveryDate:'',deliveryTime:'',deliverTo:'',cost:'',notes:''},
     checks:{}, files:[], texts:{obituary:'',programme:''}, ack:{name:'',date:'',agreed:false,sig:''},
@@ -568,6 +595,7 @@ function newCase(){
 }
 function normalize(c){
   const b=newCase();
+  c.leads=c.leads||{}; c.followup=Object.assign({date:'',by:'',notes:''},c.followup||{});
   ['call','deceased','kin','undertaker','flowers','ack','obit'].forEach(k=>{ c[k]=Object.assign({}, b[k], c[k]||{}); });
   c.checks=c.checks||{}; c.files=c.files||[]; c.texts=Object.assign({obituary:'',programme:''},c.texts||{}); c.tasks=Object.assign(blankTasks(), c.tasks||{});
   TASKS.forEach(([k])=>{ c.tasks[k]=Object.assign({who:'',status:'To do',notes:''}, c.tasks[k]); });
@@ -582,8 +610,9 @@ function dayShort(c,d){ return d.type==='funeral' ? 'Funeral' : 'Night '+(wakes(
 function locText(d){ const l=d.location==='Other'?(d.locOther||''):d.location; return [l,d.venue].filter(Boolean).join(' — '); }
 function venueText(d){ return d.venue || (d.location==='Other'?d.locOther:d.location) || ''; }
 function langText(d){ return (d.langs||[]).concat(d.langOther?[d.langOther]:[]).join(', '); }
-function whoName(c,who){ return who==='p1' ? (c.call.receivedBy||'Pastor who received the call') : (c.call.coordinator||CONFIG.COORDINATOR); }
-function allItems(st){ const a=st.items.slice(); if(st.undertaker) UNDERTAKER.forEach(g=>g.items.forEach(i=>a.push({k:i[0],t:i[1]}))); return a; }
+function whoName(c,who){ return who==='p1' ? (c.call.receivedBy||'Pastor who received the call') : who==='und' ? (c.tasks.undertaker.who||c.call.receivedBy||'Not assigned') : (c.call.coordinator||CONFIG.COORDINATOR); }
+function leadOf(c,st){ return st.k==='undertaker' ? whoName(c,'und') : ((c.leads&&c.leads[st.k]) || whoName(c,st.who)); }
+function allItems(st){ const a=st.items.slice(); if(st.undertaker && CONFIG.FULL_UNDERTAKER_CHECKLIST) UNDERTAKER.forEach(g=>g.items.forEach(i=>a.push({k:i[0],t:i[1]}))); return a; }
 function isDone(c,it){
   if(it.task) return c.tasks[it.task].status==='Done';
   const ck=c.checks[it.k];
@@ -683,7 +712,7 @@ function showLock(msg){
 function colKey(id){ return (S.view==='home'?'home':S.cur)+':'+id; }
 function isOpen(id,def){ const k=colKey(id); return k in COL ? COL[k] : def; }
 function box(id, head, body, o={}){ const open=isOpen(id, o.open!==false); return '<section class="card box'+(open?'':' shut')+'" data-box="'+id+'"><div class="box-h" data-toggle="'+id+'"><div class="grow">'+head+'</div>'+(o.right||'')+'<span class="chev"></span></div><div class="box-b">'+body+'</div></section>'; }
-function toggleBox(el, force){ const id=el.dataset.box; const open = force!==undefined ? force : el.classList.contains('shut'); el.classList.toggle('shut',!open); COL[colKey(id)]=open; ls('tow_fn_col',JSON.stringify(COL)); if(open && S.tab==='obituary') fitObit(); }
+function toggleBox(el, force){ const id=el.dataset.box; const open = force!==undefined ? force : el.classList.contains('shut'); el.classList.toggle('shut',!open); COL[colKey(id)]=open; ls('tow_fn_col',JSON.stringify(COL)); if(open){ const c=cur(); if(c && el.querySelector('#obit')) renderObit(c); if(c && el.querySelector('#sigPad')) initSig(c); } }
 const toolsBar = () => '<div class="tools"><button data-all="1">Expand all</button><button data-all="0">Collapse all</button></div>';
 function sec(letter,title,hint){ return '<div class="sec-title">'+(letter?'<span class="letter">'+letter+'</span>':'')+'<h2>'+title+(hint?' <span class="hint">· '+hint+'</span>':'')+'</h2></div>'; }
 
@@ -734,7 +763,7 @@ async function exportAll(){
 }
 
 /* ---------------- Render: case ---------------- */
-const TABS=[['details','Details'],['workflow','Workflow'],['team','Serving Team'],['programme','Programme'],['obituary','Obituary'],['notices','Notices']];
+const TABS=[['details','Details'],['workflow','Workflow'],['report','Report']];
 function renderCase(){
   const c=cur(); if(!c){ S.view='home'; return renderHome(); }
   const t=$('#tabs'); t.style.display='flex'; $('#savebar').style.display='block';
@@ -742,12 +771,14 @@ function renderCase(){
   t.querySelectorAll('.tab').forEach(el=>el.onclick=()=>{ S.tab=el.dataset.tab; renderCase(); window.scrollTo(0,0); });
   const at=t.querySelector('.active'); if(at) at.scrollIntoView({inline:'nearest',block:'nearest'});
   $('#crumb').textContent=c.deceased.name||'New funeral request';
-  let h='<div class="case-head" id="caseHead"></div>'+toolsBar();
-  h+=({details:vDetails,workflow:vWorkflow,team:vTeam,programme:vProgramme,obituary:vObituary,notices:vNotices}[S.tab])(c);
+  document.documentElement.style.setProperty('--hdr',($('header').offsetHeight)+'px');
+  let h='<div class="case-head" id="caseHead"></div>'+(S.tab==='report'?'':toolsBar());
+  if(!['details','workflow','report'].includes(S.tab)) S.tab='workflow';
+  h+=({details:vDetails,workflow:vWorkflow,report:vReport}[S.tab])(c);
   $('#app').innerHTML=h;
   renderHead(c); bind(c);
-  if(S.tab==='obituary') renderObit(c);
-  if(S.tab==='notices') initSig(c);
+  if($('#obit')) renderObit(c);
+  initSig(c);
 }
 function renderHead(c){
   const si=stageInfo(c), f=fun(c);
@@ -783,11 +814,8 @@ function vDetails(c){
     fText('Next of kin / contact person','kin.name',c)+fText('Relationship to deceased','kin.relation',c,{list:'rels'})+
     fText('Contact number','kin.phone',c,{type:'tel',ph:'012-345 6789'})+'<div></div>'+
     fArea('Residential address','kin.address',c)+
-    fArea('Survived by <small>(for the obituary)</small>','survivedBy',c,{ph:'e.g. Beloved husband of Mary Lim\nLoving father of David & Grace\nCherished grandfather of 4'})+
+    fArea('Survived by <small>(family members left behind — shown on the obituary)</small>','survivedBy',c,{ph:'e.g. Beloved husband of Mary Lim\nLoving father of David & Grace\nCherished grandfather of 4'})+
     '</div><datalist id="rels">'+['Son','Daughter','Spouse','Husband','Wife','Father','Mother','Brother','Sister','Grandson','Granddaughter','Nephew','Niece','Friend'].map(r=>'<option>'+r).join('')+'</datalist>');
-  h+=box('und', sec('','Funeral home / undertaker'), '<div class="grid">'+
-    fText('Funeral home / undertaker','undertaker.company',c,{ph:'e.g. Nirvana'})+fText('Package','undertaker.pkg',c,{ph:'e.g. NV Gracious'})+
-    fText('Contact person','undertaker.contact',c)+fText('Contact number','undertaker.phone',c,{type:'tel'})+'</div>');
   let b='<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap"><span class="small" style="font-weight:600;color:#5b5748">Wake nights</span><div class="stepper"><button data-act="wakeMinus">−</button><b>'+wakes(c).length+'</b><button data-act="wakePlus">＋</button></div><span class="small muted">followed by the funeral service</span></div>';
   c.days.forEach((d,i)=>{ b+=dayBox(c,d,i); });
   h+=box('B', sec('B','Service details'), b, {open:!c.manual});
@@ -805,7 +833,7 @@ function dayBox(c,d,i){
   if(d.type==='funeral') h+=fPills('Type of service',p+'serviceType',c,['Burial','Cremation'],{rr:true});
   h+=fPills('Location',p+'location',c,['Church','Funeral Home','Residence','Other'],{rr:true});
   if(d.location==='Other') h+=fText('Other location',p+'locOther',c,{full:true});
-  h+=fText('Funeral home / undertaker',p+'undertaker',c,{ph:c.undertaker.company})+fText('Address / venue',p+'venue',c);
+  h+=fText('Funeral home / undertaker',p+'undertaker',c,{ph:c.undertaker.company,hint:'(optional)'})+fText('Address / venue',p+'venue',c);
   if(d.type==='funeral') h+=fText(d.serviceType==='Cremation'?'Crematorium':'Burial site / cemetery',p+'site',c,{full:true,hint:'(for the obituary)'});
   h+=fMulti('Language preference',p+'langs',c,CONFIG.LANGUAGES)+fText('Other language',p+'langOther',c,{hint:'(optional)'})+'<div></div>'+fArea('Remarks',p+'remarks',c)+'</div>';
   return box('day-'+d.id,title,h,{open:i===0||d.type==='funeral'});
@@ -813,15 +841,36 @@ function dayBox(c,d,i){
 
 /* ---- Workflow ---- */
 function vWorkflow(c){
-  const si=stageInfo(c); let h=c.manual?'<div class="note" style="margin:0 0 12px">Past record — the checklist wasn’t used for this funeral. You can still tick items if helpful.</div>':'';
+  const si=stageInfo(c);
+  let h=c.manual?'<div class="note" style="margin:0 0 12px">Past record — the checklist wasn’t used for this funeral. You can still fill in or tick items if helpful.</div>':'';
+  h+='<div class="stepnav">'+STAGES.map((st,n)=>{ const p=si.per[n]; return '<button data-jump="'+st.k+'" class="'+(p.complete?'ok':si.cur===st.k?'now':'')+'" title="'+esc(st.t)+'">'+(p.complete?'✓':n+1)+'</button>'; }).join('')+'</div>';
   STAGES.forEach((st,n)=>{
     const p=si.per[n], cls=p.complete?'done':(si.cur===st.k?'current':'');
-    const head='<div class="h3" style="font-family:var(--sans);font-size:15px;font-weight:700">'+st.t+'</div><div class="owner">Led by <b>'+esc(whoName(c,st.who))+'</b></div>';
-    let b='<div class="small muted" style="margin-bottom:4px">'+st.d+'</div>';
-    st.items.forEach(it=>b+=itemRow(c,it));
-    if(st.undertaker){ if(c.undertaker.company||c.undertaker.pkg) b+='<div class="note" style="margin-top:6px">'+esc([c.undertaker.company,c.undertaker.pkg].filter(Boolean).join(' · '))+(c.undertaker.contact||c.undertaker.phone?' — '+esc(c.undertaker.contact)+' '+esc(c.undertaker.phone):'')+'</div>'; UNDERTAKER.forEach(g=>{ b+='<div class="grp">'+g.g+'</div><div class="ckgrid">'; g.items.forEach(i=>b+=itemRow(c,{k:i[0],t:i[1]})); b+='</div>'; }); }
-    h+='<div class="stage '+cls+'"><div class="num">'+(p.complete?'✓':n+1)+'</div>'+box('st-'+st.k, head, b, {open:si.cur===st.k, right:'<span class="chip '+(p.complete?'green':cls?'gold':'grey')+'">'+p.dn+'/'+p.n+'</span>'})+'</div>';
+    const head='<div class="h3" style="font-family:var(--sans);font-size:15px;font-weight:700">'+st.t+'</div><div class="owner">Person in charge: <b>'+esc(leadOf(c,st))+'</b></div>';
+    const leadPath = st.k==='undertaker' ? 'tasks.undertaker.who' : 'leads.'+st.k;
+    let b='<div class="small muted" style="margin-bottom:8px">'+st.d+'</div>'+
+      '<div class="leadrow"><label class="f" style="margin:0;white-space:nowrap">Person in charge</label><input type="text" list="ppl" data-b="'+leadPath+'" data-rrb="1" value="'+esc(st.k==='undertaker'?c.tasks.undertaker.who:(c.leads[st.k]||''))+'" placeholder="'+esc(whoName(c,st.who))+'"></div>';
+    b+='<div class="cklist">'; allItems(st).forEach(it=>b+=itemRow(c,it)); b+='</div>';
+    if(st.ui) b+='<div class="stage-ui">'+st.ui(c)+'</div>';
+    h+='<div class="stage '+cls+'" id="stage-'+st.k+'"><div class="num">'+(p.complete?'✓':n+1)+'</div>'+box('st-'+st.k, head, b, {open:si.cur===st.k, right:'<span class="chip '+(p.complete?'green':cls?'gold':'grey')+'">'+p.dn+'/'+p.n+'</span>'})+'</div>';
   });
+  return h+peopleList(c);
+}
+function undertakerUI(c){
+  let v='<div class="grid">'+
+    fText('Funeral home / undertaker','undertaker.company',c,{hint:'(optional)',ph:'e.g. Nirvana'})+fText('Package','undertaker.pkg',c,{hint:'(optional)',ph:'e.g. NV Gracious'})+
+    fText('Contact person','undertaker.contact',c)+fText('Contact number','undertaker.phone',c,{type:'tel'})+
+    fText('Other funeral vendor','undertaker.vendor',c,{hint:'(if not the undertaker)',ph:'e.g. casket, catering, tentage'})+fText('Vendor contact','undertaker.vendorPhone',c,{type:'tel'})+'</div>';
+  v+='<div class="note" style="margin-top:12px"><b>Venue</b><br>'+c.days.map(d=>{ const e=eff(c,d); return esc(dayShort(c,d))+': '+(locText(e)?esc(locText(e)):'<i>not set</i>'); }).join('<br>')+'<div style="margin-top:6px"><button class="btn sm" data-act="goDetails">Edit dates & venue in Details ›</button></div></div>';
+  return box('und', sec('','Undertaker, vendor & venue'), v, {open:true});
+}
+function afterUI(c){
+  let v='<div class="grid">'+fText('Follow-up visit date','followup.date',c,{type:'date'})+fText('Visited by','followup.by',c,{list:'ppl'})+fArea('Notes <small>(how the family is doing, prayer needs)</small>','followup.notes',c)+'</div>';
+  v+='<div class="small muted" style="margin:8px 0 2px">Suggested: a visit or call 1–2 weeks after the funeral, and again around one month.</div>';
+  let h=box('followup', sec('','Follow-up care'), v, {open:true});
+  h+='<div class="card"><div class="btnrow" style="justify-content:space-between"><button class="btn" data-act="goReport">📄 View full report</button>'+
+    (c.status==='closed'?'<button class="btn" data-act="reopen">Reopen case</button>':'<button class="btn primary" data-act="close">✓ Close case</button>')+'</div>'+
+    (c.status==='closed'&&c.closedAt?'<div class="small muted" style="margin-top:8px">Closed '+fmtDate(c.closedAt.slice(0,10))+(c.closedBy?' by '+esc(c.closedBy):'')+'</div>':'')+'</div>';
   return h;
 }
 function itemRow(c,it){
@@ -837,10 +886,10 @@ function itemRow(c,it){
 /* ---- Serving team ---- */
 function vTeam(c){
   let a='<div class="small muted" style="margin-bottom:6px">The coordinator assigns each duty — choose from the list or type any name.</div>';
-  TASKS.forEach(([k,t])=>{ const T=c.tasks[k]; a+='<div class="asg"><div class="tn">'+esc(t)+'</div><input type="text" list="ppl" data-b="tasks.'+k+'.who" value="'+esc(T.who)+'" placeholder="Assign to…"><select data-b="tasks.'+k+'.status" data-rr="1">'+TASK_STATUS.map(s=>'<option'+(s===T.status?' selected':'')+'>'+s+'</option>').join('')+'</select>'+
+  DUTIES.forEach(([k,t])=>{ const T=c.tasks[k]; a+='<div class="asg"><div class="tn">'+esc(t)+'</div><input type="text" list="ppl" data-b="tasks.'+k+'.who" value="'+esc(T.who)+'" placeholder="Assign to…"><select data-b="tasks.'+k+'.status" data-rr="1">'+TASK_STATUS.map(s=>'<option'+(s===T.status?' selected':'')+'>'+s+'</option>').join('')+'</select>'+
     (T.notes?'':'<button class="btn sm addn" data-addnote="1" style="grid-column:1/-1;justify-self:start;min-height:28px;padding:3px 9px;font-weight:500">＋ Note</button>')+'<input type="text" class="notes" data-b="tasks.'+k+'.notes" value="'+esc(T.notes)+'" placeholder="Notes (optional)"'+(T.notes?'':' style="display:none"')+'></div>'; });
   a+=peopleList(c);
-  let h=box('asg', sec('','Duties & assignments'), a, {right:'<span class="chip '+(TASKS.every(([k])=>c.tasks[k].who)?'green':'amber')+'">'+TASKS.filter(([k])=>c.tasks[k].who).length+'/'+TASKS.length+'</span>'});
+  let h=box('asg', sec('','Duties & assignments'), a, {right:'<span class="chip '+(DUTIES.every(([k])=>c.tasks[k].who)?'green':'amber')+'">'+DUTIES.filter(([k])=>c.tasks[k].who).length+'/'+DUTIES.length+'</span>'});
   h+=box('flowers', sec('','Flower order', c.tasks.flowers.who?'by '+esc(c.tasks.flowers.who):'not assigned'), '<div class="grid">'+
     fArea('Arrangements','flowers.items',c,{ph:'e.g. Casket spray (white lilies), 2 standing wreaths, altar arrangement'})+
     fText('Florist','flowers.florist',c)+fText('Cost (RM)','flowers.cost',c,{type:'number'})+
@@ -852,7 +901,7 @@ function vTeam(c){
     if(i>0) b+='<div style="margin-top:10px"><button class="btn sm" data-copyroster="'+i+'">Copy team from '+dayShort(c,c.days[i-1])+'</button></div>';
     h+=box('ros-'+d.id, '<div class="h3">'+dayLabel(c,d)+'<small>'+fmtDate(d.date)+(eff(c,d).time?' · '+fmtTime(eff(c,d).time):'')+'</small></div>', b, {open:i===0, right:'<span class="chip '+(filled===5?'green':'grey')+'">'+filled+'/5</span>'});
   });
-  h+=msgBox(c,'tasks',true)+msgBox(c,'roster');
+  h+=msgBox(c,'tasks')+msgBox(c,'roster');
   return h;
 }
 
@@ -972,7 +1021,7 @@ function renderObit(c){
   fitObit();
 }
 function fitObit(){ const w=$('#obwrap'), s=$('#obscale'); if(!w||!s) return; const k=Math.min(1,w.clientWidth/540); s.style.transform='scale('+k+')'; s.style.left=Math.max(0,(w.clientWidth-540*k)/2)+'px'; const ob=s.querySelector('.ob'); w.style.height=(ob?ob.offsetHeight*k:0)+'px'; }
-window.addEventListener('resize',()=>{ if(S.tab==='obituary') fitObit(); });
+window.addEventListener('resize',()=>{ if($('#obit')) fitObit(); });
 function photoSrc(c){ return c.obit.photo || (c.obit.photoId && S.photos[c.obit.photoId]) || ''; }
 async function fetchPhoto(c){ const id=c.obit.photoId; if(S.photos[id]===false) return; S.photos[id]=false; try{ const j=await api({action:'file',fileId:id}); if(j.ok){ S.photos[id]='data:'+j.mime+';base64,'+j.data; if(S.tab==='obituary'&&cur()===c) renderObit(c); } }catch(e){} }
 function greyPhoto(c){ const src=photoSrc(c), key=src.length+':'+src.slice(-40); if(S.grey[key]) return; const img=new Image(); img.onload=()=>{ const cv=document.createElement('canvas'); cv.width=img.width; cv.height=img.height; const x=cv.getContext('2d'); x.drawImage(img,0,0); const d=x.getImageData(0,0,cv.width,cv.height); for(let i=0;i<d.data.length;i+=4){ const g=d.data[i]*.3+d.data[i+1]*.59+d.data[i+2]*.11; d.data[i]=d.data[i+1]=d.data[i+2]=g; } x.putImageData(d,0,0); S.grey[key]=cv.toDataURL('image/jpeg',.82); renderObit(c); }; img.src=src; }
@@ -1002,7 +1051,7 @@ const MSGS = {
     const rem=c.days.map(d=>d.remarks?dayShort(c,d)+': '+d.remarks:'').filter(Boolean); if(rem.length) L.push('','*Remarks:*',...rem);
     L.push('','Please assign the team and arrange the programme. Thank you!','— '+(c.call.receivedBy||'')); return L.join('\n'); }},
   tasks:{t:'Team assignments summary', to:()=>'For the serving team WhatsApp group', body:c=>{ const L=['*Funeral of '+(c.deceased.name||'')+' — assignments*','',...svcLines(c),'','*Duties*'];
-    TASKS.forEach(([k,t])=>{ const T=c.tasks[k]; L.push('• '+t+': '+(T.who||'_to be assigned_')+(T.status==='Done'?' ✅':'')+(T.notes?' — '+T.notes:'')); });
+    DUTIES.forEach(([k,t])=>{ const T=c.tasks[k]; L.push('• '+t+': '+(T.who||'_to be assigned_')+(T.status==='Done'?' ✅':'')+(T.notes?' — '+T.notes:'')); });
     const F=c.flowers; if(F.items) L.push('','*Flowers:* '+F.items+(F.deliveryDate?' — deliver '+fmtDate(F.deliveryDate)+(F.deliveryTime?', '+fmtTime(F.deliveryTime):''):'')+' to '+(F.deliverTo||venueText(eff(c,c.days[0]))||'venue'));
     L.push('','*Serving each day*'); c.days.forEach(d=>{ const r=d.roster; L.push('_'+dayLabel(c,d)+' — '+fmtDate(d.date)+'_','Minister: '+(r.minister||'TBC')+' · Reader: '+(r.reader||'TBC'),'WL: '+(r.wl||'TBC')+' · Musicians: '+(r.musicians||'TBC'),'Helpers: '+(r.helpers||'TBC'),''); });
     L.push('Coordinator: '+(c.call.coordinator||'')); return L.join('\n'); }},
@@ -1030,14 +1079,13 @@ function vNotices(c){
     '<div class="full"><label class="switch"><input type="checkbox" data-b="ack.agreed" data-rr="1"'+(c.ack.agreed?' checked':'')+'><i></i>Family agreed by WhatsApp (replied “Agreed”)</label></div></div>'+
     '<div class="btnrow" style="margin-top:12px"><button class="btn" data-act="printFam">⎙ Print guidelines & declaration</button></div></div>';
   let h=box('decl', sec('C','Guidelines & declaration','for the family'), g, {right:(c.ack.sig||c.ack.agreed)?'<span class="chip green">'+(c.ack.sig?'Signed':'Agreed')+'</span>':'<span class="chip amber">Pending</span>'});
-  ['alert','handover','family','guide','tasks','roster','announce'].forEach(k=>h+=msgBox(c,k,false));
-  if(!S.tg && !LOCAL) h+='<div class="note">Tip: messages can also post straight to a Telegram group — see the README to switch it on.</div>';
+  h+=msgBox(c,'family')+msgBox(c,'guide');
   return h;
 }
 
 /* ---------------- Signature pad ---------------- */
 function initSig(c){
-  const cv=$('#sigPad'); if(!cv) return;
+  const cv=$('#sigPad'); if(!cv || !cv.offsetWidth) return;
   const fit=()=>{ const r=cv.getBoundingClientRect(), k=window.devicePixelRatio||1; cv.width=r.width*k; cv.height=r.height*k; const x=cv.getContext('2d'); x.scale(k,k); x.lineWidth=2.2; x.lineCap='round'; x.lineJoin='round'; x.strokeStyle='#1d2433'; };
   fit(); let down=false, last=null, drawn=false; const x=()=>cv.getContext('2d');
   const pos=e=>{ const r=cv.getBoundingClientRect(); return {x:e.clientX-r.left, y:e.clientY-r.top}; };
@@ -1050,6 +1098,41 @@ function saveSig(c){
   const cv=$('#sigPad'); if(!cv) return; if(!cv._drawn()){ toast('Please sign first'); return; }
   const out=document.createElement('canvas'); out.width=cv.width; out.height=cv.height; const g=out.getContext('2d'); g.fillStyle='#fff'; g.fillRect(0,0,out.width,out.height); g.drawImage(cv,0,0);
   c.ack.sig=out.toDataURL('image/jpeg',.7); if(!c.ack.date) c.ack.date=todayISO(); if(!c.ack.name) c.ack.name=c.kin.name; touch(c); keep(renderCase); toast('Signature saved');
+}
+
+/* ---------------- Report (full funeral record) ---------------- */
+function vReport(c){
+  return '<div class="card" style="padding:12px 16px"><div class="btnrow" style="justify-content:space-between"><div class="small muted" style="flex:1;min-width:180px">The complete record of this funeral — for filing. Print it or save as PDF.</div><button class="btn primary" data-act="printReport">⎙ Print / Save PDF</button></div></div><div class="card rep"><div class="pz">'+reportHTML(c)+'</div></div>';
+}
+function itemState(c,it){ const ck=c.checks[it.k]; if(it.task){ const T=c.tasks[it.task]; return {done:T.status==='Done', by:T.by||'', at:T.at||'', note:T.who?'Assigned to '+T.who+(T.status==='In progress'?' (in progress)':''):'Not assigned'}; }
+  const auto=!!(it.auto&&it.auto(c)&&!(ck&&ck.off)); return {done:!!(ck&&ck.done)||auto, by:ck&&ck.done?ck.by:'', at:ck&&ck.done?ck.at:'', note:auto&&!(ck&&ck.done)?'Automatic':''}; }
+function reportHTML(c){ return '<div class="pz-rep">'+reportBody(c)+'</div>'; }
+function reportBody(c){
+  const D=c.deceased, K=c.kin, U=c.undertaker, si=stageInfo(c), e_=esc;
+  const row=(l,v)=>v?'<tr><td class="l">'+l+'</td><td>'+v+'</td></tr>':'';
+  const when=iso=>iso?new Date(iso).toLocaleString([],{day:'numeric',month:'short',year:'numeric',hour:'numeric',minute:'2-digit'}):'';
+  let h='<div class="pz-page">'+pzHead('Funeral Service Record', e_(D.name||'')+(D.zh?'<br><span style="font-family:\'Noto Serif SC\'">'+e_(D.zh)+'</span>':'')+'<br>Ref '+c.id.slice(-6).toUpperCase());
+  h+='<div class="pz-small" style="margin-bottom:6px">Status: <b>'+(c.status==='closed'?'Closed'+(c.closedAt?' on '+fmtDate(c.closedAt.slice(0,10),false):'')+(c.closedBy?' by '+e_(c.closedBy):''):'Active — now at: '+e_(si.curStage?si.curStage.t:'all steps done'))+'</b> · Checklist '+si.done+' of '+si.total+(c.manual?' · Past record (entered after the service)':'')+' · Printed '+fmtDate(todayISO(),false)+'</div>';
+  h+='<h4><b>A</b>Deceased &amp; family</h4><table class="pz-f">'+row('Name',e_(D.name)+(D.zh?' ('+e_(D.zh)+')':''))+row('Date of birth',D.dob?fmtDate(D.dob,false):'')+row('Date of passing',D.dop?fmtDate(D.dop,false):'')+row('Age',e_(D.age))+row('Gender',e_(D.gender))+row('Marital status',e_(D.marital))+row('Membership',e_(c.call.membership))+
+    row('Next of kin',e_(K.name)+(K.relation?' ('+e_(K.relation)+')':''))+row('Contact number',e_(K.phone))+row('Address',e_(K.address))+row('Survived by',e_(c.survivedBy).replace(/\n/g,'<br>'))+'</table>';
+  h+='<h4>Request handling</h4><table class="pz-f">'+row('Call received',(c.call.date?fmtDate(c.call.date,false):'')+(c.call.time?', '+fmtTime(c.call.time):''))+row('Received by',e_(c.call.receivedBy))+row('Coordinator',e_(c.call.coordinator))+
+    row('Undertaker',e_([U.company,U.pkg].filter(Boolean).join(' · '))+((U.contact||U.phone)?' — '+e_(U.contact)+' '+e_(U.phone):''))+row('Other vendor',e_(U.vendor)+(U.vendorPhone?' — '+e_(U.vendorPhone):''))+'</table>';
+  h+='<h4><b>B</b>Service schedule</h4><table class="pz-f"><tr><td class="l">Service</td><td class="l">Date &amp; time</td><td class="l">Venue</td><td class="l">Remarks</td></tr>'+c.days.map(d=>{ const e=eff(c,d); return '<tr><td>'+dayLabel(c,d)+'</td><td>'+fmtDate(d.date)+(e.time?'<br>'+fmtTime(e.time):'')+'</td><td>'+e_(locText(e))+(d.type==='funeral'&&(d.serviceType||d.site)?'<br><i>'+e_(d.serviceType||'')+(d.site?' — '+e_(d.site):'')+'</i>':'')+(langText(e)?'<br><span class="ob">'+e_(langText(e))+'</span>':'')+'</td><td>'+e_(d.remarks||'').replace(/\n/g,'<br>')+'</td></tr>'; }).join('')+'</table>';
+  h+='<h4>Serving personnel</h4><table class="pz-f"><tr><td class="l">Role</td>'+c.days.map(d=>'<td class="l">'+dayShort(c,d)+'</td>').join('')+'</tr>'+ROLES.map(([k,l])=>'<tr><td class="l">'+l.replace(' (optional)','')+'</td>'+c.days.map(d=>'<td>'+e_(d.roster[k])+'</td>').join('')+'</tr>').join('')+'</table>';
+  h+='<h4>Duties</h4><table class="pz-f">'+row('Undertaker liaison',e_(c.tasks.undertaker.who||'—'))+DUTIES.map(([k,t])=>{ const T=c.tasks[k]; return row(t, e_(T.who||'—')+' · '+T.status+(T.notes?'<br><span class="ob">'+e_(T.notes)+'</span>':'')); }).join('')+'</table>';
+  const F=c.flowers; if(F.items||F.florist) h+='<h4>Flowers</h4><table class="pz-f">'+row('Arrangements',e_(F.items))+row('Florist',e_(F.florist))+row('Delivery',(F.deliveryDate?fmtDate(F.deliveryDate):'')+(F.deliveryTime?', '+fmtTime(F.deliveryTime):'')+(F.deliverTo?' — '+e_(F.deliverTo):''))+row('Cost',F.cost?'RM '+e_(F.cost):'')+row('Notes',e_(F.notes))+'</table>';
+
+  h+='<h4><b>F</b>Programme flow</h4>'+c.days.map(d=>{ const rows=progRows(c,d).filter(x=>!x.s.skip); return '<div class="pz-day"><div class="dh">'+dayLabel(c,d)+' <span class="pz-small">'+fmtDate(d.date)+'</span></div><table class="pz-f">'+rows.map(x=>'<tr><td style="width:72px;white-space:nowrap;font-weight:700;color:#1F3864">'+(x.time?fmtTime(x.time):'')+'</td><td style="font-weight:600">'+e_(x.s.seg)+(x.s.desc?' <span class="ob">— '+e_(x.s.desc)+'</span>':'')+'</td><td>'+e_(picFor(d,x.s))+'</td></tr>').join('')+'</table></div>'; }).join('');
+  if(c.texts.programme) h+='<div class="pz-small" style="white-space:pre-wrap;border:1px solid #e3dccb;border-radius:6px;padding:8px 10px"><b>Programme text (pasted)</b>\n'+e_(c.texts.programme)+'</div>';
+  h+='<h4><b>D</b>Checklist</h4><table class="pz-f">'+STAGES.map((st,n)=>'<tr><td colspan="3" style="background:#F6F2E7;font-weight:700;color:#1F3864">'+(n+1)+'. '+st.t+' <span class="ob">· '+e_(leadOf(c,st))+'</span></td></tr>'+allItems(st).map(it=>{ const x=itemState(c,it); return '<tr><td style="width:24px;text-align:center">'+(x.done?'☑':'☐')+'</td><td>'+e_(it.t)+'</td><td class="ob" style="width:34%">'+e_([x.by?'✓ '+x.by:'',x.at?when(x.at):'',x.note].filter(Boolean).join(' · '))+'</td></tr>'; }).join('')).join('')+'</table>';
+  h+='<h4><b>E</b>Family declaration</h4><table class="pz-f">'+row('Name',e_(c.ack.name)||'—')+row('Date',c.ack.date?fmtDate(c.ack.date,false):'')+row('Agreement',c.ack.sig?'<img src="'+c.ack.sig+'" style="height:50px">':c.ack.agreed?'Agreed by WhatsApp':'Pending')+'</table>';
+  const FU=c.followup; if(FU.date||FU.by||FU.notes) h+='<h4>Follow-up care</h4><table class="pz-f">'+row('Visit date',FU.date?fmtDate(FU.date,false):'')+row('Visited by',e_(FU.by))+row('Notes',e_(FU.notes).replace(/\n/g,'<br>'))+'</table>';
+  if(c.files.length) h+='<h4>Files on record</h4><table class="pz-f">'+c.files.map(f=>row(kindName(f.kind), e_(f.name)+' <span class="ob">· '+fsize(f.size||0)+(f.by?' · '+e_(f.by):'')+(f.at?' · '+fmtDate(f.at.slice(0,10),false):'')+'</span>')).join('')+'</table><div class="pz-small">Files are kept in the church Google Drive (TOW Funeral Files).</div>';
+  h+='</div>';
+  if(c.texts.obituary && !D.name) {}
+  if(D.name && !c.manual) h+='<div class="pz-page">'+pzHead('Obituary', e_(D.name))+'<div class="pz-obit">'+(TPL[c.obit.tpl]||TPL.grace)(obData(c))+'</div></div>';
+  else if(c.texts.obituary) h+='<div class="pz-page">'+pzHead('Obituary text', e_(D.name||''))+'<div class="pz-small" style="white-space:pre-wrap">'+e_(c.texts.obituary)+'</div></div>';
+  return h;
 }
 
 /* ---------------- Printing ---------------- */
@@ -1266,7 +1349,7 @@ function bind(c){
     if(path==='days.0.date') syncDates(c);
     if(/^tasks\.\w+\.who$/.test(path) && !c.call.coordinator) {}
     touch(c); renderHead(c);
-    if(S.tab==='obituary') renderObit(c);
+    if($('#obit') && el.closest('[data-box="st-obituary"]')) renderObit(c);
     if(el.dataset.rr && (el.type==='radio'||el.type==='checkbox')) keep(renderCase);
   };
   app.onchange=e=>{
@@ -1282,14 +1365,16 @@ function bind(c){
     if(el.dataset.upload!==undefined && el.files.length){ const kind=el.dataset.upload || ($('#upKind')||{}).value || 'other'; return uploadFiles(c,[...el.files],kind); }
     if(el.dataset.b && /^tasks\.\w+\.status$/.test(el.dataset.b)){ const T=getP(c,el.dataset.b.replace('.status','')); if(T.status==='Done'){ T.by=ls('tow_fn_me')||''; T.at=new Date().toISOString(); } touch(c); }
     if(el.dataset.b && el.dataset.rr && (el.tagName==='SELECT'||el.type==='date'||el.type==='number')) keep(renderCase);
+    if(el.dataset.rrb) keep(renderCase);
   };
   app.onclick=e=>{
-    const t=e.target.closest('[data-act],[data-addnote],[data-copytext],[data-fview],[data-fdel],[data-goshare],[data-copy],[data-tg],[data-copyroster],[data-resetprog],[data-tpl],[data-all],[data-toggle]'); if(!t) return;
+    const t=e.target.closest('[data-act],[data-jump],[data-addnote],[data-copytext],[data-fview],[data-fdel],[data-goshare],[data-copy],[data-tg],[data-copyroster],[data-resetprog],[data-tpl],[data-all],[data-toggle]'); if(!t) return;
     if(t.dataset.copytext){ copy(c.texts[t.dataset.copytext]||''); return; }
     if(t.dataset.fview){ viewFile(c,t.dataset.fview); return; }
     if(t.dataset.fdel){ const f=c.files.find(x=>x.id===t.dataset.fdel); confirmBox('Remove this file?','“'+(f?f.name:'')+'” will be removed from this record.','Remove',async()=>{ if(!LOCAL){ try{ await api({action:'deleteFile',fileId:f.id}); }catch(e){} } c.files=c.files.filter(x=>x!==f); touch(c); await flush(); keep(renderCase); toast('File removed'); }); return; }
     if(t.dataset.addnote){ const inp=t.nextElementSibling; inp.style.display=''; inp.focus(); t.remove(); return; }
-    if(t.dataset.goshare){ e.preventDefault(); e.stopPropagation(); S.tab=['tasks','roster'].includes(t.dataset.goshare)?'team':'notices'; COL[S.cur+':msg-'+t.dataset.goshare]=true; renderCase(); const m=$('[data-box="msg-'+t.dataset.goshare+'"]'); if(m) setTimeout(()=>m.scrollIntoView({behavior:'smooth',block:'start'}),60); return; }
+    if(t.dataset.goshare){ e.preventDefault(); e.stopPropagation(); const k=t.dataset.goshare, st=MSG_STAGE[k]||'notices'; COL[S.cur+':st-'+st]=true; COL[S.cur+':msg-'+k]=true; ls('tow_fn_col',JSON.stringify(COL)); if(S.tab!=='workflow'){ S.tab='workflow'; renderCase(); } else keep(renderCase); const m=$('[data-box="msg-'+k+'"]'); if(m) setTimeout(()=>m.scrollIntoView({behavior:'smooth',block:'start'}),60); return; }
+    if(t.dataset.jump){ const id='st-'+t.dataset.jump; COL[S.cur+':'+id]=true; ls('tow_fn_col',JSON.stringify(COL)); const bx=$('[data-box="'+id+'"]'); if(bx){ toggleBox(bx,true); setTimeout(()=>$('#stage-'+t.dataset.jump).scrollIntoView({behavior:'smooth',block:'start'}),40); } return; }
     if(t.dataset.copy){ copy(MSGS[t.dataset.copy].body(c)); return; }
     if(t.dataset.tg){ sendTG(MSGS[t.dataset.tg].body(c)); return; }
     if(t.dataset.copyroster){ const i=Number(t.dataset.copyroster); c.days[i].roster=Object.assign({},c.days[i-1].roster); touch(c); keep(renderCase); toast('Team copied'); return; }
@@ -1300,8 +1385,11 @@ function bind(c){
     const a=t.dataset.act;
     if(a==='wakePlus'){ const w=wakes(c); const nd=newDay('wake',w[w.length-1]); c.days.splice(w.length,0,nd); const f=fun(c); if(f.date&&nd.date&&f.date<=nd.date) f.date=addDays(nd.date,1); touch(c); keep(renderCase); }
     if(a==='wakeMinus'){ const w=wakes(c); if(w.length<=1){ toast('At least one wake night'); return; } c.days.splice(w.length-1,1); touch(c); keep(renderCase); }
-    if(a==='close'){ c.status='closed'; touch(c); renderCase(); toast('Case closed — kept in Past records'); }
-    if(a==='reopen'){ c.status='active'; touch(c); renderCase(); }
+    if(a==='close'){ confirmBox('Close this case?','It moves to Past records with the full report kept. You can reopen it any time.','Close case',()=>{ c.status='closed'; c.closedAt=new Date().toISOString(); c.closedBy=ls('tow_fn_me')||''; touch(c); keep(renderCase); toast('Case closed — kept in Past records'); }); }
+    if(a==='goDetails'){ S.tab='details'; COL[S.cur+':B']=true; renderCase(); window.scrollTo(0,0); }
+    if(a==='goReport'){ S.tab='report'; renderCase(); window.scrollTo(0,0); }
+    if(a==='printReport') doPrint(reportHTML(c));
+    if(a==='reopen'){ c.status='active'; delete c.closedAt; touch(c); keep(renderCase); }
     if(a==='delete') confirmBox('Delete this request?','This removes the record for '+(c.deceased.name||'this case')+' for everyone. To keep it in history, use “Mark case closed” instead.','Delete',async()=>{ delete S.full[c.id]; S.index=S.index.filter(x=>x.id!==c.id); S.dirty.delete(c.id); if(LOCAL) flush(); else { try{ await api({action:'delete',id:c.id}); }catch(e){} } S.view='home'; render(); toast('Deleted'); });
     if(a==='printProg') doPrint(printProgramme(c));
     if(a==='printForm') doPrint(formHTML(c));
