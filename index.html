@@ -172,6 +172,7 @@
   .uprow{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);}
   .stepnav{display:flex;gap:6px;justify-content:space-between;margin:0 0 12px;padding:10px 12px;background:#fff;border:1px solid var(--line);border-radius:12px;position:sticky;top:calc(var(--hdr,118px));z-index:5;}
   .stepnav button{flex:1;max-width:44px;height:32px;border-radius:50%;border:2px solid var(--line);background:#fff;font-family:var(--serif);font-weight:700;font-size:15px;color:var(--muted);cursor:pointer;padding:0;}
+  .stepnav button.optst{border-style:dashed;}
   .stepnav button.ok{background:var(--green);border-color:var(--green);color:#fff;}
   .stepnav button.now{background:var(--gold);border-color:var(--gold);color:var(--navy-dark);}
   .leadrow{display:flex;align-items:center;gap:10px;margin-bottom:8px;padding:8px 10px;background:#FDFCF8;border:1px solid var(--line);border-radius:8px;}
@@ -183,6 +184,27 @@
   .rep .pz-page{margin-bottom:26px;padding-bottom:20px;border-bottom:1px dashed var(--line);}
   .rep .pz-page:last-child{border-bottom:none;}
   @media(max-width:600px){.rep .pz-obit{zoom:.62;} .rep{padding:12px;} .rep .pz{font-size:10pt;}}
+  input[data-pick]{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%231F3864' stroke-width='1.6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 11px center;padding-right:32px;}
+  .pickmenu{position:absolute;z-index:120;background:#fff;border:1px solid var(--line);border-radius:10px;box-shadow:0 10px 30px rgba(21,38,71,.18);max-height:260px;overflow:auto;padding:4px;}
+  .pickmenu .pk{padding:10px 12px;border-radius:7px;font-size:14px;cursor:pointer;display:flex;justify-content:space-between;}
+  .pickmenu .pk:hover{background:var(--soft);} .pickmenu .pk.on{font-weight:700;color:var(--navy);} .pickmenu .pk span{color:var(--green);}
+  .kinrow{display:grid;grid-template-columns:1.3fr 1fr 1.1fr 40px;gap:6px;margin-bottom:6px;align-items:center;}
+  .kinrow .kin1{font-size:10px;font-weight:700;color:var(--muted);text-align:center;letter-spacing:.06em;text-transform:uppercase;}
+  @media(max-width:560px){.kinrow{grid-template-columns:1fr 1fr 40px;}.kinrow input:first-child{grid-column:1/-1;}}
+  .dprev{font-size:11px;font-weight:700;letter-spacing:.06em;color:var(--navy);margin-top:3px;min-height:13px;}
+  .visitbox{border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:#FDFCF8;}
+  .duty{display:grid;grid-template-columns:1fr 150px 98px;gap:8px;align-items:center;padding:8px 0;border-top:1px solid #F3EFE6;}
+  .duty:first-of-type{border-top:none;}
+  .duty .dt{font-size:13.5px;font-weight:600;}
+  .duty input{min-height:36px;padding:6px 30px 6px 9px;font-size:14px;}
+  .duty .dx{grid-column:1/-1;margin-top:-2px;}
+  .duty .lvd{display:inline-block;margin-right:12px;}
+  .stchip{border:none;border-radius:20px;font-size:11.5px;font-weight:700;padding:8px 6px;cursor:pointer;}
+  .st-Todo{background:var(--soft);color:#5b5748;} .st-Inprogress{background:var(--amber-bg);color:var(--amber);} .st-Done{background:var(--green-bg);color:var(--green);}
+  .lnk{background:none;border:none;color:var(--navy);font-weight:600;font-size:12px;cursor:pointer;padding:2px 0;text-decoration:none;}
+  .dxb{margin-top:8px;padding:10px;border:1px solid var(--line);border-radius:8px;background:#FDFCF8;}
+  .sumrow{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:#FDFCF8;}
+  @media(max-width:560px){.duty{grid-template-columns:1fr 92px;}.duty .dt{grid-column:1/-1;}.duty input{grid-column:1/2;}}
   /* overlays */
   .toast{position:fixed;left:50%;bottom:86px;transform:translateX(-50%) translateY(20px);background:var(--navy-dark);color:#fff;padding:10px 16px;border-radius:10px;font-size:13px;opacity:0;transition:all .25s;z-index:100;pointer-events:none;max-width:90vw;}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
@@ -272,6 +294,8 @@
   .ob .vref{font-family:var(--sans);font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;font-weight:600;margin-top:5px;}
   .ob .surv{font-size:15.5px;line-height:1.5;white-space:pre-line;}
   .ob .foot{font-family:var(--sans);font-size:10.5px;line-height:1.6;margin-top:14px;}
+  .ob .zhl{font-family:"Noto Serif SC",serif;font-size:.9em;margin-top:4px;}
+  .pz .zh2{font-family:"Noto Serif SC",serif;font-weight:400;font-size:.92em;color:#555;}
   .ob .church{font-family:var(--sans);font-size:10px;letter-spacing:.28em;text-transform:uppercase;font-weight:600;margin-top:8px;}
   .ob .inner{position:relative;z-index:2;}
   .ob svg,.ob img.orn{position:absolute;pointer-events:none;height:auto;max-width:none;}
@@ -408,7 +432,7 @@ const CONFIG = {
   CHURCH: 'Tabernacle of Worship',
   // Names offered when choosing who received the call / coordinator / assignments (you can still type any name)
   PASTORS: ['Ps. Derick Wong','Ps. Jocelyn Yoong','Ps. Kenrick Kong','Ps. Kevin Ong','Ps. Melissa Lai','Ps. Michael Lia','Ps. Viven Tan'],
-  TEAM: ['Leon Wong','Jeremy Ong','Priscilla Chin','Church office'],
+  TEAM: ['Church office'],   // starting list only — the admin can edit names inside the app (Admin → Team names)
   COORDINATOR: 'Ps. Melissa Lai',       // default coordinator (Pastor 2) — can be changed per case
   LANGUAGES: ['English','Mandarin','Cantonese','Bahasa Malaysia','Hokkien'],
   FULL_UNDERTAKER_CHECKLIST: false,   // true = show the detailed undertaker package checklist (permits, casket, hearse…)
@@ -423,12 +447,10 @@ const TASKS = [
   ['undertaker','Liaise with family & undertaker'],
   ['flowers','Order flowers & arrange delivery'],
   ['levites','Arrange worship leader & musicians'],
+  ['announce','Church announcement'],
+  ['print','Print wake & funeral service programmes'],
   ['obituary','Design obituary'],
   ['slides','Collect photos & prepare memoir slides'],
-  ['announce','Church announcement'],
-  ['print','Print memorial programme'],
-  ['refreshments','Refreshments (with family / undertaker)'],
-  ['setup','Venue check before service (PA, keyboard, song sheets)'],
   ['grief','Follow-up visit with the family'],
 ];
 const TASK_STATUS = ['To do','In progress','Done'];
@@ -459,29 +481,23 @@ const STAGES = [
     {k:'d_form', t:'Completed funeral request form', form:true},
   ], ui:c=>msgBox(c,'handover')},
   {k:'serving', t:'Serving personnel', who:'p2', d:'Assign the duties and the team for each wake night and the funeral.', items:[
-    {k:'assigned', t:'Duties assigned to the team', auto:c=>DUTIES.every(([k])=>c.tasks[k].who)},
-    {k:'roster', t:'Minister, scripture reader & helpers for each day', auto:c=>c.days.every(d=>d.roster.minister && d.roster.reader)},
-    {k:'levites', t:'Worship leader & musicians confirmed', task:'levites'},
-    {k:'flowers', t:'Flowers ordered & delivery arranged', task:'flowers'},
     {k:'d_personnel', t:'Confirmed serving personnel', form:true, msg:'roster'},
     {k:'d_eulogy', t:'Eulogy contributors contacted (friend / family)', form:true},
-    {k:'d_slides', t:'Slides / media submitted (memoir)', form:true, task:'slides'},
-    {k:'d_song', t:'Song request (optional)', form:true},
+    {k:'d_slides', t:'Slides / media submitted (memoir)', form:true, opt:true},
+    {k:'d_song', t:'Song request', form:true, opt:true},
+    {k:'d_refresh', t:'Finalised refreshment plans', form:true, opt:true},
   ], ui:c=>vTeam(c)},
   {k:'programme', t:'Programme flow', who:'p2', d:'Times and names fill in automatically from the team above — edit as needed.', items:[
     {k:'prog', t:'Programme drafted for every wake night & the funeral'},
     {k:'d_progfinal', t:'Finalised memorial programme', form:true},
-    {k:'d_printed', t:'Printed memorial programme', form:true, task:'print'},
+    {k:'d_printed', t:'Printed wake & funeral service programmes', form:true, task:'print'},
   ], ui:c=>vProgramme(c)},
-  {k:'obituary', t:'Obituary & announcement', who:'p2', d:'Design or upload the obituary, then announce the service.', items:[
-    {k:'obit', t:'Obituary designed & approved by the family', task:'obituary'},
-    {k:'d_announce', t:'Announcement of memorial information', form:true, task:'announce', msg:'announce'},
+  {k:'obituary', t:'Obituary & announcement', opt:true, who:'p2', d:'Optional — design or upload the obituary (or edit it in Canva), and announce the service.', items:[
+    {k:'obit', t:'Obituary designed & approved by the family', task:'obituary', opt:true},
+    {k:'d_announce', t:'Announcement of memorial information', form:true, task:'announce', msg:'announce', opt:true},
   ], ui:c=>vObituary(c)+msgBox(c,'announce')},
-  {k:'notices', t:'Family guidelines & notices', who:'p2', d:'Share the guidelines, get the declaration signed and guide the family.', items:[
+  {k:'notices', t:'Family guidelines & declaration', who:'p2', d:'Share the guidelines with the family and get the declaration signed or agreed.', items:[
     {k:'n_family', t:'Family acknowledged the guidelines & declaration', auto:c=>!!((c.ack.agreed||c.ack.sig) && c.ack.name)},
-    {k:'n_guide', t:'Family guide shared (things to do & who to contact)', msg:'guide'},
-    {k:'n_personnel', t:'Serving personnel briefed with the roster', msg:'roster'},
-    {k:'d_refresh', t:'Finalised refreshment plans', form:true, task:'refreshments'},
   ], ui:c=>vNotices(c)},
   {k:'after', t:'After the service', who:'p2', d:'Love offerings, follow-up care, then review the record and close the case.', items:[
     {k:'d_love_staff', t:'Love offering to working personnel', form:true},
@@ -491,7 +507,8 @@ const STAGES = [
     {k:'after_close', t:'Case closed', auto:c=>c.status==='closed'},
   ], ui:c=>afterUI(c)},
 ];
-const DUTIES = TASKS.filter(([k])=>k!=='undertaker');
+const DUTIES = TASKS.filter(([k])=>['flowers','levites','announce','print'].includes(k));
+const DUTIES_OPT = TASKS.filter(([k])=>['obituary','slides'].includes(k));
 const MSG_STAGE = {alert:'call', handover:'handover', tasks:'serving', roster:'serving', announce:'obituary', family:'notices', guide:'notices'};
 
 const SEG_WAKE = [
@@ -548,14 +565,15 @@ const esc = s => String(s==null?'':s).replace(/[&<>"']/g, m => ({'&':'&amp;','<'
 const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2,7);
 const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'], MONL=['January','February','March','April','May','June','July','August','September','October','November','December'], DOW=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'], DOWL=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 function pd(iso){ if(!iso) return null; const [y,m,d]=iso.split('-').map(Number); return new Date(y,m-1,d); }
-function fmtDate(iso,dow=true){ const d=pd(iso); if(!d) return '—'; return (dow?DOW[d.getDay()]+', ':'')+d.getDate()+' '+MON[d.getMonth()]+' '+d.getFullYear(); }
-function fmtLong(iso){ const d=pd(iso); return d? d.getDate()+' '+MONL[d.getMonth()]+' '+d.getFullYear() : ''; }
-function fmtFull(iso){ const d=pd(iso); return d? DOWL[d.getDay()]+', '+d.getDate()+' '+MONL[d.getMonth()]+' '+d.getFullYear() : ''; }
+function fmtDate(iso,dow=true){ const d=pd(iso); if(!d) return '—'; return ((dow?DOW[d.getDay()]+', ':'')+d.getDate()+' '+MON[d.getMonth()]+' '+d.getFullYear()).toUpperCase(); }
+function fmtLong(iso){ const d=pd(iso); return d? (d.getDate()+' '+MONL[d.getMonth()]+' '+d.getFullYear()).toUpperCase() : ''; }
+function fmtFull(iso){ const d=pd(iso); return d? (DOWL[d.getDay()]+', '+d.getDate()+' '+MONL[d.getMonth()]+' '+d.getFullYear()).toUpperCase() : ''; }
 function fmtTime(t){ if(!t) return ''; let [h,m]=t.split(':').map(Number); const ap=h>=12?'PM':'AM'; h=h%12||12; return h+(m?':'+String(m).padStart(2,'0'):'')+' '+ap; }
 function addMin(t,n){ if(!t) return ''; let [h,m]=t.split(':').map(Number); let x=((h*60+m+n)%1440+1440)%1440; return String(Math.floor(x/60)).padStart(2,'0')+':'+String(x%60).padStart(2,'0'); }
 function iso(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
 function addDays(s,n){ const d=pd(s); if(!d) return ''; d.setDate(d.getDate()+n); return iso(d); }
 const todayISO = () => iso(new Date());
+function ageOf(D){ if(D.dobYearOnly){ const y=+D.dobYear, b=pd(D.dop); if(!y||!b) return ''; const a=b.getFullYear()-y; return a>=0&&a<130?a:''; } return calcAge(D.dob,D.dop); }
 function calcAge(dob,dop){ const a=pd(dob),b=pd(dop); if(!a||!b) return ''; let y=b.getFullYear()-a.getFullYear(); if(b.getMonth()<a.getMonth()||(b.getMonth()===a.getMonth()&&b.getDate()<a.getDate())) y--; return y>=0?y:''; }
 function getP(o,p){ return p.split('.').reduce((a,k)=>a==null?a:a[k],o); }
 function setP(o,p,v){ const ks=p.split('.'); let x=o; ks.slice(0,-1).forEach(k=>{ if(x[k]==null) x[k]={}; x=x[k]; }); x[ks[ks.length-1]]=v; }
@@ -572,7 +590,7 @@ const blankRoster = () => ({minister:'',wl:'',musicians:'',reader:'',helpers:'',
 const blankProg = type => (type==='funeral'?SEG_FUNERAL:SEG_WAKE).map(s=>({k:s.k,seg:s.seg,desc:s.desc,dur:s.dur,role:s.role,pic:'',skip:false}));
 function newDay(type, from){
   const d={id:uid(), type, date:'', time:type==='funeral'?'10:00':'20:00', location:'', locOther:'', undertaker:'', venue:'', langs:['English'], langOther:'', remarks:'', same:false, roster:blankRoster(), prog:blankProg(type)};
-  if(type==='funeral'){ d.serviceType=''; d.site=''; }
+  if(type==='funeral'){ d.serviceType=''; d.site=''; d.procTime=''; }
   if(from){ d.date=from.date?addDays(from.date,1):''; d.time=from.time; d.same=true; }
   return d;
 }
@@ -581,20 +599,22 @@ function newCase(){
   const me=ls('tow_fn_me')||'';
   const c={ id:uid(), created:new Date().toISOString(), status:'active', rev:0,
     call:{date:todayISO(), time:'', receivedBy:me, coordinator:CONFIG.COORDINATOR, membership:'Member'},
-    deceased:{name:'',zh:'',dob:'',dop:todayISO(),age:'',gender:'',marital:'',cause:''},
-    kin:{name:'',relation:'',phone:'',address:''}, survivedBy:'',
+    deceased:{name:'',zh:'',dob:'',dobYearOnly:false,dobYear:'',dop:todayISO(),age:'',gender:'',marital:'',cause:''},
+    kin:{name:'',relation:'',phone:'',address:''}, kins:[{name:'',relation:'',phone:''}], survivedBy:'', visit:{from:'',to:'',start:'',end:''}, lang:'en',
     undertaker:{company:'',contact:'',phone:'',pkg:'',vendor:'',vendorPhone:''}, leads:{}, followup:{date:'',by:'',notes:''},
     days:[], tasks:blankTasks(),
     flowers:{items:'',florist:'',deliveryDate:'',deliveryTime:'',deliverTo:'',cost:'',notes:''},
     checks:{}, files:[], texts:{obituary:'',programme:''}, ack:{name:'',date:'',agreed:false,sig:''},
     obit:{tpl:'grace', verse:'john11', called:'Called home to be with the Lord', photo:'', showZh:true, extra:''} };
-  c.tasks.undertaker.who=me;
+  c.tasks.undertaker.who=me; c.tasks.announce.who='All Pastors & Ministers';
   const w=newDay('wake'); w.date=todayISO(); c.days.push(w);
   const f=newDay('funeral'); f.date=addDays(todayISO(),1); c.days.push(f);
   return c;
 }
 function normalize(c){
   const b=newCase();
+  if(!Array.isArray(c.kins)||!c.kins.length) c.kins=[{name:(c.kin&&c.kin.name)||'',relation:(c.kin&&c.kin.relation)||'',phone:(c.kin&&c.kin.phone)||''}];
+  c.visit=Object.assign({from:'',to:'',start:'',end:''},c.visit||{}); c.lang=c.lang||'en';
   c.leads=c.leads||{}; c.followup=Object.assign({date:'',by:'',notes:''},c.followup||{});
   ['call','deceased','kin','undertaker','flowers','ack','obit'].forEach(k=>{ c[k]=Object.assign({}, b[k], c[k]||{}); });
   c.checks=c.checks||{}; c.files=c.files||[]; c.texts=Object.assign({obituary:'',programme:''},c.texts||{}); c.tasks=Object.assign(blankTasks(), c.tasks||{});
@@ -620,11 +640,12 @@ function isDone(c,it){
 }
 function stageInfo(c){
   let total=0,done=0,cur=null;
-  const per=STAGES.map(st=>{ const its=allItems(st), dn=its.filter(i=>isDone(c,i)).length; total+=its.length; done+=dn; const complete=dn===its.length; if(!complete&&cur==null) cur=st.k; return {k:st.k,dn,n:its.length,complete}; });
+  const per=STAGES.map(st=>{ if(st.opt){ const all=allItems(st), d2=all.filter(i=>isDone(c,i)).length; return {k:st.k,dn:d2,n:all.length,complete:all.length>0&&d2===all.length,opt:true}; } const its=allItems(st).filter(i=>!i.opt), dn=its.filter(i=>isDone(c,i)).length; total+=its.length; done+=dn; const complete=dn===its.length; if(!complete&&cur==null) cur=st.k; return {k:st.k,dn,n:its.length,complete}; });
   return {per,total,done,pct:total?Math.round(done/total*100):0,cur,curStage:STAGES.find(s=>s.k===cur)};
 }
 function summary(c){ const si=stageInfo(c), f=fun(c), w=wakes(c); return {id:c.id, name:c.deceased.name, zh:c.deceased.zh, kin:c.kin.name, dop:c.deceased.dop, fdate:f.date||'', ftime:f.time||'', wakes:w.length, w1:w[0]?w[0].date:'', receivedBy:c.call.receivedBy, coordinator:c.call.coordinator, stage:si.curStage?si.curStage.t:'All done', pct:si.pct, done:si.done, total:si.total, status:c.status, manual:!!c.manual, files:(c.files||[]).length+['obituary','programme'].filter(k=>c.texts&&c.texts[k]&&c.texts[k].trim()).length, updated:c.updated||c.created}; }
-const people = c => [...new Set(CONFIG.PASTORS.concat(CONFIG.TEAM, c?[c.call.receivedBy,c.call.coordinator]:[]).filter(Boolean))];
+function baseNames(){ if(Array.isArray(S.names)&&S.names.length) return S.names; if(LOCAL){ try{ const n=JSON.parse(ls('tow_fn_names')||'null'); if(Array.isArray(n)&&n.length) return n; }catch(e){} } return CONFIG.PASTORS.concat(CONFIG.TEAM); }
+const people = c => [...new Set(baseNames().filter(Boolean))];
 
 /* ---------------- Storage / sync ---------------- */
 const S = { photos:{}, grey:{}, index:[], full:{}, view:'home', cur:null, tab:'details', filter:'active', year:'all', q:'', pin:ls('tow_fn_pin')||'', dirty:new Set(), saving:false, tg:false };
@@ -641,7 +662,7 @@ function localAll(){ try{ return JSON.parse(ls('tow_fn_cases')||'[]').map(normal
 async function loadIndex(){
   if(LOCAL){ const all=localAll(); all.forEach(c=>S.full[c.id]=c); S.index=all.map(summary); setSync('local','Test mode · saved on this device'); return; }
   setSync('saving','Loading…');
-  try{ const j=await api({action:'list'}); if(j.ok){ S.index=j.cases||[]; S.tg=!!j.telegram; S.sheetUrl=j.sheetUrl||''; showSheetBtn(true); setSync('','Synced'); } else setSync('err',j.error||'Error'); }
+  try{ const j=await api({action:'list'}); if(j.ok){ S.index=j.cases||[]; S.tg=!!j.telegram; S.sheetUrl=j.sheetUrl||''; if(Array.isArray(j.names)) S.names=j.names; showSheetBtn(true); setSync('','Synced'); } else setSync('err',j.error||'Error'); }
   catch(e){ if(e.message!=='PIN') setSync('err','Offline — cannot reach server'); throw e; }
 }
 async function openCase(id, tab){
@@ -650,7 +671,7 @@ async function openCase(id, tab){
 }
 const cur = () => S.full[S.cur];
 let saveT=null;
-function touch(c){ c=c||cur(); if(!c) return; c.updated=new Date().toISOString(); c.summary=summary(c); const i=S.index.findIndex(x=>x.id===c.id); if(i>=0) S.index[i]=c.summary; else S.index.push(c.summary); S.dirty.add(c.id); clearTimeout(saveT); setSync('saving','Saving…'); saveT=setTimeout(flush,1000); }
+function touch(c){ c=c||cur(); if(!c) return; if(c.kins&&c.kins[0]){ c.kin.name=c.kins[0].name; c.kin.relation=c.kins[0].relation; c.kin.phone=c.kins[0].phone; } c.updated=new Date().toISOString(); c.summary=summary(c); const i=S.index.findIndex(x=>x.id===c.id); if(i>=0) S.index[i]=c.summary; else S.index.push(c.summary); S.dirty.add(c.id); clearTimeout(saveT); setSync('saving','Saving…'); saveT=setTimeout(flush,1000); }
 async function flush(){
   clearTimeout(saveT);
   if(LOCAL){ const all=Object.values(S.full); ls('tow_fn_cases',JSON.stringify(all)); S.dirty.clear(); setSync('local','Test mode · saved on this device'); return true; }
@@ -678,16 +699,22 @@ function closeModal(){ $('#modalRoot').innerHTML=''; }
 function confirmBox(title,text,ok,cb){ modal('<h3>'+esc(title)+'</h3><p>'+esc(text)+'</p><div class="btnrow" style="justify-content:flex-end"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn primary" id="mok">'+esc(ok)+'</button></div>'); $('#mok').onclick=()=>{ closeModal(); cb(); }; }
 function pickMe(force){
   const me=ls('tow_fn_me')||'';
-  modal('<h3>Who is using this device?</h3><p>Your name is recorded when you tick items, and filled in as “received by” on new requests.</p><input type="text" id="meSel" list="meList" value="'+esc(me)+'" placeholder="Choose or type your name" style="margin-bottom:14px"><datalist id="meList">'+people().map(p=>'<option>'+esc(p)).join('')+'</datalist><div class="btnrow" style="justify-content:flex-end">'+(force?'':'<button class="btn" onclick="closeModal()">Cancel</button>')+'<button class="btn primary" id="meOk">Save</button></div>');
+  modal('<h3>Who is using this device?</h3><p>Your name is recorded when you tick items, and filled in as “received by” on new requests.</p><input type="text" id="meSel" data-pick="1" autocomplete="off" value="'+esc(me)+'" placeholder="Choose or type your name" style="margin-bottom:14px"><datalist id="meList">'+people().map(p=>'<option>'+esc(p)).join('')+'</datalist><div class="btnrow" style="justify-content:flex-end">'+(force?'':'<button class="btn" onclick="closeModal()">Cancel</button>')+'<button class="btn primary" id="meOk">Save</button></div>');
   $('#meOk').onclick=()=>{ const v=$('#meSel').value.trim(); if(!v){ toast('Please choose a name'); return; } ls('tow_fn_me',v); updateMe(); closeModal(); };
 }
 function updateMe(){ $('#meBtn').textContent=ls('tow_fn_me')||'Select name'; }
 function adminBox(){
-  const on=!!ls('tow_fn_admin');
-  modal('<h3>Admin access</h3><p>'+(on?'Admin access is on for this device — the sheet icon shows beside your name.':'For the admin only. Enter the admin PIN to show the Google Sheet icon on this device.')+'</p>'+(on?'':'<input type="password" id="adminIn" inputmode="numeric" placeholder="Admin PIN" style="text-align:center;letter-spacing:.3em;margin-bottom:14px">')+'<div class="btnrow" style="justify-content:flex-end"><button class="btn" onclick="closeModal()">Close</button>'+(on?'<button class="btn danger" id="adminOff">Turn off on this device</button>':'<button class="btn primary" id="adminOk">Unlock</button>')+'</div>');
-  const done=async(msgOk)=>{ closeModal(); try{ await loadIndex(); render(); }catch(e){} if(msgOk) toast(S.sheetUrl?'Admin access on':'Admin PIN not recognised'); if(msgOk && !S.sheetUrl) ls('tow_fn_admin',null); };
-  if(on) $('#adminOff').onclick=()=>{ ls('tow_fn_admin',null); S.sheetUrl=''; showSheetBtn(false); closeModal(); toast('Admin access turned off'); };
-  else { const go=()=>{ const a=$('#adminIn').value.trim(); if(!a) return; ls('tow_fn_admin',a); done(true); }; $('#adminOk').onclick=go; $('#adminIn').addEventListener('keydown',e=>{ if(e.key==='Enter') go(); }); setTimeout(()=>{ const x=$('#adminIn'); if(x) x.focus(); },50); }
+  const on=!!ls('tow_fn_admin') || LOCAL;
+  if(!on){
+    modal('<h3>Admin access</h3><p>For the admin only. Enter the admin PIN to manage team names and show the Google Sheet icon on this device.</p><input type="password" id="adminIn" inputmode="numeric" placeholder="Admin PIN" style="text-align:center;letter-spacing:.3em;margin-bottom:14px"><div class="btnrow" style="justify-content:flex-end"><button class="btn" onclick="closeModal()">Close</button><button class="btn primary" id="adminOk">Unlock</button></div>');
+    const go=async()=>{ const a=$('#adminIn').value.trim(); if(!a) return; ls('tow_fn_admin',a); closeModal(); try{ await loadIndex(); render(); }catch(e){} if(S.sheetUrl){ toast('Admin access on'); adminBox(); } else { ls('tow_fn_admin',null); toast('Admin PIN not recognised'); } };
+    $('#adminOk').onclick=go; $('#adminIn').addEventListener('keydown',e=>{ if(e.key==='Enter') go(); }); setTimeout(()=>{ const x=$('#adminIn'); if(x) x.focus(); },50); return;
+  }
+  modal('<h3>Admin</h3><p style="margin-bottom:8px"><b>Team names</b> — shown in every name list (who received the call, coordinator, duties, serving team). One name per line.</p><textarea id="namesIn" style="min-height:190px;font-size:14px">'+esc(people().join('\n'))+'</textarea><div class="btnrow" style="justify-content:space-between;margin-top:14px">'+(LOCAL?'<span></span>':'<button class="btn danger sm" id="adminOff">Turn off admin on this device</button>')+'<div class="btnrow"><button class="btn" onclick="closeModal()">Close</button><button class="btn primary" id="namesSave">Save names</button></div></div>');
+  $('#namesSave').onclick=async()=>{ const names=[...new Set($('#namesIn').value.split('\n').map(x=>x.trim()).filter(Boolean))]; if(!names.length){ toast('Add at least one name'); return; }
+    if(LOCAL){ ls('tow_fn_names',JSON.stringify(names)); S.names=names; closeModal(); toast('Names saved'); render(); return; }
+    try{ const j=await api({action:'saveNames',names}); if(j.ok){ S.names=names; closeModal(); toast('Names saved for everyone'); render(); } else toast(j.error||'Could not save'); }catch(e){} };
+  const off=$('#adminOff'); if(off) off.onclick=()=>{ ls('tow_fn_admin',null); S.sheetUrl=''; showSheetBtn(false); closeModal(); toast('Admin access turned off'); render(); };
 }
 $('#meBtn').onclick=()=>pickMe(false);
 // Sheet icon: only shown when the server confirms the admin PIN (the sheet link is never stored in this page)
@@ -699,6 +726,31 @@ $('#saveNow').onclick=async()=>{
   if(ok){ modal('<div class="tick"></div><h3>Saved</h3><p style="margin:0">'+(LOCAL?'Saved on this device (test mode).':'All changes are saved for the whole team.')+'</p>','saved-ok'); setTimeout(closeModal,1500); }
   else modal('<h3>Not saved yet</h3><p>We could not reach the server. Check your internet connection — the app will keep retrying.</p><div class="btnrow" style="justify-content:flex-end"><button class="btn primary" onclick="closeModal()">OK</button></div>');
 };
+
+/* ---------------- Name picker: always lists every name; asks before replacing a name ---------------- */
+let PICK=null;
+function closePick(){ const m=$('#pickMenu'); if(m) m.remove(); PICK=null; }
+function openPick(inp, filter){
+  closePick(); const names=people(cur()); const f=(filter||'').toLowerCase();
+  const list=f?names.filter(n=>n.toLowerCase().includes(f)):names; if(!list.length || (f && list.length===1 && list[0].toLowerCase()===f)) return;
+  const r=inp.getBoundingClientRect(); const m=document.createElement('div'); m.id='pickMenu'; m.className='pickmenu';
+  m.style.left=(r.left+window.scrollX)+'px'; m.style.top=(r.bottom+window.scrollY+4)+'px'; m.style.width=Math.max(r.width,200)+'px';
+  m.innerHTML=list.map(n=>'<div class="pk'+(n===inp.value?' on':'')+'" data-name="'+esc(n)+'">'+esc(n)+(n===inp.value?' <span>✓</span>':'')+'</div>').join('');
+  document.body.appendChild(m); PICK={inp, orig:inp.dataset.orig!=null?inp.dataset.orig:inp.value};
+  m.addEventListener('mousedown',e=>e.preventDefault());
+  m.addEventListener('click',e=>{ const it=e.target.closest('[data-name]'); if(!it) return; choosePick(inp,it.dataset.name); });
+}
+function choosePick(inp,name){
+  const old=(inp.dataset.orig!=null?inp.dataset.orig:inp.value).trim(); closePick();
+  const apply=()=>{ inp.value=name; inp.dataset.orig=name; inp.dispatchEvent(new Event('input',{bubbles:true})); inp.dispatchEvent(new Event('change',{bubbles:true})); };
+  if(old && old!==name && !inp.closest('.modal')) confirmBox('Change name?','Replace “'+old+'” with “'+name+'”?','Change',apply); else apply();
+}
+document.addEventListener('focusin',e=>{ const t=e.target; if(t.matches&&t.matches('input[data-pick]')){ t.dataset.orig=t.value; openPick(t); } });
+document.addEventListener('click',e=>{ const t=e.target; if(t.matches&&t.matches('input[data-pick]')){ if(!$('#pickMenu')) openPick(t); return; } if(!e.target.closest('#pickMenu')) closePick(); });
+document.addEventListener('input',e=>{ const t=e.target; if(t.matches&&t.matches('input[data-pick]')&&e.isTrusted) openPick(t,t.value); },true);
+document.addEventListener('keydown',e=>{ if(PICK && (e.key==='Escape'||e.key==='Enter')){ closePick(); if(e.key==='Enter' && e.target.matches('input[data-pick]')) e.target.blur(); } });
+document.addEventListener('focusout',e=>{ const t=e.target; if(t.matches&&t.matches('input[data-pick]')) setTimeout(()=>{ if(PICK && PICK.inp===t && document.activeElement!==t) closePick(); },150); });
+window.addEventListener('scroll',()=>{ if(PICK){ const r=PICK.inp.getBoundingClientRect(); const m=$('#pickMenu'); if(m){ m.style.top=(r.bottom+window.scrollY+4)+'px'; m.style.left=(r.left+window.scrollX)+'px'; } } },{passive:true});
 
 /* ---------------- Lock ---------------- */
 function showLock(msg){
@@ -741,7 +793,7 @@ function renderHome(){
     if(s.manual){ h+='<div class="card case-card" data-open="'+s.id+'"><div class="crow"><div style="min-width:0"><div class="cname">'+esc(s.name||'Unnamed')+(s.zh?'<span class="zh">'+esc(s.zh)+'</span>':'')+'</div><div class="cmeta">'+(s.dop?'Passed '+fmtDate(s.dop,false):'')+(s.fdate?(s.dop?' · ':'')+'Funeral '+fmtDate(s.fdate):'')+'</div></div>'+chip+'</div></div>'; return; }
     h+='<div class="card case-card" data-open="'+s.id+'"><div class="crow"><div style="min-width:0"><div class="cname">'+esc(s.name||'Unnamed')+(s.zh?'<span class="zh">'+esc(s.zh)+'</span>':'')+'</div><div class="cmeta">'+(s.wakes?s.wakes+' wake night'+(s.wakes>1?'s':'')+(s.w1?' from '+fmtDate(s.w1,false):'')+' · ':'')+'Funeral '+fmtDate(s.fdate)+(s.ftime?', '+fmtTime(s.ftime):'')+'<br>Received by '+esc(s.receivedBy||'—')+' · Coordinator '+esc(s.coordinator||'—')+'</div></div>'+chip+'</div><div style="display:flex;align-items:center;gap:10px;margin-top:12px"><div class="bar" style="flex:1"><i style="width:'+(s.pct||0)+'%"></i></div><span class="small muted">'+(s.pct||0)+'%</span></div></div>';
   });
-  if(!LOCAL) h+='<div style="text-align:center;margin:28px 0 6px"><button id="adminBtn" style="background:none;border:none;color:#b3ab95;font-size:11.5px;cursor:pointer;letter-spacing:.04em">'+(ls('tow_fn_admin')?'Admin ✓':'Admin')+'</button></div>';
+  h+='<div style="text-align:center;margin:28px 0 6px"><button id="adminBtn" style="background:none;border:none;color:#b3ab95;font-size:11.5px;cursor:pointer;letter-spacing:.04em">'+(ls('tow_fn_admin')?'Admin ✓':'Admin')+'</button></div>';
   $('#app').innerHTML=h;
   const ab=$('#adminBtn'); if(ab) ab.onclick=adminBox;
   $('#q').oninput=e=>{ S.q=e.target.value; const p=e.target.selectionStart; renderHome(); const n=$('#q'); n.focus(); n.setSelectionRange(p,p); };
@@ -750,7 +802,7 @@ function renderHome(){
   $$('input[name=flt]').forEach(r=>r.onchange=()=>{ S.filter=r.value; renderHome(); });
   $('#yearSel').onchange=e=>{ S.year=e.target.value; renderHome(); };
   $$('[data-open]').forEach(el=>el.onclick=()=>openCase(el.dataset.open));
-  $('#blankBtn').onclick=()=>doPrint(formHTML(null));
+  $('#blankBtn').onclick=()=>{ modal('<h3>Print blank form</h3><p>Choose the language for the paper form.</p><div class="btnrow" style="flex-direction:column;align-items:stretch">'+[['en','English'],['en_zh','English + 中文'],['bm','Bahasa Malaysia']].map(([v,l])=>'<button class="btn" data-blank="'+v+'" style="justify-content:center">'+l+'</button>').join('')+'</div><div class="btnrow" style="justify-content:flex-end;margin-top:12px"><button class="btn" onclick="closeModal()">Cancel</button></div>'); $$('[data-blank]').forEach(b=>b.onclick=()=>{ closeModal(); doPrint(formHTML(null,b.dataset.blank)); }); };
   $('#expBtn').onclick=exportAll;
   const rb=$('#refBtn'); if(rb) rb.onclick=async()=>{ await flush(); S.full={}; await loadIndex(); renderHome(); toast('Updated'); };
 }
@@ -788,7 +840,7 @@ function renderHead(c){
 }
 
 /* ---- field helpers ---- */
-function fText(label,path,c,o={}){ return '<div class="'+(o.full?'full':'')+'"><label class="f">'+label+(o.hint?' <small>'+o.hint+'</small>':'')+'</label><input type="'+(o.type||'text')+'" data-b="'+path+'" value="'+esc(getP(c,path))+'"'+(o.ph?' placeholder="'+esc(o.ph)+'"':'')+(o.list?' list="'+o.list+'"':'')+(o.rr?' data-rr="1"':'')+(o.type==='tel'?' inputmode="tel"':'')+'></div>'; }
+function fText(label,path,c,o={}){ return '<div class="'+(o.full?'full':'')+'"><label class="f">'+label+(o.hint?' <small>'+o.hint+'</small>':'')+'</label><input type="'+(o.type||'text')+'" data-b="'+path+'" value="'+esc(getP(c,path))+'"'+(o.ph?' placeholder="'+esc(o.ph)+'"':'')+(o.list==='ppl'?' data-pick="1" autocomplete="off"':o.list?' list="'+o.list+'"':'')+(o.rr?' data-rr="1"':'')+(o.type==='tel'?' inputmode="tel"':'')+'>'+(o.type==='date'?'<div class="dprev">'+(getP(c,path)?fmtDate(getP(c,path)):'')+'</div>':'')+'</div>'; }
 function fArea(label,path,c,o={}){ return '<div class="full"><label class="f">'+label+(o.hint?' <small>'+o.hint+'</small>':'')+'</label><textarea data-b="'+path+'"'+(o.ph?' placeholder="'+esc(o.ph)+'"':'')+'>'+esc(getP(c,path))+'</textarea></div>'; }
 function fPills(label,path,c,opts,o={}){ const v=getP(c,path)||''; const nm='p_'+path.replace(/\./g,'_'); return '<div class="'+(o.half?'':'full')+'"><label class="f">'+label+'</label><div class="pills">'+opts.map(x=>'<label class="pill"><input type="radio" name="'+nm+'" data-b="'+path+'" value="'+esc(x)+'"'+(x===v?' checked':'')+(o.rr?' data-rr="1"':'')+'><span>'+esc(x)+'</span></label>').join('')+'</div></div>'; }
 function fMulti(label,path,c,opts){ const v=getP(c,path)||[]; return '<div class="full"><label class="f">'+label+' <small>(select all that apply)</small></label><div class="pills">'+opts.map(x=>'<label class="pill multi"><input type="checkbox" data-arr="'+path+'" value="'+esc(x)+'"'+(v.includes(x)?' checked':'')+'><span>'+esc(x)+'</span></label>').join('')+'</div></div>'; }
@@ -801,22 +853,24 @@ function vDetails(c){
   h+=box('handling', sec('','Request handling'), '<div class="grid">'+
     fText('Call received on','call.date',c,{type:'date'})+fText('Time','call.time',c,{type:'time'})+
     fText('Received by <small>(Pastor 1)</small>','call.receivedBy',c,{list:'ppl'})+fText('Coordinator <small>(Pastor 2)</small>','call.coordinator',c,{list:'ppl'})+
-    fPills('Membership','call.membership',c,['Member','Non-member'],{rr:true})+'</div>'+
+    fPills('Membership','call.membership',c,['Member','Non-member'],{rr:true})+
+    '<div class="full"><label class="f">Language for printed forms &amp; obituary</label><div class="pills">'+[['en','English'],['en_zh','English + 中文'],['bm','Bahasa Malaysia']].map(([v,l])=>'<label class="pill"><input type="radio" name="p_lang" data-b="lang" value="'+v+'"'+(c.lang===v?' checked':'')+' data-rr="1"><span>'+l+'</span></label>').join('')+'</div></div></div>'+
     (c.call.membership==='Non-member'?'<div class="note">Non-member request — to be prayerfully reviewed by the pastoral team before confirming.</div>':'')+peopleList(c));
   h+=box('A', sec('A','Deceased & family details'), '<div class="grid">'+
     fText('Dearly departed’s full name','deceased.name',c,{full:true})+
     fText('Chinese name','deceased.zh',c,{hint:'(optional)'})+fPills('Gender','deceased.gender',c,['Male','Female'],{half:true})+
-    fText('Date of birth','deceased.dob',c,{type:'date',rr:true})+fText('Date of passing','deceased.dop',c,{type:'date',rr:true})+
-    fText('Age','deceased.age',c,{type:'number',hint:'(auto from dates)'})+'<div></div>'+
+    '<div><label class="f" style="display:flex;justify-content:space-between;align-items:center">Date of birth <label class="switch" style="font-size:11px;font-weight:500"><input type="checkbox" data-b="deceased.dobYearOnly" data-rr="1"'+(c.deceased.dobYearOnly?' checked':'')+'><i></i>Year only</label></label>'+(c.deceased.dobYearOnly?'<input type="number" inputmode="numeric" data-b="deceased.dobYear" value="'+esc(c.deceased.dobYear)+'" placeholder="e.g. 1942">':'<input type="date" data-b="deceased.dob" data-rr="1" value="'+esc(c.deceased.dob)+'">')+'</div>'+fText('Date of passing','deceased.dop',c,{type:'date',rr:true})+
+    fText('Age','deceased.age',c,{type:'number',hint:c.deceased.dobYearOnly?'(auto from year — approx.)':'(auto from dates)'})+'<div></div>'+
     fPills('Marital status','deceased.marital',c,['Single','Married','Widowed','Divorced'])+
     fText('Cause of death','deceased.cause',c,{full:true,hint:'(optional · never shown on obituary or messages)'})+
     '</div><div class="grid" style="margin-top:14px;padding-top:14px;border-top:1px solid var(--line)">'+
-    fText('Next of kin / contact person','kin.name',c)+fText('Relationship to deceased','kin.relation',c,{list:'rels'})+
-    fText('Contact number','kin.phone',c,{type:'tel',ph:'012-345 6789'})+'<div></div>'+
+    '<div class="full"><label class="f" style="font-size:12.5px;color:var(--navy)">Next of kin / family contacts</label>'+c.kins.map((k,i)=>'<div class="kinrow"><input type="text" data-b="kins.'+i+'.name" value="'+esc(k.name)+'" placeholder="Name"><input type="text" data-b="kins.'+i+'.relation" value="'+esc(k.relation)+'" placeholder="Relationship" list="rels"><input type="tel" inputmode="tel" data-b="kins.'+i+'.phone" value="'+esc(k.phone)+'" placeholder="Mobile number">'+(i?'<button class="btn sm danger" data-rmkin="'+i+'" title="Remove">✕</button>':'<span class="kin1">Main</span>')+'</div>').join('')+'<button class="btn sm" data-act="addKin" style="margin-top:6px">＋ Add family contact</button></div>'+
     fArea('Residential address','kin.address',c)+
     fArea('Survived by <small>(family members left behind — shown on the obituary)</small>','survivedBy',c,{ph:'e.g. Beloved husband of Mary Lim\nLoving father of David & Grace\nCherished grandfather of 4'})+
     '</div><datalist id="rels">'+['Son','Daughter','Spouse','Husband','Wife','Father','Mother','Brother','Sister','Grandson','Granddaughter','Nephew','Niece','Friend'].map(r=>'<option>'+r).join('')+'</datalist>');
-  let b='<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap"><span class="small" style="font-weight:600;color:#5b5748">Wake nights</span><div class="stepper"><button data-act="wakeMinus">−</button><b>'+wakes(c).length+'</b><button data-act="wakePlus">＋</button></div><span class="small muted">followed by the funeral service</span></div>';
+  h+=box('und', sec('','Funeral home / undertaker','optional'), '<div class="grid">'+fText('Funeral home / undertaker','undertaker.company',c,{ph:'e.g. Nirvana'})+fText('Contact person','undertaker.contact',c)+fText('Contact number','undertaker.phone',c,{type:'tel',ph:'e.g. 012-681 6788'})+'</div>');
+  let b='<div class="visitbox"><div class="small" style="font-weight:700;color:var(--navy);margin-bottom:6px">Visitation <span class="muted" style="font-weight:500">(optional — when family &amp; friends may come)</span></div><div class="grid">'+fText('From date','visit.from',c,{type:'date'})+fText('To date','visit.to',c,{type:'date'})+fText('Start time','visit.start',c,{type:'time'})+fText('End time','visit.end',c,{type:'time'})+'</div></div>';
+  b+='<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:14px"><span class="small" style="font-weight:600;color:#5b5748">Wake nights</span><div class="stepper"><button data-act="wakeMinus">−</button><b>'+wakes(c).length+'</b><button data-act="wakePlus">＋</button></div><span class="small muted">followed by the funeral service</span></div>';
   c.days.forEach((d,i)=>{ b+=dayBox(c,d,i); });
   h+=box('B', sec('B','Service details'), b, {open:!c.manual});
   if(!c.manual) h+=filesBox(c,null,false);
@@ -827,14 +881,15 @@ function dayBox(c,d,i){
   const p='days.'+i+'.', w=wakes(c), first=d.type==='wake'&&w[0]===d;
   const title='<div class="h3">'+(d.type==='funeral'?'Funeral Service':'Wake · Night '+(w.indexOf(d)+1))+'<small>'+fmtDate(d.date)+(d.time?' · '+fmtTime(d.time):'')+'</small></div>';
   let h='<div class="grid">';
-  if(d.type==='wake' && !first) h+='<div class="full"><label class="switch"><input type="checkbox" data-b="'+p+'same" data-rr="1"'+(d.same?' checked':'')+'><i></i>Same venue & details as Night 1</label></div>';
-  h+=fText('Date',p+'date',c,{type:'date',rr:true})+fText('Time',p+'time',c,{type:'time'});
+  if(d.type==='wake' && !first) h+='<div class="full"><label class="switch"><input type="checkbox" data-b="'+p+'same" data-rr="1"'+(d.same?' checked':'')+'><i></i>Same venue &amp; details as Night 1 <span class="muted">(turn off to customise)</span></label></div>';
+  h+=fText('Date',p+'date',c,{type:'date',rr:true,hint:(d.type==='wake'&&!first&&!d.dateManual)||(d.type==='funeral'&&!d.dateManual)?'(auto: next day)':''})+fText(d.type==='funeral'?'Funeral service time':'Wake service time',p+'time',c,{type:'time',rr:true});
+  if(d.type==='funeral') h+=fText('Procession time','days.'+i+'.procTime',c,{type:'time'})+'<div></div>';
   if(d.type==='wake' && d.same && !first){ const f=w[0]; h+='<div class="full small muted">'+esc(locText(f)||'—')+(langText(f)?' · '+esc(langText(f)):'')+'</div></div>'; return box('day-'+d.id,title,h,{open:false}); }
   if(d.type==='funeral') h+=fPills('Type of service',p+'serviceType',c,['Burial','Cremation'],{rr:true});
   h+=fPills('Location',p+'location',c,['Church','Funeral Home','Residence','Other'],{rr:true});
   if(d.location==='Other') h+=fText('Other location',p+'locOther',c,{full:true});
-  h+=fText('Funeral home / undertaker',p+'undertaker',c,{ph:c.undertaker.company,hint:'(optional)'})+fText('Address / venue',p+'venue',c);
-  if(d.type==='funeral') h+=fText(d.serviceType==='Cremation'?'Crematorium':'Burial site / cemetery',p+'site',c,{full:true,hint:'(for the obituary)'});
+  h+=fText(d.type==='funeral'?'Funeral service venue / address':'Address / venue',p+'venue',c,{full:true});
+  if(d.type==='funeral') h+=fText(d.serviceType==='Cremation'?'Cremation venue (crematorium)':d.serviceType==='Burial'?'Burial venue (cemetery)':'Cremation / burial venue',p+'site',c,{full:true});
   h+=fMulti('Language preference',p+'langs',c,CONFIG.LANGUAGES)+fText('Other language',p+'langOther',c,{hint:'(optional)'})+'<div></div>'+fArea('Remarks',p+'remarks',c)+'</div>';
   return box('day-'+d.id,title,h,{open:i===0||d.type==='funeral'});
 }
@@ -843,26 +898,24 @@ function dayBox(c,d,i){
 function vWorkflow(c){
   const si=stageInfo(c);
   let h=c.manual?'<div class="note" style="margin:0 0 12px">Past record — the checklist wasn’t used for this funeral. You can still fill in or tick items if helpful.</div>':'';
-  h+='<div class="stepnav">'+STAGES.map((st,n)=>{ const p=si.per[n]; return '<button data-jump="'+st.k+'" class="'+(p.complete?'ok':si.cur===st.k?'now':'')+'" title="'+esc(st.t)+'">'+(p.complete?'✓':n+1)+'</button>'; }).join('')+'</div>';
+  h+='<div class="stepnav">'+STAGES.map((st,n)=>{ const p=si.per[n]; return '<button data-jump="'+st.k+'" class="'+(p.complete?'ok':si.cur===st.k?'now':'')+(st.opt?' optst':'')+'" title="'+esc(st.t)+'">'+(p.complete?'✓':n+1)+'</button>'; }).join('')+'</div>';
   STAGES.forEach((st,n)=>{
     const p=si.per[n], cls=p.complete?'done':(si.cur===st.k?'current':'');
     const head='<div class="h3" style="font-family:var(--sans);font-size:15px;font-weight:700">'+st.t+'</div><div class="owner">Person in charge: <b>'+esc(leadOf(c,st))+'</b></div>';
     const leadPath = st.k==='undertaker' ? 'tasks.undertaker.who' : 'leads.'+st.k;
     let b='<div class="small muted" style="margin-bottom:8px">'+st.d+'</div>'+
-      '<div class="leadrow"><label class="f" style="margin:0;white-space:nowrap">Person in charge</label><input type="text" list="ppl" data-b="'+leadPath+'" data-rrb="1" value="'+esc(st.k==='undertaker'?c.tasks.undertaker.who:(c.leads[st.k]||''))+'" placeholder="'+esc(whoName(c,st.who))+'"></div>';
-    b+='<div class="cklist">'; allItems(st).forEach(it=>b+=itemRow(c,it)); b+='</div>';
+      '<div class="leadrow"><label class="f" style="margin:0;white-space:nowrap">Person in charge</label><input type="text" data-pick="1" data-b="'+leadPath+'" data-rrb="1" value="'+esc(st.k==='undertaker'?c.tasks.undertaker.who:(c.leads[st.k]||''))+'" placeholder="'+esc(whoName(c,st.who))+'"></div>';
+    const its=allItems(st); b+='<div class="cklist">'; its.filter(i=>!i.opt).concat(its.filter(i=>i.opt)).forEach(it=>b+=itemRow(c,it)); b+='</div>';
     if(st.ui) b+='<div class="stage-ui">'+st.ui(c)+'</div>';
-    h+='<div class="stage '+cls+'" id="stage-'+st.k+'"><div class="num">'+(p.complete?'✓':n+1)+'</div>'+box('st-'+st.k, head, b, {open:si.cur===st.k, right:'<span class="chip '+(p.complete?'green':cls?'gold':'grey')+'">'+p.dn+'/'+p.n+'</span>'})+'</div>';
+    h+='<div class="stage '+cls+'" id="stage-'+st.k+'"><div class="num">'+(p.complete?'✓':n+1)+'</div>'+box('st-'+st.k, head, b, {open:si.cur===st.k, right:st.opt?'<span class="chip '+(p.complete?'green':'grey')+'">'+(p.complete?'Done':'Optional')+'</span>':'<span class="chip '+(p.complete?'green':cls?'gold':'grey')+'">'+p.dn+'/'+p.n+'</span>'})+'</div>';
   });
   return h+peopleList(c);
 }
 function undertakerUI(c){
-  let v='<div class="grid">'+
-    fText('Funeral home / undertaker','undertaker.company',c,{hint:'(optional)',ph:'e.g. Nirvana'})+fText('Package','undertaker.pkg',c,{hint:'(optional)',ph:'e.g. NV Gracious'})+
-    fText('Contact person','undertaker.contact',c)+fText('Contact number','undertaker.phone',c,{type:'tel'})+
-    fText('Other funeral vendor','undertaker.vendor',c,{hint:'(if not the undertaker)',ph:'e.g. casket, catering, tentage'})+fText('Vendor contact','undertaker.vendorPhone',c,{type:'tel'})+'</div>';
-  v+='<div class="note" style="margin-top:12px"><b>Venue</b><br>'+c.days.map(d=>{ const e=eff(c,d); return esc(dayShort(c,d))+': '+(locText(e)?esc(locText(e)):'<i>not set</i>'); }).join('<br>')+'<div style="margin-top:6px"><button class="btn sm" data-act="goDetails">Edit dates & venue in Details ›</button></div></div>';
-  return box('und', sec('','Undertaker, vendor & venue'), v, {open:true});
+  const U=c.undertaker;
+  let v='<div class="sumrow"><div><div class="small muted">Funeral home / undertaker</div><b>'+(esc(U.company)||'<i class="muted" style="font-weight:400">not entered</i>')+'</b>'+((U.contact||U.phone)?'<div class="small">'+esc(U.contact)+(U.contact&&U.phone?' · ':'')+esc(U.phone)+'</div>':'')+'</div><button class="btn sm" data-act="goDetails">Edit in Details ›</button></div>';
+  v+='<div class="grid" style="margin-top:10px">'+fText('Other funeral vendor','undertaker.vendor',c,{hint:'(if not the undertaker)',ph:'e.g. casket, catering, tentage'})+fText('Vendor contact','undertaker.vendorPhone',c,{type:'tel'})+'</div>';
+  return box('und-wf', sec('','Undertaker & vendor'), v, {open:true});
 }
 function afterUI(c){
   let v='<div class="grid">'+fText('Follow-up visit date','followup.date',c,{type:'date'})+fText('Visited by','followup.by',c,{list:'ppl'})+fArea('Notes <small>(how the family is doing, prayer needs)</small>','followup.notes',c)+'</div>';
@@ -880,24 +933,28 @@ function itemRow(c,it){
   else if(ck&&ck.done&&ck.by) sub.push('✓ '+esc(ck.by)+' · '+new Date(ck.at).toLocaleString([],{day:'numeric',month:'short',hour:'numeric',minute:'2-digit'}));
   if(autoOn) sub.push('Ticked automatically from the details');
   const msg=it.msg?' <a href="#" data-goshare="'+it.msg+'" style="font-size:11px;color:var(--navy);font-weight:600;white-space:nowrap">message ›</a>':'';
-  return '<label class="item"><input type="checkbox" data-check="'+it.k+'"'+(it.task?' data-task="'+it.task+'"':'')+(done?' checked':'')+(autoOn?' data-auto="1"':'')+'><span class="box-ck"></span><span class="txt"><span class="t">'+esc(it.t)+'</span>'+(it.form?'<span class="tag">FORM</span>':'')+(autoOn?'<span class="tag auto">AUTO</span>':'')+msg+(sub.length?'<div class="sub">'+sub.join(' · ')+'</div>':'')+'</span></label>';
+  return '<label class="item"><input type="checkbox" data-check="'+it.k+'"'+(it.task?' data-task="'+it.task+'"':'')+(done?' checked':'')+(autoOn?' data-auto="1"':'')+'><span class="box-ck"></span><span class="txt"><span class="t">'+esc(it.t)+'</span>'+(it.form?'<span class="tag">FORM</span>':'')+(it.opt?'<span class="tag" style="background:#fff;border:1px solid var(--line)">OPTIONAL</span>':'')+(autoOn?'<span class="tag auto">AUTO</span>':'')+msg+(sub.length?'<div class="sub">'+sub.join(' · ')+'</div>':'')+'</span></label>';
 }
 
 /* ---- Serving team ---- */
+function dutyRow(c,k,t){
+  const T=c.tasks[k]; const st=T.status||'To do';
+  let extra='';
+  if(k==='flowers') extra='<div class="dx"><button class="lnk" data-toggledx="fl">'+(c.flowers.items?esc(c.flowers.items.split('\n')[0]).slice(0,60):'Add flower order details')+' ▾</button><div class="dxb" id="dx-fl" style="display:none"><div class="grid">'+
+    fArea('Arrangements','flowers.items',c,{ph:'e.g. Casket spray (white lilies), 2 standing wreaths'})+fText('Florist','flowers.florist',c)+fText('Cost (RM)','flowers.cost',c,{type:'number'})+
+    fText('Delivery date','flowers.deliveryDate',c,{type:'date'})+fText('Delivery time','flowers.deliveryTime',c,{type:'time'})+fText('Deliver to','flowers.deliverTo',c,{full:true,ph:venueText(eff(c,c.days[0]))})+'</div></div></div>';
+  if(k==='levites') extra='<div class="dx small">'+c.days.map(d=>'<span class="lvd"><b>'+dayShort(c,d)+':</b> '+(d.roster.wl?esc(d.roster.wl):'<i class="muted">WL?</i>')+' · '+(d.roster.musicians?esc(d.roster.musicians):'<i class="muted">musicians?</i>')+'</span>').join('')+' <button class="lnk" data-jumpros="1">Edit in team below ↓</button></div>';
+  if(k==='announce') extra='<div class="dx small muted">Posted in the Pastors &amp; Ministers chat to share with SG groups · <a href="#" data-goshare="announce" class="lnk">message ›</a></div>';
+  return '<div class="duty"><div class="dt">'+esc(t)+'</div><input type="text" data-pick="1" autocomplete="off" data-b="tasks.'+k+'.who" value="'+esc(T.who)+'" placeholder="Assign…"><button class="stchip st-'+st.replace(' ','')+'" data-cycle="'+k+'" title="Tap to change status">'+st+'</button>'+extra+'</div>';
+}
 function vTeam(c){
-  let a='<div class="small muted" style="margin-bottom:6px">The coordinator assigns each duty — choose from the list or type any name.</div>';
-  DUTIES.forEach(([k,t])=>{ const T=c.tasks[k]; a+='<div class="asg"><div class="tn">'+esc(t)+'</div><input type="text" list="ppl" data-b="tasks.'+k+'.who" value="'+esc(T.who)+'" placeholder="Assign to…"><select data-b="tasks.'+k+'.status" data-rr="1">'+TASK_STATUS.map(s=>'<option'+(s===T.status?' selected':'')+'>'+s+'</option>').join('')+'</select>'+
-    (T.notes?'':'<button class="btn sm addn" data-addnote="1" style="grid-column:1/-1;justify-self:start;min-height:28px;padding:3px 9px;font-weight:500">＋ Note</button>')+'<input type="text" class="notes" data-b="tasks.'+k+'.notes" value="'+esc(T.notes)+'" placeholder="Notes (optional)"'+(T.notes?'':' style="display:none"')+'></div>'; });
-  a+=peopleList(c);
-  let h=box('asg', sec('','Duties & assignments'), a, {right:'<span class="chip '+(DUTIES.every(([k])=>c.tasks[k].who)?'green':'amber')+'">'+DUTIES.filter(([k])=>c.tasks[k].who).length+'/'+DUTIES.length+'</span>'});
-  h+=box('flowers', sec('','Flower order', c.tasks.flowers.who?'by '+esc(c.tasks.flowers.who):'not assigned'), '<div class="grid">'+
-    fArea('Arrangements','flowers.items',c,{ph:'e.g. Casket spray (white lilies), 2 standing wreaths, altar arrangement'})+
-    fText('Florist','flowers.florist',c)+fText('Cost (RM)','flowers.cost',c,{type:'number'})+
-    fText('Delivery date','flowers.deliveryDate',c,{type:'date'})+fText('Delivery time','flowers.deliveryTime',c,{type:'time'})+
-    fText('Deliver to','flowers.deliverTo',c,{full:true,ph:venueText(eff(c,c.days[0]))})+fArea('Notes','flowers.notes',c)+'</div>', {open:false});
+  let a='<div class="small muted" style="margin-bottom:4px">Tap a name box to choose; tap the status to change it.</div>';
+  DUTIES.forEach(([k,t])=>a+=dutyRow(c,k,t));
+  a+='<div class="grp" style="margin-top:14px">Optional</div>'; DUTIES_OPT.forEach(([k,t])=>a+=dutyRow(c,k,t));
+  let h=box('asg', sec('','Duties'), a, {right:'<span class="chip '+(DUTIES.every(([k])=>c.tasks[k].who)?'green':'amber')+'">'+DUTIES.filter(([k])=>c.tasks[k].who).length+'/'+DUTIES.length+'</span>'});
   c.days.forEach((d,i)=>{
     const p='days.'+i+'.roster.', r=d.roster, filled=ROLES.slice(0,5).filter(([k])=>r[k]).length;
-    let b='<div class="grid">'+ROLES.map(([k,l])=>fText(l,p+k,c,{list:'ppl',full:k==='helpers',ph:k==='helpers'?'Names, separated by commas':''})).join('')+'</div>';
+    let b='<div class="grid">'+ROLES.map(([k,l])=>fText(l+(k==='wl'||k==='musicians'?' <small>(Levites)</small>':''),p+k,c,{list:'ppl',full:k==='helpers',ph:k==='helpers'?'Names, separated by commas':''})).join('')+'</div>';
     if(i>0) b+='<div style="margin-top:10px"><button class="btn sm" data-copyroster="'+i+'">Copy team from '+dayShort(c,c.days[i-1])+'</button></div>';
     h+=box('ros-'+d.id, '<div class="h3">'+dayLabel(c,d)+'<small>'+fmtDate(d.date)+(eff(c,d).time?' · '+fmtTime(eff(c,d).time):'')+'</small></div>', b, {open:i===0, right:'<span class="chip '+(filled===5?'green':'grey')+'">'+filled+'/5</span>'});
   });
@@ -931,11 +988,12 @@ function vObituary(c){
     '<div><label class="f">Scripture</label><select data-b="obit.verse" data-rr="1">'+Object.entries(VERSES).map(([k,v])=>'<option value="'+k+'"'+(c.obit.verse===k?' selected':'')+'>'+v.ref+'</option>').join('')+'<option value=""'+(!c.obit.verse?' selected':'')+'>No verse</option></select></div>'+
     '<div class="full"><label class="f">Opening line</label><input type="text" data-b="obit.called" value="'+esc(c.obit.called)+'" list="calls"></div>'+
     fArea('Survived by','survivedBy',c)+fArea('Additional note <small>(optional)</small>','obit.extra',c,{ph:'e.g. In lieu of flowers, kindly contribute to …'})+
+    '<div class="full"><label class="f">Canva design link <small>(optional — paste the link if the obituary is made or edited in Canva)</small></label><div style="display:flex;gap:8px"><input type="text" data-b="obit.canva" value="'+esc(c.obit.canva||'')+'" placeholder="https://www.canva.com/design/…">'+(c.obit.canva&&/^https:\/\/(www\.)?canva\.com\//.test(c.obit.canva)?'<a class="btn" href="'+esc(c.obit.canva)+'" target="_blank" rel="noopener">Open</a>':'')+'</div></div>'+
     '<div class="full"><label class="switch"><input type="checkbox" data-b="obit.showZh" data-rr="1"'+(c.obit.showZh?' checked':'')+'><i></i>Show Chinese name</label></div></div>'+
     '<datalist id="calls"><option>Called home to be with the Lord<option>Peacefully went home to be with the Lord<option>Entered into eternal rest<option>Promoted to glory</datalist>';
   let h=(c.manual||c.files.some(f=>f.kind==='obituary')||c.texts.obituary)?filesBox(c,'obituary',true):'';
   h+=box('obd', sec('','Design','fills in from the request'), pick+ctl, {open:!c.manual});
-  h+='<div class="card"><div class="obwrap" id="obwrap"><div class="obscale" id="obscale"><div id="obit"></div></div></div><div class="btnrow" style="justify-content:center;margin-top:14px"><button class="btn gold" data-act="obitImg">⤓ Save as image</button><button class="btn" data-act="printObit">⎙ Print / PDF</button><button class="btn" data-act="copyObit">Copy text</button></div></div>';
+  h+='<div class="card"><div class="obwrap" id="obwrap"><div class="obscale" id="obscale"><div id="obit"></div></div></div><div class="btnrow" style="justify-content:center;margin-top:14px"><button class="btn gold" data-act="obitImg">⤓ Save as image</button><button class="btn" data-act="canva" title="Saves the image, then opens Canva so you can upload and edit it">✎ Edit in Canva</button><button class="btn" data-act="printObit">⎙ Print / PDF</button><button class="btn" data-act="copyObit">Copy text</button></div></div>';
   return h;
 }
 function tplSwatch(k){
@@ -981,37 +1039,109 @@ function prepOrnaments(){ return Promise.all(Object.keys(ORN_DEF).map(k=>new Pro
 const lilySprig = st => orn('sprig',st), lilyCluster = st => orn('cluster',st);
 const lineBranch = (col,st,n) => orn(n===7?'branchSage':'branchEve',st), crossRays = (col,st) => orn('cross',st);
 
+/* ---------------- Languages for printed forms & obituary: en · en_zh (English + 简体中文) · bm ---------------- */
+let PL='en';
+const I18N={
+ ilm:['In Loving Memory of','永远怀念','Dalam Kenangan'], inmem:['In memory of','永远怀念','Dalam Kenangan'], remembering:['Remembering','追思','Mengenang'],
+ celebrate:['Celebrating a Life Well Lived','感恩美好的一生','Meraikan Kehidupan yang Diberkati'],
+ called:['Called home to be with the Lord','安息主怀','Telah kembali ke pangkuan Tuhan'],
+ visit:['Visitation','吊唁时间','Waktu Ziarah'], wake:['Wake Service','追思礼拜','Kebaktian Penghiburan'], wakes:['Wake Services','追思礼拜','Kebaktian Penghiburan'],
+ funeral:['Funeral Service','出殡礼拜','Kebaktian Pengebumian'], procession:['Funeral procession','出殡时间','Perarakan jenazah'],
+ followedC:['Followed by cremation at','随后火化于','Diikuti dengan kremasi di'], followedB:['Followed by burial at','随后安葬于','Diikuti dengan pengebumian di'], followedX:['Followed by burial / cremation at','随后安葬/火化于','Diikuti dengan pengebumian / kremasi di'],
+ enquiries:['For enquiries','家属联络','Untuk pertanyaan'], progflow:['Programme Flow','礼拜程序','Aturcara'],
+ formTitle:['Funeral Service Request & Planning Form','丧礼服务申请及筹备表','Borang Permohonan & Perancangan Upacara Pengebumian'],
+ receivedBy:['Received by','接听者','Diterima oleh'], date:['Date','日期','Tarikh'], ref:['Ref','编号','Rujukan'],
+ secA:['Deceased & family details','逝者及家属资料','Butiran si mati & keluarga'], secB:['Service details','礼拜安排','Butiran upacara'], secC:['Guidelines for the service','礼拜须知','Garis panduan upacara'],
+ secD:['Checklist (wake & funeral)','检查清单（追思及出殡）','Senarai semak (penghiburan & pengebumian)'], secE:['Declaration','声明','Akuan'], secF:['Programme flow','礼拜程序','Aturcara'],
+ fullname:['Dearly departed’s full name','逝者全名','Nama penuh si mati'], dob:['Date of birth','出生日期','Tarikh lahir'], dop:['Date of passing','安息日期','Tarikh meninggal dunia'], age:['Age','享年','Umur'],
+ gender:['Gender','性别','Jantina'], Male:['Male','男','Lelaki'], Female:['Female','女','Perempuan'], marital:['Marital status','婚姻状况','Status perkahwinan'],
+ Single:['Single','单身','Bujang'], Married:['Married','已婚','Berkahwin'], Widowed:['Widowed','丧偶','Balu / Duda'], Divorced:['Divorced','离婚','Bercerai'],
+ cause:['Cause of death (optional)','死因（可选）','Punca kematian (pilihan)'], nok:['Next of kin / contact person','家属 / 联络人','Waris / orang untuk dihubungi'],
+ relation:['Relationship to deceased','与逝者关系','Hubungan dengan si mati'], phone:['Contact number','联络电话','Nombor telefon'], address:['Residential address','住址','Alamat kediaman'],
+ day:['Day','第','Hari'], wakeDay:['Wake Service','追思礼拜','Kebaktian Penghiburan'], sameDay1:['Same as Day 1','同第一天','Sama seperti Hari 1'], na:['Not applicable','不适用','Tidak berkenaan'],
+ onlyIfDiff:['(only fill in if different from Day 1)','（如与第一天不同才填写）','(isi hanya jika berbeza daripada Hari 1)'],
+ reqDate:['Requested date','日期','Tarikh'], reqTime:['Requested time','时间','Masa'], svcType:['Type of service','仪式类别','Jenis upacara'], Burial:['Burial','安葬','Pengebumian'], Cremation:['Cremation','火化','Kremasi'],
+ location:['Location','地点','Lokasi'], Church:['Church','教会','Gereja'], 'Funeral Home':['Funeral Home','殡仪馆','Rumah Pengebumian'], Residence:['Residence','住家','Kediaman'], Other:['Other','其他','Lain-lain'],
+ undertaker:['Name of undertaker','殡葬业者','Syarikat pengurusan jenazah'], venue:['Address / venue','地址 / 场地','Alamat / tempat'], site:['Burial site / crematorium','安葬 / 火化地点','Tapak pengebumian / krematorium'],
+ procTime:['Procession time','出殡时间','Masa perarakan'], visitFrom:['Visitation (date & time)','吊唁（日期及时间）','Waktu ziarah (tarikh & masa)'],
+ langPref:['Language preference','语言','Pilihan bahasa'], others:['Others','其他','Lain-lain'], remarks:['Remarks','备注','Catatan'], office:['OFFICE USE','教会填写','KEGUNAAN PEJABAT'],
+ minister:['Minister','主礼牧者','Pastor bertugas'], reader:['Scripture reader','读经','Pembaca Alkitab'], wl:['Worship leader','敬拜主领','Pemimpin pujian'], musicians:['Musician(s)','乐手','Pemuzik'], helpers:['Helpers','招待 / 帮手','Pembantu'], eulogy:['Eulogy','追思分享','Ucapan kenangan'],
+ otherMatters:['OTHER MATTERS','其他事项','PERKARA LAIN'], name:['Name','姓名','Nama'], signature:['Signature','签名','Tandatangan'],
+ time:['TIME','时间','MASA'], segment:['SEGMENT','程序','ACARA'], description:['DESCRIPTION','说明','KETERANGAN'], pic:['PERSON IN CHARGE','负责人','PENANGGUNGJAWAB'],
+ declTitle:['Funeral Service — Guidelines & Declaration','丧礼服务 — 须知及声明','Upacara Pengebumian — Garis Panduan & Akuan'], forFamily:['For the family of','致家属','Untuk keluarga'],
+ seg_arrival:['Arrival of Family','家属入场','Ketibaan keluarga'], seg_opening:['Opening Prayer','开会祷告','Doa pembukaan'], seg_worship:['Worship / Hymns','敬拜赞美','Pujian & penyembahan'], seg_scripture:['Scripture Reading','读经','Pembacaan Alkitab'],
+ seg_eulogy:['Eulogy','追思分享','Ucapan kenangan'], seg_message:['Message of Hope','盼望的信息','Khutbah pengharapan'], seg_benediction:['Prayer & Benediction','祷告及祝福','Doa & berkat'], seg_viewing:['Final Viewing','瞻仰遗容','Penghormatan terakhir'],
+ seg_departure:['Departure for Burial / Cremation','起灵','Berangkat ke tempat pengebumian / kremasi'], seg_committal:['Burial / Cremation Service','安葬 / 火化礼拜','Upacara pengebumian / kremasi'],
+ 'd_Prelude music':['Prelude music','序乐','Muzik pembukaan'], 'd_2 songs':['2 songs','两首诗歌','2 lagu'], 'd_By family / friend (optional)':['By family / friend (optional)','家属 / 亲友（可选）','Oleh keluarga / rakan (pilihan)'], 'd_Short sermon':['Short sermon','简短信息','Khutbah ringkas'], 'd_If applicable':['If applicable','如适用','Jika berkenaan'], 'd_At site':['At site','于现场','Di lokasi'],
+ d_form:['Completed Funeral Request Form','已填妥丧礼申请表','Borang permohonan dilengkapkan'], d_undertaker:['Booked & Confirmed Undertaker','已预约并确认殡葬业者','Syarikat pengurusan jenazah ditempah & disahkan'], d_venue:['Booked & Confirmed Venue','已预约并确认场地','Tempat ditempah & disahkan'],
+ d_personnel:['Confirmed Serving Personnel','已确认事奉人员','Petugas disahkan'], d_progfinal:['Finalised Memorial Programme','已确定礼拜程序','Aturcara dimuktamadkan'], d_announce:['Announcement of Memorial Information','已发布礼拜资讯','Pengumuman maklumat kebaktian'],
+ d_eulogy:['Eulogy Contributors Contacted (Friend/Family)','已联络追思分享者（亲友 / 家属）','Penyampai ucapan kenangan dihubungi (rakan / keluarga)'], d_slides:['Slides / Media Submitted (Memoir)','已提交幻灯片 / 影音（生平回顾）','Slaid / media diserahkan (memoir)'],
+ d_song:['Song Request (Optional)','诗歌点唱（可选）','Permintaan lagu (pilihan)'], d_printed:['Printed Wake & Funeral Programmes','已印制追思及出殡礼拜程序','Aturcara penghiburan & pengebumian dicetak'], d_refresh:['Finalised Refreshment Plans','已确定茶点安排','Persiapan jamuan dimuktamadkan'],
+ d_love_staff:['Love Offering to Working Personnel','同工爱心奉献','Persembahan kasih kepada petugas'], d_love_church:['Love Offering to Church','教会爱心奉献','Persembahan kasih kepada gereja'],
+};
+const LI = () => PL==='bm'?2:0;
+function tx(k){ const e=I18N[k]; if(!e) return k; if(PL==='en_zh') return e[0]+' / '+e[1]; return e[LI()]; }          // inline, plain text
+function txh(k){ const e=I18N[k]; if(!e) return esc(k); if(PL==='en_zh') return esc(e[0])+'<br><span class="zh2">'+esc(e[1])+'</span>'; return esc(e[LI()]); }  // stacked, HTML
+const ZHD=['日','一','二','三','四','五','六'], BMD=['AHAD','ISNIN','SELASA','RABU','KHAMIS','JUMAAT','SABTU'], BMM=['JAN','FEB','MAC','APR','MEI','JUN','JUL','OGOS','SEP','OKT','NOV','DIS'];
+function zhDate(iso,dow=true){ const d=pd(iso); return d? d.getFullYear()+'年'+(d.getMonth()+1)+'月'+d.getDate()+'日'+(dow?'（星期'+ZHD[d.getDay()]+'）':''):''; }
+function bmDate(iso,dow=true){ const d=pd(iso); return d? (dow?BMD[d.getDay()]+', ':'')+d.getDate()+' '+BMM[d.getMonth()]+' '+d.getFullYear():''; }
+function dL(iso,dow=true){ if(!iso) return '—'; if(PL==='bm') return bmDate(iso,dow); if(PL==='en_zh') return fmtDate(iso,dow)+' · '+zhDate(iso,dow); return fmtDate(iso,dow); }
+const segName = s => { const def=(s.k&&I18N['seg_'+s.k]); return def && s.seg===def[0] ? tx('seg_'+s.k) : s.seg; };
+const segDesc = s => I18N['d_'+s.desc] ? tx('d_'+s.desc) : (s.desc||'');
+const VERSES_ZH = {john11:['约翰福音 11:25','复活在我，生命也在我。信我的人虽然死了，也必复活。'], rev21:['启示录 21:4','神要擦去他们一切的眼泪；不再有死亡，也不再有悲哀、哭号、疼痛。'], ps23:['诗篇 23:4','我虽然行过死荫的幽谷，也不怕遭害，因为你与我同在。'],
+  tim4:['提摩太后书 4:7','那美好的仗我已经打过了，当跑的路我已经跑尽了，所信的道我已经守住了。'], ps116:['诗篇 116:15','在耶和华眼中，看圣民之死极为宝贵。'], john14:['约翰福音 14:2','在我父的家里有许多住处……我去原是为你们预备地方去。'], thes4:['帖撒罗尼迦前书 4:14','我们若信耶稣死而复活了，那已经在耶稣里睡了的人，神也必将他与耶稣一同带来。']};
+const GUIDE_I18N = { // [zh, bm] for GUIDELINES & DECLARATION
+  h:[['预约确认','Pengesahan tempahan'],['场地使用','Penggunaan tempat'],['行为守则（所有出席者）','Tatatertib (untuk semua yang hadir)']],
+  p:[[['在突如其来的失丧中，教会将尽力以关怀与怜悯协助，即使时间紧迫。','Dalam saat kehilangan yang mengejut, gereja akan berusaha sebaik mungkin untuk membantu dengan penuh kasih, walaupun dalam masa yang singkat.'],['所有非会友的申请，将由牧养团队以祷告审阅，以确保妥善的关怀与协调。','Semua permohonan bukan ahli akan disemak dengan doa oleh pasukan pastoral bagi memastikan penjagaan dan penyelarasan yang sewajarnya.']],
+     [['我们将与您及您委任的殡葬业者紧密合作，确保双方对场地布置及安排有共同的理解与共识。','Kami akan bekerjasama rapat dengan anda dan syarikat pengurusan jenazah yang dilantik bagi memastikan persefahaman bersama tentang susunan dan persiapan.']],
+     [['穿着端庄得体','Berpakaian sopan dan sesuai'],['保持庄重肃穆的气氛','Kekalkan suasana yang khusyuk dan hormat'],['避免大声谈话、随意使用手机或不当媒体','Elakkan bercakap dengan kuat, penggunaan telefon sesuka hati atau media yang tidak sesuai'],['礼拜场地及周围禁止饮酒、吸烟或任何扰乱行为','Dilarang minum arak, merokok atau berkelakuan mengganggu di tempat upacara dan kawasan sekitarnya']]],
+  intro:['所有出席者应持守基督徒的价值观，尊重场合的庄严。请遵守以下事项：','Semua yang hadir diharap menjunjung nilai-nilai Kristian dan menghormati suasana upacara. Sila patuhi perkara berikut:'],
+  decl:['本人确认所提供的资料据本人所知均属实，并明白及同意遵守教会的丧礼服务须知。','Saya yang bertandatangan di bawah mengesahkan bahawa semua maklumat yang diberikan adalah benar sepanjang pengetahuan saya. Saya faham dan bersetuju untuk mematuhi garis panduan gereja bagi upacara pengebumian.']};
+function gl(en,zhbm){ if(PL==='bm') return esc(zhbm[1]); if(PL==='en_zh') return esc(en)+'<br><span class="zh2">'+esc(zhbm[0])+'</span>'; return esc(en); }
+function guidelinesHTML(){ return GUIDELINES.map((g,i)=>'<div style="margin-bottom:8px"><b>'+(i+1)+'. '+gl(g.h,GUIDE_I18N.h[i])+'</b>'+(g.intro?'<div class="pz-small">'+gl(g.intro,GUIDE_I18N.intro)+'</div>':'')+'<ul style="margin:3px 0;padding-left:18px">'+g.p.map((p,j)=>'<li>'+gl(p,GUIDE_I18N.p[i][j])+'</li>').join('')+'</ul></div>').join(''); }
+const declText = () => gl(DECLARATION, GUIDE_I18N.decl);
+
 /* ---- Obituary data & templates ---- */
 function obData(c){
-  const d=c.deceased, y1=d.dob?pd(d.dob).getFullYear():'', y2=d.dop?pd(d.dop).getFullYear():'';
-  const f=fun(c);
-  return { name:d.name||'Full Name', zh:c.obit.showZh?d.zh:'', years:(y1&&y2)?(y1+' – '+y2):String(y2||y1||''), y1, y2, passed:d.dop?fmtLong(d.dop):'', age:hasAge(d)?d.age:'',
-    called:c.obit.called||'', verse:VERSES[c.obit.verse], surv:c.survivedBy, extra:c.obit.extra, photo:photoSrc(c), photoG:S.grey[photoSrc(c).length+':'+photoSrc(c).slice(-40)]||'',
+  PL=c.lang||'en';
+  const d=c.deceased, y1=d.dobYearOnly?(d.dobYear||''):(d.dob?pd(d.dob).getFullYear():''), y2=d.dop?pd(d.dop).getFullYear():'';
+  const f=fun(c), V=c.visit||{};
+  const fol = (f.serviceType||f.site) ? (f.serviceType==='Cremation'?tx('followedC'):f.serviceType==='Burial'?tx('followedB'):tx('followedX'))+(f.site?' '+f.site:'') : '';
+  const kins=(c.kins||[]).filter(k=>k.name||k.phone).slice(0,2);
+  return { lang:PL, name:d.name||'Full Name', zh:c.obit.showZh?d.zh:'', years:(y1&&y2)?(y1+' – '+y2):String(y2||y1||''), y1, y2, passedISO:d.dop, passed:d.dop?(PL==='bm'?bmDate(d.dop,false):fmtLong(d.dop)):'', age:hasAge(d)?d.age:'',
+    called:c.obit.called||'', verse:VERSES[c.obit.verse], verseKey:c.obit.verse, surv:c.survivedBy, extra:c.obit.extra, photo:photoSrc(c), photoG:S.grey[photoSrc(c).length+':'+photoSrc(c).slice(-40)]||'',
     initials:(d.name||'').split(/\s+/).filter(Boolean).slice(0,2).map(x=>x[0]).join('').toUpperCase(),
-    wakes:wakes(c).map(w=>{ const e=eff(c,w); return {date:fmtDate(w.date), time:fmtTime(e.time), venue:venueText(e)}; }),
-    fun:f.date?{date:fmtDate(f.date), full:fmtFull(f.date), time:fmtTime(f.time), venue:venueText(f)}:null,
-    followed:(f.serviceType||f.site)?('Followed by '+(f.serviceType?f.serviceType.toLowerCase():'burial / cremation')+(f.site?' at '+f.site:'')):'',
-    contact:(c.kin.name||c.kin.phone)?('For enquiries: '+c.kin.name+(c.kin.relation?' ('+c.kin.relation+')':'')+(c.kin.phone?' · '+c.kin.phone:'')):'', church:CONFIG.CHURCH };
+    visit:(V.from||V.start)?{date:V.from?(dL(V.from)+(V.to&&V.to!==V.from?' – '+dL(V.to):'')):'', time:[V.start,V.end].filter(Boolean).map(fmtTime).join(' – ')}:null,
+    wakes:wakes(c).map(w=>{ const e=eff(c,w); return {date:dL(w.date), time:fmtTime(e.time), venue:venueText(e)}; }),
+    fun:f.date?{date:dL(f.date), full:fmtFull(f.date), time:fmtTime(f.time), venue:venueText(f), proc:f.procTime?fmtTime(f.procTime):''}:null,
+    followed:fol,
+    contact:kins.length?(tx('enquiries')+': '+kins.map(k=>k.name+(k.relation?' ('+k.relation+')':'')+(k.phone?' '+k.phone:'')).join(' · ')):'', church:CONFIG.CHURCH };
 }
 const ph = (D,style,grey) => { const src=grey&&D.photoG?D.photoG:D.photo; return '<div class="ph" style="'+(src?'background-image:url('+src+');':'')+(style||'')+'">'+(src?'':'✝')+'</div>'; };
-const calledH = D => esc(D.called)+(D.passed?'<br>on '+esc(D.passed):'')+(D.age!==''?', aged '+esc(D.age):'');
-const verseH = D => D.verse?'<div class="verse">“'+esc(D.verse.txt)+'”</div><div class="vref">'+D.verse.ref+'</div>':'';
-function svcH(D,o={}){ let h=''; if(D.wakes.length){ h+='<div class="svc-h">Wake Service'+(D.wakes.length>1?'s':'')+'</div>'; D.wakes.forEach(w=>{ h+='<div class="svc"><b>'+esc(w.date)+'</b>'+(w.time?' · '+esc(w.time):'')+(w.venue?'<br>'+esc(w.venue):'')+'</div>'; }); }
-  if(D.fun){ h+='<div class="svc-h">Funeral Service</div><div class="svc"><b>'+esc(D.fun.date)+'</b>'+(D.fun.time?' · '+esc(D.fun.time):'')+(D.fun.venue?'<br>'+esc(D.fun.venue):'')+'</div>'; if(D.followed) h+='<div class="svc" style="font-style:italic">'+esc(D.followed)+'</div>'; }
+const calledH = D => { const isDefault = !D.called || D.called===I18N.called[0];
+  const en = esc(D.called||I18N.called[0])+(D.passed?'<br>on '+esc(D.passed):'')+(D.age!==''?', aged '+esc(D.age):'');
+  const zh = '安息主怀'+(D.passedISO?' · '+zhDate(D.passedISO,false):'')+(D.age!==''?' · 享年'+esc(D.age)+'岁':'');
+  const bm = esc(isDefault?I18N.called[2]:D.called)+(D.passed?'<br>pada '+esc(D.passed):'')+(D.age!==''?', berusia '+esc(D.age)+' tahun':'');
+  return D.lang==='bm'?bm : D.lang==='en_zh'? en+'<div class="zhl">'+zh+'</div>' : en; };
+const verseH = D => { if(!D.verse) return ''; let h='<div class="verse">“'+esc(D.verse.txt)+'”</div><div class="vref">'+D.verse.ref+'</div>'; const z=VERSES_ZH[D.verseKey]; if(D.lang==='en_zh'&&z) h+='<div class="verse zhl" style="font-style:normal">“'+esc(z[1])+'”</div><div class="vref">'+esc(z[0])+'</div>'; return h; };
+function svcH(D,o={}){ let h='';
+  if(D.visit){ h+='<div class="svc-h">'+esc(tx('visit'))+'</div><div class="svc">'+(D.visit.date?'<b>'+esc(D.visit.date)+'</b>':'')+(D.visit.time?(D.visit.date?'<br>':'')+esc(D.visit.time):'')+'</div>'; }
+  if(D.wakes.length){ h+='<div class="svc-h">'+esc(tx(D.wakes.length>1?'wakes':'wake'))+'</div>'; D.wakes.forEach(w=>{ h+='<div class="svc"><b>'+esc(w.date)+'</b>'+(w.time?' · '+esc(w.time):'')+(w.venue?'<br>'+esc(w.venue):'')+'</div>'; }); }
+  if(D.fun){ h+='<div class="svc-h">'+esc(tx('funeral'))+'</div><div class="svc"><b>'+esc(D.fun.date)+'</b>'+(D.fun.time?' · '+esc(D.fun.time):'')+(D.fun.venue?'<br>'+esc(D.fun.venue):'')+'</div>'; if(D.fun.proc) h+='<div class="svc">'+esc(tx('procession'))+': '+esc(D.fun.proc)+'</div>'; if(D.followed) h+='<div class="svc" style="font-style:italic">'+esc(D.followed)+'</div>'; }
   return h; }
 const footH = D => (D.extra?'<div class="foot" style="font-family:var(--serif);font-size:13.5px">'+esc(D.extra)+'</div>':'')+(D.contact?'<div class="foot">'+esc(D.contact)+'</div>':'')+'<div class="church">'+esc(D.church)+'</div>';
 const nameBlock = D => '<div class="nm">'+esc(D.name)+'</div>'+(D.zh?'<div class="zh">'+esc(D.zh)+'</div>':'')+(D.years?'<div class="yr">'+esc(D.years)+'</div>':'');
 const TPL = {
-  grace: D => '<div class="ob ob-grace" style="background-image:url('+PAPER+')">'+lilySprig('width:150px;left:-14px;bottom:-24px;opacity:.55;transform:scaleX(-1) rotate(10deg)')+'<div class="inner"><div class="top"><div class="ring" style="background-image:url('+RING+')"></div>'+ph(D)+lilySprig('width:172px;right:-104px;top:58px;z-index:3')+'</div><div class="ilm">In Loving Memory of</div>'+nameBlock(D)+'<div class="rule"></div><div class="called">'+calledH(D)+'</div>'+verseH(D)+(D.surv?'<div class="rule"></div><div class="surv">'+esc(D.surv)+'</div>':'')+svcH(D)+footH(D)+'</div></div>',
-  classic: D => '<div class="ob ob-classic"><div class="inner"><div class="cr">✝</div><div class="ilm">In Loving Memory of</div>'+ph(D)+nameBlock(D)+'<div class="rule"></div><div class="called">'+calledH(D)+'</div>'+verseH(D)+(D.surv?'<div class="rule"></div><div class="surv">'+esc(D.surv)+'</div>':'')+svcH(D)+footH(D)+'</div></div>',
-  eve: D => '<div class="ob ob-eve">'+lineBranch('rgba(255,255,255,.75)','width:200px;left:-10px;top:-10px;transform:rotate(180deg) scaleX(-1)')+lineBranch('rgba(255,255,255,.75)','width:200px;right:-10px;bottom:-10px')+'<div class="inner"><div class="ilm">In memory of</div>'+ph(D)+nameBlock(D)+'<div class="rule"></div><div class="called">'+calledH(D)+'</div>'+verseH(D)+(D.surv?'<div class="rule"></div><div class="surv">'+esc(D.surv)+'</div>':'')+svcH(D)+footH(D)+'</div></div>',
-  sage: D => '<div class="ob ob-sage"><div class="inner"><div class="ilm">Remembering</div><div class="archw">'+lineBranch('rgba(255,255,255,.85)','width:120px;left:-92px;top:96px;transform:scaleX(-1) rotate(-14deg)',7)+lineBranch('rgba(255,255,255,.85)','width:120px;right:-92px;top:96px;transform:rotate(-14deg)',7)+'<div class="arch"></div>'+ph(D)+'</div>'+nameBlock(D)+'<div class="rule"></div><div class="called">'+calledH(D)+'</div>'+verseH(D)+(D.surv?'<div class="rule"></div><div class="surv">'+esc(D.surv)+'</div>':'')+svcH(D)+footH(D)+'</div></div>',
-  sky: D => '<div class="ob ob-sky" style="background:#b7d3ec url('+SKY+') center/cover">'+lilyCluster('width:230px;left:-70px;top:-50px;transform:rotate(150deg)')+lilyCluster('width:220px;right:-80px;top:120px;transform:rotate(-100deg)')+lilyCluster('width:250px;left:-90px;bottom:-60px;transform:rotate(30deg)')+lilyCluster('width:230px;right:-70px;bottom:-50px;transform:rotate(-30deg)')+'<div class="inner"><div class="ilm">In Loving Memory of</div>'+ph(D)+nameBlock(D)+'<div class="rule"></div><div class="called">'+calledH(D)+'</div>'+verseH(D)+(D.surv?'<div class="surv" style="margin-top:12px">'+esc(D.surv)+'</div>':'')+'<div class="card2">'+svcH(D)+'</div>'+footH(D)+'</div></div>',
-  modern: D => '<div class="ob ob-modern"><div class="lc">'+ph(D,'',true)+(D.contact?'<div class="host">'+esc(D.contact.replace('For enquiries: ',''))+'</div>':'')+'</div><div class="rc"><div class="crx">'+crossRays('#6b1f24','width:64px;left:0;top:0')+'</div><div class="ilm">Remembering</div>'+nameBlock(D)+'<div class="rule"></div><div class="called">'+calledH(D)+'</div>'+verseH(D)+(D.surv?'<div class="surv">'+esc(D.surv)+'</div>':'')+
-    (D.fun?'<div class="svc-h" style="margin-top:18px">Funeral Service</div><div class="big">'+esc(D.fun.date.replace(/^\w+, /,''))+'</div><div class="svc" style="margin-top:4px">'+esc(D.fun.time)+(D.fun.venue?'<br>'+esc(D.fun.venue):'')+(D.followed?'<br><i>'+esc(D.followed)+'</i>':'')+'</div>':'')+
-    (D.wakes.length?'<div class="svc-h">Wake Service'+(D.wakes.length>1?'s':'')+'</div>'+D.wakes.map(w=>'<div class="svc"><b>'+esc(w.date)+'</b>'+(w.time?' · '+esc(w.time):'')+(w.venue?'<br>'+esc(w.venue):'')+'</div>').join(''):'')+
+  grace: D => '<div class="ob ob-grace" style="background-image:url('+PAPER+')">'+lilySprig('width:150px;left:-14px;bottom:-24px;opacity:.55;transform:scaleX(-1) rotate(10deg)')+'<div class="inner"><div class="top"><div class="ring" style="background-image:url('+RING+')"></div>'+ph(D)+lilySprig('width:172px;right:-104px;top:58px;z-index:3')+'</div><div class="ilm">'+esc(tx('ilm'))+'</div>'+nameBlock(D)+'<div class="rule"></div><div class="called">'+calledH(D)+'</div>'+verseH(D)+(D.surv?'<div class="rule"></div><div class="surv">'+esc(D.surv)+'</div>':'')+svcH(D)+footH(D)+'</div></div>',
+  classic: D => '<div class="ob ob-classic"><div class="inner"><div class="cr">✝</div><div class="ilm">'+esc(tx('ilm'))+'</div>'+ph(D)+nameBlock(D)+'<div class="rule"></div><div class="called">'+calledH(D)+'</div>'+verseH(D)+(D.surv?'<div class="rule"></div><div class="surv">'+esc(D.surv)+'</div>':'')+svcH(D)+footH(D)+'</div></div>',
+  eve: D => '<div class="ob ob-eve">'+lineBranch('rgba(255,255,255,.75)','width:200px;left:-10px;top:-10px;transform:rotate(180deg) scaleX(-1)')+lineBranch('rgba(255,255,255,.75)','width:200px;right:-10px;bottom:-10px')+'<div class="inner"><div class="ilm">'+esc(tx('inmem'))+'</div>'+ph(D)+nameBlock(D)+'<div class="rule"></div><div class="called">'+calledH(D)+'</div>'+verseH(D)+(D.surv?'<div class="rule"></div><div class="surv">'+esc(D.surv)+'</div>':'')+svcH(D)+footH(D)+'</div></div>',
+  sage: D => '<div class="ob ob-sage"><div class="inner"><div class="ilm">'+esc(tx('remembering'))+'</div><div class="archw">'+lineBranch('rgba(255,255,255,.85)','width:120px;left:-92px;top:96px;transform:scaleX(-1) rotate(-14deg)',7)+lineBranch('rgba(255,255,255,.85)','width:120px;right:-92px;top:96px;transform:rotate(-14deg)',7)+'<div class="arch"></div>'+ph(D)+'</div>'+nameBlock(D)+'<div class="rule"></div><div class="called">'+calledH(D)+'</div>'+verseH(D)+(D.surv?'<div class="rule"></div><div class="surv">'+esc(D.surv)+'</div>':'')+svcH(D)+footH(D)+'</div></div>',
+  sky: D => '<div class="ob ob-sky" style="background:#b7d3ec url('+SKY+') center/cover">'+lilyCluster('width:230px;left:-70px;top:-50px;transform:rotate(150deg)')+lilyCluster('width:220px;right:-80px;top:120px;transform:rotate(-100deg)')+lilyCluster('width:250px;left:-90px;bottom:-60px;transform:rotate(30deg)')+lilyCluster('width:230px;right:-70px;bottom:-50px;transform:rotate(-30deg)')+'<div class="inner"><div class="ilm">'+esc(tx('ilm'))+'</div>'+ph(D)+nameBlock(D)+'<div class="rule"></div><div class="called">'+calledH(D)+'</div>'+verseH(D)+(D.surv?'<div class="surv" style="margin-top:12px">'+esc(D.surv)+'</div>':'')+'<div class="card2">'+svcH(D)+'</div>'+footH(D)+'</div></div>',
+  modern: D => '<div class="ob ob-modern"><div class="lc">'+ph(D,'',true)+(D.contact?'<div class="host">'+esc(D.contact.replace('For enquiries: ',''))+'</div>':'')+'</div><div class="rc"><div class="crx">'+crossRays('#6b1f24','width:64px;left:0;top:0')+'</div><div class="ilm">'+esc(tx('remembering'))+'</div>'+nameBlock(D)+'<div class="rule"></div><div class="called">'+calledH(D)+'</div>'+verseH(D)+(D.surv?'<div class="surv">'+esc(D.surv)+'</div>':'')+
+    (D.fun?'<div class="svc-h" style="margin-top:18px">'+esc(tx('funeral'))+'</div><div class="big">'+esc(D.fun.date.replace(/^\w+, /,''))+'</div><div class="svc" style="margin-top:4px">'+esc(D.fun.time)+(D.fun.venue?'<br>'+esc(D.fun.venue):'')+(D.followed?'<br><i>'+esc(D.followed)+'</i>':'')+'</div>':'')+
+    (D.visit?'<div class="svc-h">'+esc(tx('visit'))+'</div><div class="svc">'+esc(D.visit.date)+(D.visit.time?'<br>'+esc(D.visit.time):'')+'</div>':'')+(D.wakes.length?'<div class="svc-h">'+esc(tx(D.wakes.length>1?'wakes':'wake'))+'</div>'+D.wakes.map(w=>'<div class="svc"><b>'+esc(w.date)+'</b>'+(w.time?' · '+esc(w.time):'')+(w.venue?'<br>'+esc(w.venue):'')+'</div>').join(''):'')+
     (D.extra?'<div class="foot">'+esc(D.extra)+'</div>':'')+'<div class="church" style="margin-top:16px">'+esc(D.church)+'</div></div></div>',
-  celeb: D => '<div class="ob ob-celeb" style="background:#fdfcfa url('+CELEB+') center/cover">'+lilySprig('width:170px;left:-30px;top:160px;opacity:.5;transform:scaleX(-1)')+lilySprig('width:150px;right:-30px;bottom:-20px;opacity:.45')+'<div class="inner"><div class="ilm0">Celebrating a Life Well Lived</div>'+ph(D)+'<div class="ilm">In Loving Memory of</div>'+nameBlock(D)+'<div class="rule"></div><div class="called">'+calledH(D)+'</div>'+verseH(D)+(D.surv?'<div class="rule"></div><div class="surv">'+esc(D.surv)+'</div>':'')+svcH(D)+footH(D)+'</div></div>',
+  celeb: D => '<div class="ob ob-celeb" style="background:#fdfcfa url('+CELEB+') center/cover">'+lilySprig('width:170px;left:-30px;top:160px;opacity:.5;transform:scaleX(-1)')+lilySprig('width:150px;right:-30px;bottom:-20px;opacity:.45')+'<div class="inner"><div class="ilm0">'+esc(tx('celebrate'))+'</div>'+ph(D)+'<div class="ilm">'+esc(tx('ilm'))+'</div>'+nameBlock(D)+'<div class="rule"></div><div class="called">'+calledH(D)+'</div>'+verseH(D)+(D.surv?'<div class="rule"></div><div class="surv">'+esc(D.surv)+'</div>':'')+svcH(D)+footH(D)+'</div></div>',
 };
 function renderObit(c){
   const el=$('#obit'); if(!el) return;
@@ -1037,9 +1167,10 @@ function obitText(c){
   L.push('',CONFIG.CHURCH); return L.join('\n');
 }
 function svcLines(c){
-  const L=[];
+  const L=[], V=c.visit||{};
+  if(V.from||V.start) L.push('*Visitation*: '+(V.from?fmtDate(V.from)+(V.to&&V.to!==V.from?' – '+fmtDate(V.to):''):'')+((V.start||V.end)?', '+[V.start,V.end].filter(Boolean).map(fmtTime).join(' – '):''));
   wakes(c).forEach(d=>{ const e=eff(c,d); L.push('*'+dayShort(c,d).replace('Night','Wake · Night')+'*: '+fmtDate(d.date)+(e.time?', '+fmtTime(e.time):'')+(locText(e)?'\n   '+locText(e):'')); });
-  const f=fun(c); L.push('*Funeral Service*: '+fmtDate(f.date)+(f.time?', '+fmtTime(f.time):'')+(locText(f)?'\n   '+locText(f):'')+((f.serviceType||f.site)?'\n   Followed by '+(f.serviceType||'burial / cremation').toLowerCase()+(f.site?' at '+f.site:''):''));
+  const f=fun(c); L.push('*Funeral Service*: '+fmtDate(f.date)+(f.time?', '+fmtTime(f.time):'')+(locText(f)?'\n   '+locText(f):'')+(f.procTime?'\n   Procession '+fmtTime(f.procTime):'')+((f.serviceType||f.site)?'\n   Followed by '+(f.serviceType||'burial / cremation').toLowerCase()+(f.site?' at '+f.site:''):''));
   return L;
 }
 
@@ -1064,7 +1195,7 @@ const MSGS = {
   guide:{t:'Family guide — what to do & who to contact', to:c=>'To '+(c.kin.name||'the family'), phone:c=>c.kin.phone, body:c=>{ const L=['*A gentle guide for the days ahead*',CONFIG.CHURCH,'','Dear '+(c.kin.name||'family')+', we know this is a very hard time. Here is a simple list to help — take it one step at a time, and call us whenever you need help.',''];
     GUIDE.forEach(g=>{ L.push('*'+g.h+'*'); g.p.forEach(p=>L.push('• '+p)); L.push(''); });
     L.push('Your contact at church: '+(c.call.coordinator||c.call.receivedBy||''),'','_This is general guidance; your undertaker will advise on the exact steps._'); return L.join('\n'); }},
-  announce:{t:'Church announcement', to:()=>'For the church WhatsApp / bulletin', body:c=>{ const D=c.deceased; return ['✝ *Funeral Announcement*','','With heavy hearts, we share that *'+(D.name||'')+'*'+(hasAge(D)?', aged '+D.age+',':'')+' has been called home to be with the Lord'+(D.dop?' on '+fmtLong(D.dop):'')+'.','',...svcLines(c),'','Let us uphold the family in prayer and stand with them during this time.',CONFIG.CHURCH].join('\n'); }},
+  announce:{t:'Church announcement', to:c=>'Coordinator / pastor who received the call posts this in the Pastors & Ministers chat — to share with SG groups', body:c=>{ const D=c.deceased; return ['✝ *Funeral Announcement*','','With heavy hearts, we share that *'+(D.name||'')+'*'+(hasAge(D)?', aged '+D.age+',':'')+' has been called home to be with the Lord'+(D.dop?' on '+fmtLong(D.dop):'')+'.','',...svcLines(c),'','Let us uphold the family in prayer and stand with them during this time.',CONFIG.CHURCH].join('\n'); }},
 };
 function msgBox(c,k,open){
   const m=MSGS[k], body=m.body(c), p=m.phone?waNum(m.phone(c)):'';
@@ -1079,7 +1210,7 @@ function vNotices(c){
     '<div class="full"><label class="switch"><input type="checkbox" data-b="ack.agreed" data-rr="1"'+(c.ack.agreed?' checked':'')+'><i></i>Family agreed by WhatsApp (replied “Agreed”)</label></div></div>'+
     '<div class="btnrow" style="margin-top:12px"><button class="btn" data-act="printFam">⎙ Print guidelines & declaration</button></div></div>';
   let h=box('decl', sec('C','Guidelines & declaration','for the family'), g, {right:(c.ack.sig||c.ack.agreed)?'<span class="chip green">'+(c.ack.sig?'Signed':'Agreed')+'</span>':'<span class="chip amber">Pending</span>'});
-  h+=msgBox(c,'family')+msgBox(c,'guide');
+  h+=msgBox(c,'family');
   return h;
 }
 
@@ -1113,13 +1244,13 @@ function reportBody(c){
   const when=iso=>iso?new Date(iso).toLocaleString([],{day:'numeric',month:'short',year:'numeric',hour:'numeric',minute:'2-digit'}):'';
   let h='<div class="pz-page">'+pzHead('Funeral Service Record', e_(D.name||'')+(D.zh?'<br><span style="font-family:\'Noto Serif SC\'">'+e_(D.zh)+'</span>':'')+'<br>Ref '+c.id.slice(-6).toUpperCase());
   h+='<div class="pz-small" style="margin-bottom:6px">Status: <b>'+(c.status==='closed'?'Closed'+(c.closedAt?' on '+fmtDate(c.closedAt.slice(0,10),false):'')+(c.closedBy?' by '+e_(c.closedBy):''):'Active — now at: '+e_(si.curStage?si.curStage.t:'all steps done'))+'</b> · Checklist '+si.done+' of '+si.total+(c.manual?' · Past record (entered after the service)':'')+' · Printed '+fmtDate(todayISO(),false)+'</div>';
-  h+='<h4><b>A</b>Deceased &amp; family</h4><table class="pz-f">'+row('Name',e_(D.name)+(D.zh?' ('+e_(D.zh)+')':''))+row('Date of birth',D.dob?fmtDate(D.dob,false):'')+row('Date of passing',D.dop?fmtDate(D.dop,false):'')+row('Age',e_(D.age))+row('Gender',e_(D.gender))+row('Marital status',e_(D.marital))+row('Membership',e_(c.call.membership))+
-    row('Next of kin',e_(K.name)+(K.relation?' ('+e_(K.relation)+')':''))+row('Contact number',e_(K.phone))+row('Address',e_(K.address))+row('Survived by',e_(c.survivedBy).replace(/\n/g,'<br>'))+'</table>';
+  h+='<h4><b>A</b>Deceased &amp; family</h4><table class="pz-f">'+row('Name',e_(D.name)+(D.zh?' ('+e_(D.zh)+')':''))+row('Date of birth',D.dobYearOnly?e_(D.dobYear):(D.dob?fmtDate(D.dob,false):''))+row('Date of passing',D.dop?fmtDate(D.dop,false):'')+row('Age',e_(D.age))+row('Gender',e_(D.gender))+row('Marital status',e_(D.marital))+row('Membership',e_(c.call.membership))+row('Form & obituary language',{en:'English',en_zh:'English + 中文',bm:'Bahasa Malaysia'}[c.lang]||'English')+
+    row('Family contacts',c.kins.filter(k=>k.name||k.phone).map(k=>e_(k.name)+(k.relation?' ('+e_(k.relation)+')':'')+(k.phone?' · '+e_(k.phone):'')).join('<br>'))+row('Address',e_(K.address))+row('Survived by',e_(c.survivedBy).replace(/\n/g,'<br>'))+'</table>';
   h+='<h4>Request handling</h4><table class="pz-f">'+row('Call received',(c.call.date?fmtDate(c.call.date,false):'')+(c.call.time?', '+fmtTime(c.call.time):''))+row('Received by',e_(c.call.receivedBy))+row('Coordinator',e_(c.call.coordinator))+
     row('Undertaker',e_([U.company,U.pkg].filter(Boolean).join(' · '))+((U.contact||U.phone)?' — '+e_(U.contact)+' '+e_(U.phone):''))+row('Other vendor',e_(U.vendor)+(U.vendorPhone?' — '+e_(U.vendorPhone):''))+'</table>';
-  h+='<h4><b>B</b>Service schedule</h4><table class="pz-f"><tr><td class="l">Service</td><td class="l">Date &amp; time</td><td class="l">Venue</td><td class="l">Remarks</td></tr>'+c.days.map(d=>{ const e=eff(c,d); return '<tr><td>'+dayLabel(c,d)+'</td><td>'+fmtDate(d.date)+(e.time?'<br>'+fmtTime(e.time):'')+'</td><td>'+e_(locText(e))+(d.type==='funeral'&&(d.serviceType||d.site)?'<br><i>'+e_(d.serviceType||'')+(d.site?' — '+e_(d.site):'')+'</i>':'')+(langText(e)?'<br><span class="ob">'+e_(langText(e))+'</span>':'')+'</td><td>'+e_(d.remarks||'').replace(/\n/g,'<br>')+'</td></tr>'; }).join('')+'</table>';
+  const V=c.visit; h+='<h4><b>B</b>Service schedule</h4>'+((V.from||V.start)?'<div class="pz-small" style="margin-bottom:4px"><b>Visitation:</b> '+(V.from?fmtDate(V.from):'')+(V.to&&V.to!==V.from?' – '+fmtDate(V.to):'')+((V.start||V.end)?' · '+[V.start,V.end].filter(Boolean).map(fmtTime).join(' – '):'')+'</div>':'')+'<table class="pz-f"><tr><td class="l">Service</td><td class="l">Date &amp; time</td><td class="l">Venue</td><td class="l">Remarks</td></tr>'+c.days.map(d=>{ const e=eff(c,d); return '<tr><td>'+dayLabel(c,d)+'</td><td>'+fmtDate(d.date)+(e.time?'<br>'+fmtTime(e.time):'')+'</td><td>'+e_(locText(e))+(d.type==='funeral'&&d.procTime?'<br>Procession '+fmtTime(d.procTime):'')+(d.type==='funeral'&&(d.serviceType||d.site)?'<br><i>'+e_(d.serviceType||'')+(d.site?' — '+e_(d.site):'')+'</i>':'')+(langText(e)?'<br><span class="ob">'+e_(langText(e))+'</span>':'')+'</td><td>'+e_(d.remarks||'').replace(/\n/g,'<br>')+'</td></tr>'; }).join('')+'</table>';
   h+='<h4>Serving personnel</h4><table class="pz-f"><tr><td class="l">Role</td>'+c.days.map(d=>'<td class="l">'+dayShort(c,d)+'</td>').join('')+'</tr>'+ROLES.map(([k,l])=>'<tr><td class="l">'+l.replace(' (optional)','')+'</td>'+c.days.map(d=>'<td>'+e_(d.roster[k])+'</td>').join('')+'</tr>').join('')+'</table>';
-  h+='<h4>Duties</h4><table class="pz-f">'+row('Undertaker liaison',e_(c.tasks.undertaker.who||'—'))+DUTIES.map(([k,t])=>{ const T=c.tasks[k]; return row(t, e_(T.who||'—')+' · '+T.status+(T.notes?'<br><span class="ob">'+e_(T.notes)+'</span>':'')); }).join('')+'</table>';
+  h+='<h4>Duties</h4><table class="pz-f">'+row('Undertaker liaison',e_(c.tasks.undertaker.who||'—'))+DUTIES.concat(DUTIES_OPT).map(([k,t])=>{ const T=c.tasks[k]; return row(t, e_(T.who||'—')+' · '+T.status+(T.notes?'<br><span class="ob">'+e_(T.notes)+'</span>':'')); }).join('')+'</table>';
   const F=c.flowers; if(F.items||F.florist) h+='<h4>Flowers</h4><table class="pz-f">'+row('Arrangements',e_(F.items))+row('Florist',e_(F.florist))+row('Delivery',(F.deliveryDate?fmtDate(F.deliveryDate):'')+(F.deliveryTime?', '+fmtTime(F.deliveryTime):'')+(F.deliverTo?' — '+e_(F.deliverTo):''))+row('Cost',F.cost?'RM '+e_(F.cost):'')+row('Notes',e_(F.notes))+'</table>';
 
   h+='<h4><b>F</b>Programme flow</h4>'+c.days.map(d=>{ const rows=progRows(c,d).filter(x=>!x.s.skip); return '<div class="pz-day"><div class="dh">'+dayLabel(c,d)+' <span class="pz-small">'+fmtDate(d.date)+'</span></div><table class="pz-f">'+rows.map(x=>'<tr><td style="width:72px;white-space:nowrap;font-weight:700;color:#1F3864">'+(x.time?fmtTime(x.time):'')+'</td><td style="font-weight:600">'+e_(x.s.seg)+(x.s.desc?' <span class="ob">— '+e_(x.s.desc)+'</span>':'')+'</td><td>'+e_(picFor(d,x.s))+'</td></tr>').join('')+'</table></div>'; }).join('');
@@ -1130,58 +1261,70 @@ function reportBody(c){
   if(c.files.length) h+='<h4>Files on record</h4><table class="pz-f">'+c.files.map(f=>row(kindName(f.kind), e_(f.name)+' <span class="ob">· '+fsize(f.size||0)+(f.by?' · '+e_(f.by):'')+(f.at?' · '+fmtDate(f.at.slice(0,10),false):'')+'</span>')).join('')+'</table><div class="pz-small">Files are kept in the church Google Drive (TOW Funeral Files).</div>';
   h+='</div>';
   if(c.texts.obituary && !D.name) {}
-  if(D.name && !c.manual) h+='<div class="pz-page">'+pzHead('Obituary', e_(D.name))+'<div class="pz-obit">'+(TPL[c.obit.tpl]||TPL.grace)(obData(c))+'</div></div>';
+  if(D.name && !c.manual) h+='<div class="pz-page">'+pzHead('Obituary', e_(D.name))+obitPrintHTML(c,930)+'</div>';
   else if(c.texts.obituary) h+='<div class="pz-page">'+pzHead('Obituary text', e_(D.name||''))+'<div class="pz-small" style="white-space:pre-wrap">'+e_(c.texts.obituary)+'</div></div>';
   return h;
 }
 
 /* ---------------- Printing ---------------- */
-function doPrint(html){ $('#printZone').innerHTML='<div class="pz">'+html+'</div>'; document.body.classList.add('printing'); const go=()=>{ window.print(); setTimeout(()=>{ document.body.classList.remove('printing'); $('#printZone').innerHTML=''; },400); }; (document.fonts&&document.fonts.ready?document.fonts.ready:Promise.resolve()).then(()=>setTimeout(go,150)); }
+function doPrint(html){ $('#printZone').innerHTML='<div class="pz">'+html+'</div>'; document.body.classList.add('printing'); const go=()=>{ fitObits(); window.print(); setTimeout(()=>{ document.body.classList.remove('printing'); $('#printZone').innerHTML=''; },400); }; (document.fonts&&document.fonts.ready?document.fonts.ready:Promise.resolve()).then(()=>setTimeout(go,150)); }
 const pzHead = (t2,rt) => '<div class="pz-head"><img src="'+LOGO()+'"><div><div class="t1">'+esc(CONFIG.CHURCH)+'</div><div class="t2">'+t2+'</div></div><div class="rt">'+(rt||'')+'</div></div>';
+function dayLabelL(c,d){ if(d.type==='funeral') return tx('funeral'); const n=wakes(c).indexOf(d)+1; return PL==='bm'?'Hari '+n+' · '+I18N.wake[2] : PL==='en_zh'?'Night '+n+' · Wake Service / 第'+n+'晚 · 追思礼拜' : 'Wake Service · Night '+n; }
+function roleL(k){ return k==='eulogy1'||k==='eulogy2' ? tx('eulogy')+' '+k.slice(-1) : tx(k); }
+function obitPrintHTML(c, maxH){ return '<div class="pz-obit"><div data-fit="'+(maxH||980)+'">'+(TPL[c.obit.tpl]||TPL.grace)(obData(c))+'</div></div>'; }
+function fitObits(){ // scale each printed obituary to fit its page (run after fonts are ready)
+  const pz=$('#printZone'); pz.style.cssText='display:block;position:fixed;left:-10000px;top:0;width:760px';
+  pz.querySelectorAll('[data-fit]').forEach(el=>{ el.style.zoom=1; const ob=el.firstElementChild; const h=Math.max(ob.offsetHeight,764); el.style.zoom=Math.min(1.2,(+el.dataset.fit)/h).toFixed(3); });
+  pz.style.cssText='';
+}
 function printProgramme(c){
+  PL=c.lang||'en';
   return c.days.map(d=>{ const e=eff(c,d), r=d.roster;
-    let h='<div class="pz-page pz-prog">'+pzHead('In Loving Memory of '+esc(c.deceased.name||''), (c.deceased.zh?'<span style="font-family:\'Noto Serif SC\';font-size:13pt">'+esc(c.deceased.zh)+'</span><br>':'')+'Programme Flow');
-    h+='<div class="dayband"><div class="n">'+dayLabel(c,d)+'</div><div class="d">'+fmtFull(d.date)+(e.time?'<br>'+fmtTime(e.time):'')+'</div></div>';
-    h+='<div class="info"><span><b>Venue:</b> '+esc(locText(e)||'—')+'</span>'+(langText(e)?'<span><b>Language:</b> '+esc(langText(e))+'</span>':'')+(d.type==='funeral'&&(d.serviceType||d.site)?'<span><b>'+esc(d.serviceType||'Committal')+':</b> '+esc(d.site||'—')+'</span>':'')+'</div>';
-    h+='<table><thead><tr><th>Time</th><th>Segment</th><th>Person in charge</th></tr></thead><tbody>';
-    progRows(c,d).filter(x=>!x.s.skip).forEach(x=>{ h+='<tr><td class="t">'+(x.time?fmtTime(x.time):'')+'</td><td class="s">'+esc(x.s.seg)+(x.s.desc?'<span class="ds">'+esc(x.s.desc)+'</span>':'')+'</td><td class="p">'+esc(picFor(d,x.s)||'—')+'</td></tr>'; });
-    const team=ROLES.map(([k,l])=>r[k]?'<div><b>'+l.replace(' (optional)','')+'</b>'+esc(r[k])+'</div>':'').join('');
+    let h='<div class="pz-page pz-prog">'+pzHead(esc(tx('ilm'))+' '+esc(c.deceased.name||''), (c.deceased.zh?'<span style="font-family:\'Noto Serif SC\';font-size:13pt">'+esc(c.deceased.zh)+'</span><br>':'')+esc(tx('progflow')));
+    h+='<div class="dayband"><div class="n">'+esc(dayLabelL(c,d))+'</div><div class="d">'+esc(dL(d.date))+(e.time?'<br>'+fmtTime(e.time):'')+'</div></div>';
+    h+='<div class="info"><span><b>'+esc(tx('location'))+':</b> '+esc(locText(e)||'—')+'</span>'+(d.type==='funeral'&&d.procTime?'<span><b>'+esc(tx('procTime'))+':</b> '+fmtTime(d.procTime)+'</span>':'')+(d.type==='funeral'&&(d.serviceType||d.site)?'<span><b>'+esc(d.serviceType?tx(d.serviceType):tx('site'))+':</b> '+esc(d.site||'—')+'</span>':'')+'</div>';
+    h+='<table><thead><tr><th>'+esc(tx('time'))+'</th><th>'+esc(tx('segment'))+'</th><th>'+esc(tx('pic'))+'</th></tr></thead><tbody>';
+    progRows(c,d).filter(x=>!x.s.skip).forEach(x=>{ const ds=segDesc(x.s); h+='<tr><td class="t">'+(x.time?fmtTime(x.time):'')+'</td><td class="s">'+esc(segName(x.s))+(ds?'<span class="ds">'+esc(ds)+'</span>':'')+'</td><td class="p">'+esc(picFor(d,x.s)||'—')+'</td></tr>'; });
+    const team=ROLES.map(([k])=>r[k]?'<div><b>'+esc(roleL(k))+'</b>'+esc(r[k])+'</div>':'').join('');
     h+='</tbody></table>'+(team?'<div class="pz-team">'+team+'</div>':'');
-    if(e.remarks) h+='<div class="pz-small" style="margin-top:10px"><b>Remarks:</b> '+esc(e.remarks)+'</div>';
+    if(e.remarks) h+='<div class="pz-small" style="margin-top:10px"><b>'+esc(tx('remarks'))+':</b> '+esc(e.remarks)+'</div>';
     return h+'</div>'; }).join('');
 }
 function declHTML(c){
-  let h=''; GUIDELINES.forEach((g,i)=>{ h+='<div style="margin-bottom:8px"><b>'+(i+1)+'. '+g.h+'</b>'+(g.intro?'<div class="pz-small">'+g.intro+'</div>':'')+'<ul style="margin:3px 0;padding-left:18px">'+g.p.map(p=>'<li>'+p+'</li>').join('')+'</ul></div>'; });
-  h+='<h4><b>E</b>Declaration</h4><div>'+DECLARATION+'</div><div class="pz-sign"><div>Name: '+esc(c?c.ack.name:'')+'</div><div>Signature: '+(c&&c.ack.sig?'<img src="'+c.ack.sig+'" style="height:46px">':'')+'</div><div style="flex:.6">Date: '+(c&&c.ack.date?fmtDate(c.ack.date,false):'')+'</div></div>';
-  return h;
+  return guidelinesHTML()+'<h4><b>E</b>'+txh('secE')+'</h4><div>'+declText()+'</div><div class="pz-sign"><div>'+esc(tx('name'))+': '+esc(c?c.ack.name:'')+'</div><div>'+esc(tx('signature'))+': '+(c&&c.ack.sig?'<img src="'+c.ack.sig+'" style="height:46px">':'')+'</div><div style="flex:.6">'+esc(tx('date'))+': '+(c&&c.ack.date?esc(dL(c.ack.date,false)):'')+'</div></div>';
 }
-function formHTML(c){ // c = null → blank form
+function formHTML(c, lang){ // c = null → blank form
+  PL = lang || (c&&c.lang) || 'en';
   const v=(x)=>c?esc(x||''):'', box2=(on)=>on?'☑':'☐';
-  const opts=(list,val)=>list.map(o=>'<span class="opt">'+box2(c&&(Array.isArray(val)?val.includes(o):val===o))+' '+o+'</span>').join('');
-  const row=(l,val)=>'<tr><td class="l">'+l+'</td><td>'+val+'</td></tr>';
+  const opts=(list,val)=>list.map(o=>'<span class="opt">'+box2(c&&(Array.isArray(val)?val.includes(o):val===o))+' '+esc(I18N[o]?tx(o):o)+'</span>').join('');
+  const row=(k,val)=>'<tr><td class="l">'+(I18N[k]?txh(k):esc(k))+'</td><td>'+val+'</td></tr>';
+  const langOpts=['English','Mandarin','Cantonese','Bahasa Malaysia','Hokkien'];
   const dayTbl=(d,label,kind)=>{ const e=d?eff(c,d):{}; let t='<div class="pz-day"><div class="dh">'+label+'</div>';
-    if(kind==='wake2') t+='<div class="pz-small" style="margin-bottom:6px">'+box2(d&&d.same)+' Same as Day 1 &nbsp; '+box2(c&&!d)+' Not applicable &nbsp; <i>(only fill in if different from Day 1)</i></div>';
-    t+='<table class="pz-f">'+row('Requested date',d?fmtDate(d.date):'')+row('Requested time',d?fmtTime(e.time):'')+(kind==='fun'?row('Type of service',opts(['Burial','Cremation'],d&&d.serviceType)):'')+
-      row('Location',opts(['Church','Funeral Home','Residence'],d&&e.location)+'<span class="opt">'+box2(d&&e.location==='Other')+' Other: '+(d&&e.location==='Other'?esc(e.locOther):'________')+'</span>')+
-      row(kind==='fun'?'Name of funeral home / undertaker':'Name of undertaker',d?esc(e.undertaker||c.undertaker.company):'')+row('Address / venue',d?esc(e.venue):'')+(kind==='fun'?row('Burial site / crematorium',d?esc(d.site):''):'')+
-      row('Language preference',opts(CONFIG.LANGUAGES,d?e.langs:[])+'<span class="opt">Others: '+(d&&e.langOther?esc(e.langOther):'______')+'</span>')+row('Remarks',d?esc(e.remarks):'')+'</table>';
-    t+='<div class="pz-small" style="margin:8px 0 4px;font-weight:700;letter-spacing:.1em">OFFICE USE</div><table class="pz-f">'+ROLES.slice(0,5).map(([k,l])=>row(l,d?esc(d.roster[k]):'')).join('')+'</table></div>'; return t; };
-  const D=c?c.deceased:{}, K=c?c.kin:{};
-  let h='<div class="pz-page">'+pzHead('Funeral Service Request &amp; Planning Form', c?'Ref: '+esc(c.id.slice(-6).toUpperCase()):'Received by: ____________<br>Date: ____________');
-  h+='<h4><b>A</b>Deceased &amp; family details</h4><table class="pz-f">'+row('Dearly departed’s full name',v(D.name)+(c&&D.zh?' ('+esc(D.zh)+')':''))+row('Date of birth',c?fmtDate(D.dob,false):'')+row('Date of passing',c?fmtDate(D.dop,false):'')+row('Age',c?esc(D.age):'')+row('Gender',opts(['Male','Female'],D.gender))+row('Marital status',opts(['Single','Married','Widowed','Divorced'],D.marital))+row('Cause of death (optional)',v(D.cause))+row('Next of kin / contact person',v(K.name))+row('Relationship to deceased',v(K.relation))+row('Contact number',v(K.phone))+row('Residential address',v(K.address)+(c?'':'<br><br>'))+'</table>';
-  h+='<h4><b>B</b>Service details</h4>';
-  if(c){ wakes(c).forEach((d,i)=>h+=dayTbl(d,'Day '+(i+1)+' · Wake Service', i?'wake2':'wake')); h+=dayTbl(fun(c),'Funeral Service','fun'); }
-  else { h+=dayTbl(null,'Day 1 · Wake Service','wake')+dayTbl(null,'Day 2 · Wake Service','wake2')+dayTbl(null,'Day 3 · Wake Service','wake2')+dayTbl(null,'Funeral Service','fun'); }
-  h+='</div><div class="pz-page">'+pzHead('Guidelines, checklist &amp; declaration','');
-  h+='<h4><b>C</b>Guidelines for the service</h4><div class="pz-small" style="font-size:10pt">'+declHTML(c).split('<h4>')[0]+'</div>';
-  h+='<h4><b>D</b>Checklist (wake &amp; funeral)</h4><div class="pz-ck">'+CHECK_D.map(([k,l])=>'<div>'+box2(c&&isDoneKey(c,k))+' '+l+'</div>').join('')+'</div><div class="pz-small" style="margin:8px 0 2px;font-weight:700;letter-spacing:.1em">OTHER MATTERS</div><div class="pz-ck">'+CHECK_O.map(([k,l])=>'<div>'+box2(c&&isDoneKey(c,k))+' '+l+'</div>').join('')+'</div>';
-  h+='<h4><b>E</b>Declaration</h4><div style="font-size:10.5pt">'+DECLARATION+'</div><div class="pz-sign"><div>Name: '+(c?esc(c.ack.name):'')+'</div><div>Signature: '+(c&&c.ack.sig?'<img src="'+c.ack.sig+'" style="height:46px">':'')+'</div><div style="flex:.6">Date: '+(c&&c.ack.date?fmtDate(c.ack.date,false):'')+'</div></div></div>';
-  // Section F
-  const segRows=(type,d)=>{ const rows=d?progRows(c,d).filter(x=>!x.s.skip):(type==='funeral'?SEG_FUNERAL:SEG_WAKE).map(s=>({s,time:''})); return rows.map(x=>'<tr><td style="width:70px">'+(x.time?fmtTime(x.time):'')+'</td><td style="font-weight:600">'+esc(x.s.seg)+'</td><td>'+esc(x.s.desc||'')+'</td><td>'+(d?esc(picFor(d,x.s)):(x.s.role==='eulogy'?'Name: ____________<br>Name: ____________':({minister:'Pastor',wl:'Worship Team',reader:'Family / Pastor'}[x.s.role]||'')))+'</td></tr>').join(''); };
-  const fTbl=(label,type,d)=>'<div class="pz-day"><div class="dh">'+label+'</div><table class="pz-f"><tr><td class="l" style="width:70px">TIME</td><td class="l">SEGMENT</td><td class="l">DESCRIPTION</td><td class="l">PERSON IN CHARGE</td></tr>'+segRows(type,d)+'</table></div>';
-  h+='<div class="pz-page">'+pzHead('Section F · Programme flow','');
-  if(c){ wakes(c).forEach((d,i)=>h+=fTbl('Day '+(i+1)+': Wake Service','wake',d)); h+=fTbl('Funeral Service','funeral',fun(c)); }
-  else h+=fTbl('Day 1: Wake Service','wake')+fTbl('Day 2: Wake Service','wake')+fTbl('Day 3: Wake Service','wake')+fTbl('Funeral Service','funeral');
+    if(kind==='wake2') t+='<div class="pz-small" style="margin-bottom:6px">'+box2(d&&d.same)+' '+esc(tx('sameDay1'))+' &nbsp; '+box2(c&&!d)+' '+esc(tx('na'))+' &nbsp; <i>'+esc(tx('onlyIfDiff'))+'</i></div>';
+    t+='<table class="pz-f">'+row('reqDate',d?esc(dL(d.date)):'')+row('reqTime',d?fmtTime(e.time):'')+(kind==='fun'?row('procTime',d&&d.procTime?fmtTime(d.procTime):'')+row('svcType',opts(['Burial','Cremation'],d&&d.serviceType)):'')+
+      row('location',opts(['Church','Funeral Home','Residence'],d&&e.location)+'<span class="opt">'+box2(d&&e.location==='Other')+' '+esc(tx('Other'))+': '+(d&&e.location==='Other'?esc(e.locOther):'________')+'</span>')+
+      row('undertaker',d?esc(c.undertaker.company||e.undertaker||''):'')+row('venue',d?esc(e.venue):'')+(kind==='fun'?row('site',d?esc(d.site):''):'')+
+      row('langPref',opts(langOpts,d?e.langs:[])+'<span class="opt">'+esc(tx('others'))+': '+(d&&e.langOther?esc(e.langOther):'______')+'</span>')+row('remarks',d?esc(e.remarks):'')+'</table>';
+    t+='<div class="pz-small" style="margin:8px 0 4px;font-weight:700;letter-spacing:.1em">'+esc(tx('office'))+'</div><table class="pz-f">'+['minister','reader','wl','musicians','helpers'].map(k=>row(k,d?esc(d.roster[k]):'')).join('')+'</table></div>'; return t; };
+  const D=c?c.deceased:{}, K=c?c.kin:{}, V=c?c.visit:{};
+  const kinsTxt = c ? c.kins.filter(k=>k.name||k.phone).map(k=>esc(k.name)+(k.relation?' ('+esc(k.relation)+')':'')+(k.phone?' · '+esc(k.phone):'')).join('<br>') : '<br><br>';
+  let h='<div class="pz-page">'+pzHead(txh('formTitle'), c?esc(tx('ref'))+': '+esc(c.id.slice(-6).toUpperCase()):esc(tx('receivedBy'))+': ____________<br>'+esc(tx('date'))+': ____________');
+  h+='<h4><b>A</b>'+txh('secA')+'</h4><table class="pz-f">'+row('fullname',v(D.name)+(c&&D.zh?' ('+esc(D.zh)+')':''))+row('dob',c?(D.dobYearOnly?esc(D.dobYear):esc(dL(D.dob,false))):'')+row('dop',c?esc(dL(D.dop,false)):'')+row('age',c?esc(D.age):'')+row('gender',opts(['Male','Female'],D.gender))+row('marital',opts(['Single','Married','Widowed','Divorced'],D.marital))+row('cause',v(D.cause))+
+    (c?row('nok',kinsTxt):row('nok','')+row('relation','')+row('phone',''))+row('address',v(K.address)+(c?'':'<br><br>'))+'</table>';
+  h+='<h4><b>B</b>'+txh('secB')+'</h4>';
+  h+='<table class="pz-f" style="margin-bottom:10px">'+row('visitFrom', c&&(V.from||V.start) ? esc((V.from?dL(V.from):'')+(V.to&&V.to!==V.from?' – '+dL(V.to):''))+(V.start||V.end?' · '+[V.start,V.end].filter(Boolean).map(fmtTime).join(' – '):'') : (c?'':'_____ / _____ / _______ – _____ / _____ / _______ &nbsp;&nbsp; ______ : ______ – ______ : ______'))+'</table>';
+  const dayN = n => PL==='bm'?'Hari '+n+' · '+I18N.wake[2] : PL==='en_zh'?'Day '+n+' · Wake Service / 第'+n+'天 · 追思礼拜' : 'Day '+n+' · Wake Service';
+  if(c){ wakes(c).forEach((d,i)=>h+=dayTbl(d,esc(dayN(i+1)), i?'wake2':'wake')); h+=dayTbl(fun(c),esc(tx('funeral')),'fun'); }
+  else { h+=dayTbl(null,esc(dayN(1)),'wake')+dayTbl(null,esc(dayN(2)),'wake2')+dayTbl(null,esc(dayN(3)),'wake2')+dayTbl(null,esc(tx('funeral')),'fun'); }
+  h+='</div><div class="pz-page">'+pzHead(esc(tx('secC'))+' · '+esc(tx('secD')).replace(/ \(.*\)/,'')+' · '+esc(tx('secE')),'');
+  h+='<h4><b>C</b>'+txh('secC')+'</h4><div class="pz-small" style="font-size:10pt">'+guidelinesHTML()+'</div>';
+  h+='<h4><b>D</b>'+txh('secD')+'</h4><div class="pz-ck">'+CHECK_D.map(([k])=>'<div>'+box2(c&&isDoneKey(c,k))+' '+txh(k)+'</div>').join('')+'</div><div class="pz-small" style="margin:8px 0 2px;font-weight:700;letter-spacing:.1em">'+esc(tx('otherMatters'))+'</div><div class="pz-ck">'+CHECK_O.map(([k])=>'<div>'+box2(c&&isDoneKey(c,k))+' '+txh(k)+'</div>').join('')+'</div>';
+  h+='<h4><b>E</b>'+txh('secE')+'</h4><div style="font-size:10.5pt">'+declText()+'</div><div class="pz-sign"><div>'+esc(tx('name'))+': '+(c?esc(c.ack.name):'')+'</div><div>'+esc(tx('signature'))+': '+(c&&c.ack.sig?'<img src="'+c.ack.sig+'" style="height:46px">':'')+'</div><div style="flex:.6">'+esc(tx('date'))+': '+(c&&c.ack.date?esc(dL(c.ack.date,false)):'')+'</div></div></div>';
+  const segRows=(type,d)=>{ const rows=d?progRows(c,d).filter(x=>!x.s.skip):(type==='funeral'?SEG_FUNERAL:SEG_WAKE).map(s=>({s,time:''})); return rows.map(x=>'<tr><td style="width:70px">'+(x.time?fmtTime(x.time):'')+'</td><td style="font-weight:600">'+esc(segName(x.s))+'</td><td>'+esc(segDesc(x.s))+'</td><td>'+(d?esc(picFor(d,x.s)):(x.s.role==='eulogy'?esc(tx('name'))+': ____________<br>'+esc(tx('name'))+': ____________':''))+'</td></tr>').join(''); };
+  const fTbl=(label,type,d)=>'<div class="pz-day"><div class="dh">'+label+'</div><table class="pz-f"><tr><td class="l" style="width:70px">'+txh('time')+'</td><td class="l">'+txh('segment')+'</td><td class="l">'+txh('description')+'</td><td class="l">'+txh('pic')+'</td></tr>'+segRows(type,d)+'</table></div>';
+  h+='<div class="pz-page">'+pzHead('F · '+txh('secF'),'');
+  if(c){ wakes(c).forEach((d,i)=>h+=fTbl(esc(dayN(i+1)),'wake',d)); h+=fTbl(esc(tx('funeral')),'funeral',fun(c)); }
+  else h+=fTbl(esc(dayN(1)),'wake')+fTbl(esc(dayN(2)),'wake')+fTbl(esc(dayN(3)),'wake')+fTbl(esc(tx('funeral')),'funeral');
   return h+'</div>';
 }
 function isDoneKey(c,k){ for(const st of STAGES){ const it=st.items.find(i=>i.k===k); if(it) return isDone(c,it); } return !!(c.checks[k]&&c.checks[k].done); }
@@ -1281,14 +1424,14 @@ function parseObituary(raw){
     else if(cur) sec[cur]=(sec[cur]||'')+'\n'+L; });
   if(sec.wake){ const d=findDates(sec.wake); if(d.length){ let a=d[0], b=d.length>1?d[d.length-1]:d[0]; const n=Math.round((pd(b)-pd(a))/864e5)+1; out.wakes=n>0&&n<8?Array.from({length:n},(_,i)=>addDays(a,i)):[a]; } const tm=findTimes(sec.wake); if(tm[0]) out.wakeTime=tm[0]; }
   if(sec.funeral){ const d=findDates(sec.funeral); if(d[0]) out.fdate=d[0]; const tm=findTimes(sec.funeral); if(tm[0]) out.ftime=tm[0]; }
-  if(sec.procession){ const tm=findTimes(sec.procession); if(tm[0]) out.procession=fmtTime(tm[0]); if(!out.fdate){ const d=findDates(sec.procession); if(d[0]) out.fdate=d[0]; } }
-  if(sec.visit){ const tm=findTimes(sec.visit); if(tm.length) out.visit=tm.map(fmtTime).join(' – '); if(!out.wakes){ const d=findDates(sec.visit); if(d.length) out.wakes=d.slice(0,1); } }
+  if(sec.procession){ const tm=findTimes(sec.procession); if(tm[0]){ out.procession=fmtTime(tm[0]); out.procTime=tm[0]; } if(!out.fdate){ const d=findDates(sec.procession); if(d[0]) out.fdate=d[0]; } }
+  if(sec.visit){ const tm=findTimes(sec.visit); if(tm.length){ out.visit=tm.map(fmtTime).join(' – '); out.visitStart=tm[0]; if(tm[1]) out.visitEnd=tm[1]; } const d=findDates(sec.visit); if(d.length){ out.visitFrom=d[0]; out.visitTo=d[d.length-1]; if(!out.wakes) out.wakes=d.slice(0,1); } }
   const site=x=>{ const lp=latinPart(stripLabels(x)).replace(/^(at|@|in)\s+/i,''); return lp?titleCase(lp):cjkPart(x); };
   if(sec.cremation){ out.serviceType='Cremation'; const s2=site(sec.cremation); if(s2) out.site=s2; }
   else if(sec.burial){ out.serviceType='Burial'; const s2=site(sec.burial); if(s2) out.site=s2; }
   if(sec.venue){ const lp=latinPart(stripLabels(sec.venue)); const cj=cjkPart(sec.venue); const parts=[cj,lp?titleCase(lp):''].filter(Boolean); if(parts.length) out.venue=parts.join(', ');
     const V=sec.venue.toUpperCase(); out.location=/CHURCH|教會|教会|禮拜堂|礼拜堂/.test(V)?'Church':/RESIDENCE|HOUSE|住家|府上|住宅/.test(V)?'Residence':/紀念館|纪念馆|殯儀館|殡仪馆|PARLOU?R|MEMORIAL|FUNERAL HOME|HALL|NIRVANA|堂/.test(V)?'Funeral Home':''; }
-  if(sec.contact){ const ps=phonesIn(sec.contact); if(ps[0]){ out.kinPhone=ps[0].phone; if(ps[0].who) out.kinName=ps[0].who; } if(ps.length>1) out.otherContacts=ps.slice(1).map(x=>x.phone+(x.who?' ('+x.who+')':'')).join(', '); }
+  if(sec.contact){ const ps=phonesIn(sec.contact); if(ps[0]){ out.kinPhone=ps[0].phone; if(ps[0].who) out.kinName=ps[0].who; } out.contacts=ps; if(ps.length>1) out.otherContacts=ps.slice(1).map(x=>x.phone+(x.who?' ('+x.who+')':'')).join(', '); }
   if(sec.undertaker){ const lines=sec.undertaker.split('\n').map(x=>latinPart(x)).filter(x=>/[A-Za-z]{3}/.test(x)); const nm=lines.find(x=>/FUNERAL|SERVICES|PARLOU?R|BERHAD|SDN|ENTERPRISE/i.test(x))||lines[0]; if(nm) out.undertaker=titleCase(nm.replace(/^.*?(?=[A-Z]{2})/,'')); const ps=phonesIn(sec.undertaker); if(ps[0]) out.undertakerPhone=ps.map(x=>x.phone).slice(0,2).join(' / '); }
   return out;
 }
@@ -1307,12 +1450,13 @@ function reviewAutofill(c, P, raw){
     ['location','Location type', P.location, W[0]&&W[0].location],
     ['serviceType','Burial or cremation', P.serviceType, F.serviceType],
     ['site', P.serviceType==='Burial'?'Burial site':'Crematorium', P.site, F.site],
-    ['kinName','Family contact person', P.kinName, c.kin.name],
-    ['kinPhone','Family contact number', P.kinPhone, c.kin.phone],
+    ['kinName','Family contact person', P.kinName, c.kins[0].name],
+    ['kinPhone','Family contact number', P.kinPhone, c.kins[0].phone],
     ['undertaker','Funeral home / undertaker', P.undertaker, c.undertaker.company],
     ['undertakerPhone','Undertaker number', P.undertakerPhone, c.undertaker.phone],
-    ['remarks','Wake remarks', [P.visit?'Visitation '+P.visit:'', P.otherContacts?'Other family contact: '+P.otherContacts:''].filter(Boolean).join(' · '), ''],
-    ['remarksF','Funeral remarks', P.procession?'Funeral procession '+P.procession:'', ''],
+    ['visit','Visitation', (P.visitFrom||P.visitStart)?[(P.visitFrom?fmtDate(P.visitFrom):'')+(P.visitTo&&P.visitTo!==P.visitFrom?' – '+fmtDate(P.visitTo):''), P.visit||''].filter(Boolean).join(' · '):'', '', 'ro'],
+    ['procTime','Procession time', P.procTime, '', 'time'],
+    ['others','Other family contacts', P.otherContacts||'', '', 'ro'],
   ].filter(r=>r[2]);
   if(!rows.length){ modal('<h3>Nothing found automatically</h3><p>The text was read but no details could be matched — the layout may be unusual. The text is saved under <b>Obituary text</b> in Files so you can copy from it.</p><div class="btnrow" style="justify-content:flex-end"><button class="btn primary" onclick="closeModal()">OK</button></div>'); return; }
   const inp=(r)=> r[4]==='ro' ? '<div class="small" style="padding:8px 0;font-weight:600">'+esc(r[2])+'</div>' : '<input type="'+(r[4]==='date'?'date':r[4]==='time'?'time':'text')+'" data-af="'+r[0]+'" value="'+esc(r[2])+'" style="min-height:36px;padding:6px 9px">';
@@ -1322,17 +1466,18 @@ function reviewAutofill(c, P, raw){
   $('#afApply').onclick=()=>{
     const v=k=>{ const e=$('[data-af="'+k+'"]'); return e?e.value.trim():(P[k]||''); }, on=k=>{ const e=$('[data-afk="'+k+'"]'); return e&&e.checked; };
     if(on('name')) c.deceased.name=v('name'); if(on('zh')) c.deceased.zh=v('zh'); if(on('dop')) c.deceased.dop=v('dop'); if(on('age')) c.deceased.age=v('age')===''?'':Number(v('age'));
-    if(on('wakes') && P.wakes){ const old=wakes(c), base=old[0]||newDay('wake'), fd=fun(c); const nw=P.wakes.map((d,i)=>{ const x=i===0?base:(old[i]||newDay('wake')); x.date=d; if(i>0) x.same=true; return x; }); c.days=nw.concat([fd]); }
+    if(on('wakes') && P.wakes){ const old=wakes(c), base=old[0]||newDay('wake'), fd=fun(c); const nw=P.wakes.map((d,i)=>{ const x=i===0?base:(old[i]||newDay('wake')); x.date=d; if(i>0){ x.same=true; delete x.dateManual; } return x; }); c.days=nw.concat([fd]); }
     const W2=wakes(c), F2=fun(c);
-    if(on('wakeTime')) W2.forEach(d=>d.time=v('wakeTime'));
-    if(on('fdate')) F2.date=v('fdate'); if(on('ftime')) F2.time=v('ftime');
+    if(on('wakeTime')) W2.forEach(d=>{ d.time=v('wakeTime'); delete d.timeManual; });
+    if(on('fdate')){ F2.date=v('fdate'); F2.dateManual=true; } if(on('ftime')) F2.time=v('ftime');
     if(on('venue')){ W2[0].venue=v('venue'); if(!F2.venue) F2.venue=v('venue'); }
     if(on('location')){ W2[0].location=v('location'); if(!F2.location) F2.location=v('location'); }
     if(on('serviceType')) F2.serviceType=v('serviceType'); if(on('site')) F2.site=v('site');
-    if(on('kinName')) c.kin.name=v('kinName'); if(on('kinPhone')) c.kin.phone=v('kinPhone');
+    if(on('kinName')) c.kins[0].name=v('kinName'); if(on('kinPhone')) c.kins[0].phone=v('kinPhone');
+    if(on('others') && P.contacts) P.contacts.slice(1).forEach(x=>{ if(!c.kins.some(k=>k.phone===x.phone)) c.kins.push({name:x.who||'',relation:'',phone:x.phone}); });
+    if(on('visit')){ c.visit.from=P.visitFrom||c.visit.from; c.visit.to=P.visitTo||c.visit.to; c.visit.start=P.visitStart||c.visit.start; c.visit.end=P.visitEnd||c.visit.end; }
+    if(on('procTime')) F2.procTime=v('procTime');
     if(on('undertaker')){ c.undertaker.company=v('undertaker'); W2[0].undertaker=W2[0].undertaker||v('undertaker'); F2.undertaker=F2.undertaker||v('undertaker'); } if(on('undertakerPhone')) c.undertaker.phone=v('undertakerPhone');
-    if(on('remarks')){ const r=v('remarks'); W2[0].remarks=W2[0].remarks?W2[0].remarks+'\n'+r:r; }
-    if(on('remarksF')){ const r=v('remarksF'); F2.remarks=F2.remarks?F2.remarks+'\n'+r:r; }
     closeModal(); touch(c); flush(); keep(renderCase); toast('Details filled in — please check and complete the rest');
   };
 }
@@ -1344,9 +1489,10 @@ function bind(c){
   app.oninput=e=>{
     const el=e.target, path=el.dataset.b; if(!path||el.type==='file') return;
     let v=el.type==='checkbox'?el.checked:el.value; if(el.type==='number'&&v!=='') v=Number(v);
+    if(el.type==='date'){ const dp=el.nextElementSibling; if(dp&&dp.classList.contains('dprev')) dp.textContent=v?fmtDate(v):''; }
     setP(c,path,v);
-    if(path==='deceased.dob'||path==='deceased.dop'){ const a=calcAge(c.deceased.dob,c.deceased.dop); if(a!==''){ c.deceased.age=a; const ae=app.querySelector('[data-b="deceased.age"]'); if(ae) ae.value=a; } }
-    if(path==='days.0.date') syncDates(c);
+    { const m=path.match(/^days\.(\d+)\.(date|time)$/); if(m) cascade(c,+m[1],m[2]); }
+    if(path==='deceased.dob'||path==='deceased.dop'||path==='deceased.dobYear'||path==='deceased.dobYearOnly'){ const a=ageOf(c.deceased); if(a!==''){ c.deceased.age=a; const ae=app.querySelector('[data-b="deceased.age"]'); if(ae) ae.value=a; } }
     if(/^tasks\.\w+\.who$/.test(path) && !c.call.coordinator) {}
     touch(c); renderHead(c);
     if($('#obit') && el.closest('[data-box="st-obituary"]')) renderObit(c);
@@ -1368,10 +1514,14 @@ function bind(c){
     if(el.dataset.rrb) keep(renderCase);
   };
   app.onclick=e=>{
-    const t=e.target.closest('[data-act],[data-jump],[data-addnote],[data-copytext],[data-fview],[data-fdel],[data-goshare],[data-copy],[data-tg],[data-copyroster],[data-resetprog],[data-tpl],[data-all],[data-toggle]'); if(!t) return;
+    const t=e.target.closest('[data-act],[data-cycle],[data-toggledx],[data-jumpros],[data-rmkin],[data-jump],[data-addnote],[data-copytext],[data-fview],[data-fdel],[data-goshare],[data-copy],[data-tg],[data-copyroster],[data-resetprog],[data-tpl],[data-all],[data-toggle]'); if(!t) return;
     if(t.dataset.copytext){ copy(c.texts[t.dataset.copytext]||''); return; }
     if(t.dataset.fview){ viewFile(c,t.dataset.fview); return; }
     if(t.dataset.fdel){ const f=c.files.find(x=>x.id===t.dataset.fdel); confirmBox('Remove this file?','“'+(f?f.name:'')+'” will be removed from this record.','Remove',async()=>{ if(!LOCAL){ try{ await api({action:'deleteFile',fileId:f.id}); }catch(e){} } c.files=c.files.filter(x=>x!==f); touch(c); await flush(); keep(renderCase); toast('File removed'); }); return; }
+    if(t.dataset.cycle){ const T=c.tasks[t.dataset.cycle]; const i2=TASK_STATUS.indexOf(T.status); T.status=TASK_STATUS[(i2+1)%TASK_STATUS.length]; if(T.status==='Done'){ T.by=ls('tow_fn_me')||''; T.at=new Date().toISOString(); } touch(c); keep(renderCase); return; }
+    if(t.dataset.toggledx){ const b2=$('#dx-'+t.dataset.toggledx); b2.style.display=b2.style.display==='none'?'':'none'; return; }
+    if(t.dataset.jumpros){ const r=$('[data-box^="ros-"]'); if(r){ toggleBox(r,true); r.scrollIntoView({behavior:'smooth',block:'start'}); } return; }
+    if(t.dataset.rmkin){ c.kins.splice(+t.dataset.rmkin,1); touch(c); keep(renderCase); return; }
     if(t.dataset.addnote){ const inp=t.nextElementSibling; inp.style.display=''; inp.focus(); t.remove(); return; }
     if(t.dataset.goshare){ e.preventDefault(); e.stopPropagation(); const k=t.dataset.goshare, st=MSG_STAGE[k]||'notices'; COL[S.cur+':st-'+st]=true; COL[S.cur+':msg-'+k]=true; ls('tow_fn_col',JSON.stringify(COL)); if(S.tab!=='workflow'){ S.tab='workflow'; renderCase(); } else keep(renderCase); const m=$('[data-box="msg-'+k+'"]'); if(m) setTimeout(()=>m.scrollIntoView({behavior:'smooth',block:'start'}),60); return; }
     if(t.dataset.jump){ const id='st-'+t.dataset.jump; COL[S.cur+':'+id]=true; ls('tow_fn_col',JSON.stringify(COL)); const bx=$('[data-box="'+id+'"]'); if(bx){ toggleBox(bx,true); setTimeout(()=>$('#stage-'+t.dataset.jump).scrollIntoView({behavior:'smooth',block:'start'}),40); } return; }
@@ -1383,6 +1533,7 @@ function bind(c){
     if(t.dataset.all){ $$('.box').forEach(b=>toggleBox(b,t.dataset.all==='1')); return; }
     if(t.dataset.toggle){ if(e.target.closest('input,select,textarea,a,button:not(.chev)')) return; toggleBox(t.closest('.box')); return; }
     const a=t.dataset.act;
+    if(a==='addKin'){ c.kins.push({name:'',relation:'',phone:''}); touch(c); keep(renderCase); }
     if(a==='wakePlus'){ const w=wakes(c); const nd=newDay('wake',w[w.length-1]); c.days.splice(w.length,0,nd); const f=fun(c); if(f.date&&nd.date&&f.date<=nd.date) f.date=addDays(nd.date,1); touch(c); keep(renderCase); }
     if(a==='wakeMinus'){ const w=wakes(c); if(w.length<=1){ toast('At least one wake night'); return; } c.days.splice(w.length-1,1); touch(c); keep(renderCase); }
     if(a==='close'){ confirmBox('Close this case?','It moves to Past records with the full report kept. You can reopen it any time.','Close case',()=>{ c.status='closed'; c.closedAt=new Date().toISOString(); c.closedBy=ls('tow_fn_me')||''; touch(c); keep(renderCase); toast('Case closed — kept in Past records'); }); }
@@ -1393,17 +1544,25 @@ function bind(c){
     if(a==='delete') confirmBox('Delete this request?','This removes the record for '+(c.deceased.name||'this case')+' for everyone. To keep it in history, use “Mark case closed” instead.','Delete',async()=>{ delete S.full[c.id]; S.index=S.index.filter(x=>x.id!==c.id); S.dirty.delete(c.id); if(LOCAL) flush(); else { try{ await api({action:'delete',id:c.id}); }catch(e){} } S.view='home'; render(); toast('Deleted'); });
     if(a==='printProg') doPrint(printProgramme(c));
     if(a==='printForm') doPrint(formHTML(c));
-    if(a==='printFam') doPrint('<div class="pz-page">'+pzHead('Funeral Service — Guidelines &amp; Declaration','For the family of<br><b>'+esc(c.deceased.name||'')+'</b>')+'<h4><b>C</b>Guidelines for the service</h4>'+declHTML(c)+'</div>');
+    if(a==='printFam'){ PL=c.lang||'en'; doPrint('<div class="pz-page">'+pzHead(txh('declTitle'),esc(tx('forFamily'))+'<br><b>'+esc(c.deceased.name||'')+'</b>')+'<h4><b>C</b>'+txh('secC')+'</h4>'+declHTML(c)+'</div>'); }
     if(a==='printGuide') doPrint(guideHTML(c));
-    if(a==='printObit'){ const D=obData(c); doPrint('<div class="pz-obit">'+(TPL[c.obit.tpl]||TPL.grace)(D)+'</div>'); }
+    if(a==='printObit') doPrint(obitPrintHTML(c,1020));
     if(a==='copyObit') copy(obitText(c));
     if(a==='afAgain'){ const f=[...c.files].reverse().find(x=>x.kind==='obituary'); if(f) autofill(c,f); }
     if(a==='rmPhoto'){ if(c.obit.photoId&&!LOCAL){ api({action:'deleteFile',fileId:c.obit.photoId}).catch(()=>{}); } c.obit.photo=''; c.obit.photoId=''; delete c.obit.photoG; touch(c); renderCase(); }
     if(a==='obitImg') saveObitImage(c);
+    if(a==='canva'){ saveObitImage(c).then(()=>{ modal('<h3>Edit in Canva</h3><p>The obituary has been saved as an image. In Canva, create a design (e.g. A4 or Instagram Story), then <b>Uploads → Upload files</b> and choose the saved image. Paste the Canva link back here so the team can find it.</p><div class="btnrow" style="justify-content:flex-end"><button class="btn" onclick="closeModal()">Close</button><a class="btn primary" href="https://www.canva.com/" target="_blank" rel="noopener" onclick="closeModal()">Open Canva</a></div>'); }); }
     if(a==='sigSave') saveSig(c);
     if(a==='sigReset'){ const cv=$('#sigPad'); cv.getContext('2d').clearRect(0,0,cv.width,cv.height); initSig(c); }
     if(a==='sigClear'){ c.ack.sig=''; touch(c); keep(renderCase); }
   };
+}
+function cascade(c,i,field){
+  const d=c.days[i]; if(!d) return; const w=wakes(c), f=fun(c), wi=w.indexOf(d);
+  if(d.type==='funeral'){ if(field==='date') d.dateManual=true; return; }
+  if(wi>0){ if(field==='date') d.dateManual=true; else d.timeManual=true; }
+  for(let j=wi+1;j<w.length;j++){ if(field==='date'&&!w[j].dateManual&&w[j-1].date) w[j].date=addDays(w[j-1].date,1); if(field==='time'&&!w[j].timeManual) w[j].time=d.time; }
+  if(field==='date'&&!f.dateManual&&w.length&&w[w.length-1].date) f.date=addDays(w[w.length-1].date,1);
 }
 function syncDates(c){ const w=wakes(c); for(let i=1;i<w.length;i++) if(w[i].same) w[i].date=addDays(w[0].date,i); const f=fun(c); if(w.length&&w[0].date&&!(f.date&&f.date>w[w.length-1].date)) f.date=addDays(w[w.length-1].date,1); }
 async function copy(txt){ try{ await navigator.clipboard.writeText(txt); toast('Copied — paste into WhatsApp'); }catch(e){ const ta=document.createElement('textarea'); ta.value=txt; document.body.appendChild(ta); ta.select(); try{ document.execCommand('copy'); toast('Copied'); }catch(_){ toast('Could not copy'); } ta.remove(); } }
